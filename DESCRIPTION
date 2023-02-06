@@ -12,14 +12,18 @@ RoxygenNote: 7.2.1
 Imports: 
     cli,
     data.table,
+    memoise,
     methods,
     rlang,
     SingleCellExperiment,
     SummarizedExperiment
-Depends: 
-    R (>= 3.5.0)
 Suggests: 
     batchelor,
+    pipeline,
     scran,
     scuttle
+Remotes:
+    Yunuuuu/pipeline
+Depends: 
+    R (>= 3.5.0)
 ByteCompile: true
