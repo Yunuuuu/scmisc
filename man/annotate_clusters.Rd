@@ -16,7 +16,7 @@ annotate_clusters(x, ...)
 
 \S4method{annotate_clusters}{SummarizedExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
-\S4method{annotate_clusters}{Seurat}(x, clusters = NULL, ..., assay.use = NULL)
+\S4method{annotate_clusters}{Seurat}(x, clusters = NULL, ..., assay.type = NULL)
 }
 \arguments{
 \item{x}{A numeric matrix of counts with cells in columns and features in

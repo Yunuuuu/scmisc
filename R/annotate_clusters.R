@@ -158,8 +158,8 @@ setMethod(
 #' @rdname annotate_clusters
 setMethod(
     "annotate_clusters", "Seurat",
-    function(x, clusters = NULL, ..., assay.use = NULL) { # nolint
-        assay.use <- assay.use %||% Seurat::DefaultAssay(x) 
+    function(x, clusters = NULL, ..., assay.type = NULL) { # nolint
+        assay.type <- assay.type %||% Seurat::DefaultAssay(x) 
         if (is.null(clusters)) {
             clusters <- SeuratObject::Idents(x)
             if (is.null(clusters)) {
@@ -172,7 +172,7 @@ setMethod(
         annotate_clusters_internal(
             SeuratObject::GetAssayData(
                 object = x, slot = "data",
-                assay = assay.use
+                assay = assay.type
             ),
             clusters = clusters,
             ...
