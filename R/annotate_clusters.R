@@ -31,6 +31,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
     cluster2cell <- lapply(marker_list, function(markers) {
+        markers <- unique(markers)
         # we firstly calculate the sum expression values of all markers in a
         # each cluster.
         sum_array <- scuttle::summarizeAssayByGroup(
