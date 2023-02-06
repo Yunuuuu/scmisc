@@ -10,10 +10,6 @@ has_names <- function(x) {
     !is.na(nms) & nms != ""
 }
 
-#' @importFrom rlang zap
-#' @export
-rlang::zap
-
 #' Report if an argument is a specific class
 #'
 #' @keywords internal
