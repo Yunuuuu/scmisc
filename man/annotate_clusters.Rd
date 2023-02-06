@@ -9,7 +9,7 @@
 \usage{
 annotate_clusters(x, ...)
 
-\S4method{annotate_clusters}{ANY}(x, ...)
+\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual, ...)
 
 \S4method{annotate_clusters}{SingleCellExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
@@ -32,9 +32,6 @@ the field of \code{colData(x)} containing the grouping factor if \code{x} is a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.,
 usually clusters.}
 
-\item{assay.type}{A string or integer scalar indicating which \code{assays} in the
-\code{x} contains the count matrix.}
-
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
 cell type.}
@@ -42,6 +39,9 @@ cell type.}
 \item{manual}{A named list contaning the manually annotated cell types for
 the clusters. The names indicate the cell type label and the values
 indicate the cluster labels (will be coerced to character).}
+
+\item{assay.type}{A string or integer scalar indicating which \code{assays} in the
+\code{x} contains the count matrix.}
 }
 \value{
 A named character, names indicates the cluster labels and values

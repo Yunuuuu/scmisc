@@ -38,8 +38,12 @@ setGeneric(
 
 #' @export
 #' @rdname annotate_clusters
-setMethod("annotate_clusters", "ANY", function(x, ...) {
-    annotate_clusters_internal(x = x, ...)
+setMethod("annotate_clusters", "ANY", function(x, clusters, marker_list, manual, ...) {
+    annotate_clusters_internal(
+        x = x, clusters = clusters,
+        marker_list = marker_list,
+        manual = manual, ...
+    )
 })
 
 #' @export
@@ -88,12 +92,12 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
     if (length(marker_list) > 0L) {
-        if (all(has_names(marker_list))) {
+        if (all(!has_names(marker_list))) {
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
     }
     if (length(manual) > 0L) {
-        if (all(has_names(manual))) {
+        if (all(!has_names(manual))) {
             cli::cli_abort("All elements in {.arg manual} must be named.")
         }
     }
@@ -129,7 +133,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
         cluster2cell,
         use.names = TRUE,
         idcol = "celltype"
-    )[, .(celltype = celltype[[which.max(means)]]), by = "clusters"][ # nolint
+    )[, list(celltype = celltype[[which.max(means)]]), by = "clusters"][ # nolint
         , structure(celltype, names = clusters) # nolint
     ]
 
