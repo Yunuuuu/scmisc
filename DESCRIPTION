@@ -12,9 +12,12 @@ RoxygenNote: 7.2.1
 Imports: 
     cli,
     data.table,
-    rlang
+    methods,
+    rlang,
+    SingleCellExperiment,
+    SummarizedExperiment
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Suggests: 
     batchelor,
     scran,

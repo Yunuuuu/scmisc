@@ -10,5 +10,7 @@
 #' @importFrom data.table .NGRP
 #' @importFrom data.table .SD
 #' @importFrom data.table data.table
+#' @importFrom methods setGeneric
+#' @importFrom methods setMethod
 ## usethis namespace: end
 NULL
