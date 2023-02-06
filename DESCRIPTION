@@ -16,7 +16,8 @@ Imports:
     methods,
     rlang,
     SingleCellExperiment,
-    SummarizedExperiment
+    SummarizedExperiment,
+    SeuratObject
 Suggests: 
     batchelor,
     pipeline,

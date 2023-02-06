@@ -119,8 +119,7 @@ setMethod(
             if (is.null(clusters)) {
                 cli::cli_abort("{.field label} never exist in {.arg x}.")
             }
-        }
-        if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
+        } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
             clusters <- scater::retrieveCellInfo(
                 x, clusters,
                 search = "colData"
@@ -148,6 +147,33 @@ setMethod(
         }
         annotate_clusters_internal(
             SummarizedExperiment::assay(x, assay.type),
+            clusters = clusters,
+            ...
+        )
+    }
+)
+
+#' @export
+#' @importClassesFrom SeuratObject Seurat
+#' @rdname annotate_clusters
+setMethod(
+    "annotate_clusters", "Seurat",
+    function(x, clusters = NULL, ..., assay.use = NULL) { # nolint
+        assay.use <- assay.use %||% Seurat::DefaultAssay(x) 
+        if (is.null(clusters)) {
+            clusters <- SeuratObject::Idents(x)
+            if (is.null(clusters)) {
+                cli::cli_abort("{.field Idents} never exist in {.arg x}.")
+            }
+        } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
+            x <- SeuratObject::SetIdent(x, value = clusters)
+            clusters <- SeuratObject::Idents(x)
+        }
+        annotate_clusters_internal(
+            SeuratObject::GetAssayData(
+                object = x, slot = "data",
+                assay = assay.use
+            ),
             clusters = clusters,
             ...
         )
