@@ -87,6 +87,16 @@ setMethod(
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
+    if (length(marker_list) > 0L) {
+        if (all(has_names(marker_list))) {
+            cli::cli_abort("All elements in {.arg marker_list} must be named.")
+        }
+    }
+    if (length(manual) > 0L) {
+        if (all(has_names(manual))) {
+            cli::cli_abort("All elements in {.arg manual} must be named.")
+        }
+    }
     cluster2cell <- lapply(marker_list, function(markers) {
         markers <- unique(markers)
         # we firstly calculate the sum expression values of all markers in a
@@ -124,7 +134,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
     ]
 
     # adjust results by manual.
-    if (is.null(manual)) {
+    if (length(manual) == 0L) {
         cluster2cell_levels <- intersect(names(marker_list), cluster2cell)
     } else {
         cluster2cell[as.character(
