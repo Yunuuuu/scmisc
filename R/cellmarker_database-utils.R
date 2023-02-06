@@ -41,6 +41,10 @@ cellmarker_search <- function(markers, species = "human", internal = NULL) {
     data.table::setDF(data)[]
 }
 
+utils::globalVariables(
+    c("targeted", "gene_list", "targeted_size", "targeted_prop")
+)
+
 cellmarker_get <- function(species = "human", internal = NULL) {
     species <- match.arg(species, c("human", "mouse"))
     if (is.null(internal)) {
@@ -76,6 +80,8 @@ cellmarker_prepare <- function(data) { # nolint styler: off
         MoreArgs = NULL
     ), .SDcols = intersect(cellmarker_gene_cols, names(data))]
 }
+
+utils::globalVariables("gene_list")
 
 cellmarker_download <- function(species) {
     if (!exists(species, where = cellmarker_database_external, inherits = FALSE)) {

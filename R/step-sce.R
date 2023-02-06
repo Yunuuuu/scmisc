@@ -37,6 +37,8 @@ step_sce_sizefactor <- function(sce, batch = NULL, type = NULL, ...,
     )
 }
 
+utils::globalVariables("sizefactor")
+
 step_sce_normalize <- function(sce, type = NULL, ..., step_param = list()) {
     sce <- quo_or_symbol(sce)
     call <- rlang::expr(scuttle::logNormCounts(
