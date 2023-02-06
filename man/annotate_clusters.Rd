@@ -2,17 +2,14 @@
 % Please edit documentation in R/annotate_clusters.R
 \name{annotate_clusters}
 \alias{annotate_clusters}
-\alias{annotate_clusters_internal}
 \alias{annotate_clusters,ANY-method}
 \alias{annotate_clusters,SingleCellExperiment-method}
 \alias{annotate_clusters,SummarizedExperiment-method}
 \title{Annotate cluster cell types with provided markers}
 \usage{
-annotate_clusters_internal(x, clusters, marker_list, manual = NULL)
-
 annotate_clusters(x, ...)
 
-\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL)
+\S4method{annotate_clusters}{ANY}(x, ...)
 
 \S4method{annotate_clusters}{SingleCellExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
@@ -27,11 +24,16 @@ Alternatively, a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object
 containing such a matrix.}
 
+\item{...}{For the generic, further arguments to pass to specific methods.}
+
 \item{clusters}{A factor (or vector coercible into a factor) specifying the
 group to which each cell in \code{x} belongs. Alternatively, String specifying
 the field of \code{colData(x)} containing the grouping factor if \code{x} is a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.,
 usually clusters.}
+
+\item{assay.type}{A string or integer scalar indicating which \code{assays} in the
+\code{x} contains the count matrix.}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
@@ -40,15 +42,10 @@ cell type.}
 \item{manual}{A named list contaning the manually annotated cell types for
 the clusters. The names indicate the cell type label and the values
 indicate the cluster labels (will be coerced to character).}
-
-\item{...}{For the generic, further arguments to pass to specific methods.}
-
-\item{assay.type}{A string or integer scalar indicating which \code{assays} in the
-\code{x} contains the count matrix.}
 }
 \value{
 A named character, names indicates the cluster labels and values
-indicates the cell type name.
+indicates the cell type names.
 }
 \description{
 This function calculate the average expression levels of all
