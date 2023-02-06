@@ -29,65 +29,6 @@
 #' @name annotate_clusters
 NULL
 
-#' @export
-#' @rdname annotate_clusters
-setGeneric(
-    "annotate_clusters",
-    function(x, ...) standardGeneric("annotate_clusters")
-)
-
-#' @export
-#' @rdname annotate_clusters
-setMethod("annotate_clusters", "ANY", function(x, clusters, marker_list, manual, ...) {
-    annotate_clusters_internal(
-        x = x, clusters = clusters,
-        marker_list = marker_list,
-        manual = manual, ...
-    )
-})
-
-#' @export
-#' @param assay.type A string or integer scalar indicating which `assays` in the
-#' `x` contains the count matrix.
-#' @importClassesFrom SingleCellExperiment SingleCellExperiment
-#' @rdname annotate_clusters
-setMethod(
-    "annotate_clusters", "SingleCellExperiment",
-    function(x, clusters = NULL, ..., assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-        }
-        if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
-            clusters <- scater::retrieveCellInfo(
-                x, clusters,
-                search = "colData"
-            )$value
-        }
-        annotate_clusters_internal(
-            SummarizedExperiment::assay(x, assay.type),
-            clusters = clusters,
-            ...
-        )
-    }
-)
-
-#' @export
-#' @importClassesFrom SummarizedExperiment SummarizedExperiment
-#' @rdname annotate_clusters
-setMethod(
-    "annotate_clusters", "SummarizedExperiment",
-    function(x, clusters = NULL, ..., assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-        }
-        annotate_clusters_internal(
-            SummarizedExperiment::assay(x, assay.type),
-            clusters = clusters,
-            ...
-        )
-    }
-)
-
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
@@ -153,3 +94,62 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
 }
 
 utils::globalVariables(c("means", "celltype"))
+
+#' @export
+#' @rdname annotate_clusters
+setGeneric(
+    "annotate_clusters",
+    function(x, ...) standardGeneric("annotate_clusters")
+)
+
+#' @export
+#' @rdname annotate_clusters
+setMethod("annotate_clusters", "ANY", annotate_clusters_internal)
+
+#' @export
+#' @param assay.type A string or integer scalar indicating which `assays` in the
+#' `x` contains the count matrix.
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @rdname annotate_clusters
+setMethod(
+    "annotate_clusters", "SingleCellExperiment",
+    function(x, clusters = NULL, ..., assay.type = "logcounts") {
+        if (is.null(clusters)) {
+            clusters <- x$label
+            if (is.null(clusters)) {
+                cli::cli_abort("{.field label} never exist in {.arg x}.")
+            }
+        }
+        if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
+            clusters <- scater::retrieveCellInfo(
+                x, clusters,
+                search = "colData"
+            )$value
+        }
+        annotate_clusters_internal(
+            SummarizedExperiment::assay(x, assay.type),
+            clusters = clusters,
+            ...
+        )
+    }
+)
+
+#' @export
+#' @importClassesFrom SummarizedExperiment SummarizedExperiment
+#' @rdname annotate_clusters
+setMethod(
+    "annotate_clusters", "SummarizedExperiment",
+    function(x, clusters = NULL, ..., assay.type = "logcounts") {
+        if (is.null(clusters)) {
+            clusters <- x$label
+            if (is.null(clusters)) {
+                cli::cli_abort("{.field label} never exist in {.arg x}.")
+            }
+        }
+        annotate_clusters_internal(
+            SummarizedExperiment::assay(x, assay.type),
+            clusters = clusters,
+            ...
+        )
+    }
+)

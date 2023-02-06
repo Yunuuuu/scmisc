@@ -9,7 +9,7 @@
 \usage{
 annotate_clusters(x, ...)
 
-\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual, ...)
+\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL)
 
 \S4method{annotate_clusters}{SingleCellExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
