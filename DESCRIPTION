@@ -17,10 +17,13 @@ Imports:
     rlang,
     SingleCellExperiment,
     SummarizedExperiment,
-    SeuratObject
+    SeuratObject,
+    ggplot2
 Suggests: 
     batchelor,
     pipeline,
+    S4Vectors,
+    scater,
     scran,
     scuttle
 Remotes:

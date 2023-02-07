@@ -47,9 +47,9 @@ the field of \code{colData(x)} containing the grouping factor if \code{x} is a
 \item{cluster2cell}{A named character or factor returned by
 \code{\link[=annotate_clusters]{annotate_clusters()}}.}
 
-\item{facet_args}{A named list passed to \link[ggplot2:facet_grid]{facet_grid}.}
+\item{flip}{A scalar logical indicates whether flipping the plot.}
 
-\item{filp}{A scalar logical indicates whether flipping the plot.}
+\item{facet_args}{A named list passed to \link[ggplot2:facet_grid]{facet_grid}.}
 }
 \value{
 A ggplot2 object.

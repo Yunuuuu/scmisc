@@ -14,7 +14,7 @@
 #'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.
 #' @param cluster2cell A named character or factor returned by
 #' [`annotate_clusters()`][annotate_clusters].
-#' @param filp A scalar logical indicates whether flipping the plot.
+#' @param flip A scalar logical indicates whether flipping the plot.
 #' @param facet_args A named list passed to [facet_grid][ggplot2::facet_grid].
 #' @param ... Other arguments passed to [plotDots][scater::plotDots].
 #' @return A ggplot2 object.
@@ -71,6 +71,8 @@ facet_dots_internal <- function(x, marker_list, clusters = NULL, cluster2cell = 
         rlang::exec(ggplot2::facet_grid, !!!facet_args_list) +
         ggplot2::theme(strip.clip = "off")
 }
+
+utils::globalVariables(c("..marker_celltypes..", "Group"))
 
 #' @export
 #' @rdname facet_dots
