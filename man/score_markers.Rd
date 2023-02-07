@@ -73,8 +73,10 @@ See \link[scran:scoreMarkers]{scoreMarkers} groups argument.}
 compute effect sizes against.}
 
 \item{features}{This can be a logical, integer or character vector indicating
-the rows of x to use. See \link[scran:scoreMarkers]{scoreMarkers} subset.row
-argument}
+the rows of x to use. If \code{NULL}, and x is a
+\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment},
+\link[SingleCellExperiment:rowSubset]{rowSubset} is used to derive the features.
+See \link[scran:scoreMarkers]{scoreMarkers} subset.row argument.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}

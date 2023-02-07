@@ -31,8 +31,10 @@
 #' @param lfc A numeric scalar specifying the log-fold change threshold to
 #' compute effect sizes against.
 #' @param features This can be a logical, integer or character vector indicating
-#' the rows of x to use. See [scoreMarkers][scran::scoreMarkers] subset.row
-#' argument
+#' the rows of x to use. If `NULL`, and x is a
+#' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
+#' [rowSubset][SingleCellExperiment::rowSubset] is used to derive the features.
+#' See [scoreMarkers][scran::scoreMarkers] subset.row argument.
 #' @param ... For the generic, further arguments to pass to specific methods.
 #' @return A data.frame
 #' @name score_markers
@@ -97,9 +99,9 @@ setMethod(
             )$value
         }
         if (is.null(features)) {
-            features <- tryCatch(
-                SingleCellExperiment::rowSubset(x, onAbsence = "error"),
-                error = function(cnd) NULL
+            features <- SingleCellExperiment::rowSubset(
+                x,
+                onAbsence = "none"
             )
         }
         score_markers_internal(x,
