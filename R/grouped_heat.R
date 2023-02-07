@@ -37,7 +37,7 @@ grouped_heat_internal <- function(
         names = unlist(marker_list, recursive = FALSE, use.names = FALSE)
     )
     heat_se <- scuttle::summarizeAssayByGroup(
-        heat_matrix, ids,
+        x, ids,
         subset.row = names(gene2cell),
         statistic = "mean"
     )
