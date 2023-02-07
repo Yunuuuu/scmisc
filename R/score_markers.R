@@ -26,7 +26,7 @@
 #' @param clusters A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, String specifying
 #'   the field of `colData(x)` containing the grouping factor if `x` is a
-#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g..
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.
 #'   See [scoreMarkers][scran::scoreMarkers] groups argument.
 #' @param lfc A numeric scalar specifying the log-fold change threshold to
 #' compute effect sizes against.

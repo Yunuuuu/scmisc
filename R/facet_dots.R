@@ -10,7 +10,7 @@
 #' @param clusters A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, String specifying
 #'   the field of `colData(x)` containing the grouping factor if `x` is a
-#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g..
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.
 #' @param cluster2cell A named character or factor returned by
 #' [`annotate_clusters()`][annotate_clusters].
 #' @param filp A scalar logical indicates whether flipping the plot.

@@ -32,7 +32,7 @@ containing such a matrix.}
 \item{clusters}{A factor (or vector coercible into a factor) specifying the
 group to which each cell in \code{x} belongs. Alternatively, String specifying
 the field of \code{colData(x)} containing the grouping factor if \code{x} is a
-\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g..}
+\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
