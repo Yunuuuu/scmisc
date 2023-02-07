@@ -15,8 +15,7 @@
 #' @param clusters A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, String specifying
 #'   the field of `colData(x)` containing the grouping factor if `x` is a
-#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.,
-#'   usually clusters.
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g..
 #' @param marker_list A named list contaning the markers for each cell types.
 #'   names indicate the cell type label and values indicate the markers for this
 #'   cell type.
