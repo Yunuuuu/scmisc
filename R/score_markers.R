@@ -40,7 +40,7 @@ NULL
 score_markers_internal <- function(x, restricted = NULL, top_n = 20L, order_by = "mean.AUC", order = -1L, cellmarker = FALSE, clusters = NULL, lfc = 1L, features = NULL, ...) { # nolint
     score_markers_list <- cached_score_markers(
         x,
-        groups = clusters, lfc = lfc,
+        clusters = clusters, lfc = lfc,
         subset.row = features,
         ...
     )
