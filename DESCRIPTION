@@ -21,11 +21,15 @@ Imports:
     ggplot2
 Suggests: 
     batchelor,
+    circlize,
+    ComplexHeatmap,
     pipeline,
+    RColorBrewer,
     S4Vectors,
     scater,
     scran,
-    scuttle
+    scuttle,
+    viridis
 Remotes:
     Yunuuuu/pipeline
 Depends: 
