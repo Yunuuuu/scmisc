@@ -1,4 +1,5 @@
 #' Create a facet dot plot of expression values
+#'
 #' Create a dot plot of expression values for a grouping of cells, where the
 #' size and color of each dot represents the proportion of detected expression
 #' values and the average expression, respectively, for each feature in each
@@ -6,6 +7,10 @@
 #' @param x Currently, only
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object is
 #' supported.
+#' @param clusters A factor (or vector coercible into a factor) specifying the
+#'   group to which each cell in `x` belongs. Alternatively, String specifying
+#'   the field of `colData(x)` containing the grouping factor if `x` is a
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g..
 #' @param cluster2cell A named character or factor returned by
 #' [`annotate_clusters()`][annotate_clusters].
 #' @param filp A scalar logical indicates whether flipping the plot.
@@ -17,7 +22,18 @@
 NULL
 
 #' @keywords internal
-facet_dots_internal <- function(x, marker_list, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
+facet_dots_internal <- function(x, clusters = NULL, marker_list, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
+    if (is.null(clusters)) {
+        clusters <- x$label
+        if (is.null(clusters)) {
+            cli::cli_abort("{.field label} never exist in {.arg x}.")
+        }
+    } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
+        clusters <- scater::retrieveCellInfo(
+            x, clusters,
+            search = "colData"
+        )$value
+    }
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),
@@ -30,6 +46,7 @@ facet_dots_internal <- function(x, marker_list, cluster2cell = NULL, flip = TRUE
     base_plot <- scater::plotDots(
         x,
         features = names(gene2cell),
+        group = I(clusters),
         other_fields = list(S4Vectors::DataFrame(
             ..marker_celltypes.. = unname(gene2cell[rownames(x)])
         )),

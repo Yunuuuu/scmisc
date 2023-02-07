@@ -4,16 +4,13 @@
 \alias{facet_dots}
 \alias{facet_dots,ANY-method}
 \alias{facet_dots,SingleCellExperiment-method}
-\title{Create a facet dot plot of expression values
-Create a dot plot of expression values for a grouping of cells, where the
-size and color of each dot represents the proportion of detected expression
-values and the average expression, respectively, for each feature in each
-group of cells.}
+\title{Create a facet dot plot of expression values}
 \usage{
 facet_dots(x, ...)
 
 \S4method{facet_dots}{ANY}(
   x,
+  clusters = NULL,
   marker_list,
   cluster2cell = NULL,
   flip = TRUE,
@@ -23,6 +20,7 @@ facet_dots(x, ...)
 
 \S4method{facet_dots}{SingleCellExperiment}(
   x,
+  clusters = NULL,
   marker_list,
   cluster2cell = NULL,
   flip = TRUE,
@@ -36,6 +34,11 @@ facet_dots(x, ...)
 supported.}
 
 \item{...}{Other arguments passed to \link[scater:plotDots]{plotDots}.}
+
+\item{clusters}{A factor (or vector coercible into a factor) specifying the
+group to which each cell in \code{x} belongs. Alternatively, String specifying
+the field of \code{colData(x)} containing the grouping factor if \code{x} is a
+\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g..}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
@@ -52,7 +55,6 @@ cell type.}
 A ggplot2 object.
 }
 \description{
-Create a facet dot plot of expression values
 Create a dot plot of expression values for a grouping of cells, where the
 size and color of each dot represents the proportion of detected expression
 values and the average expression, respectively, for each feature in each
