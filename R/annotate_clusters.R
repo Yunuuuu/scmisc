@@ -13,9 +13,11 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
 #' containing such a matrix.
 #' @param clusters A factor (or vector coercible into a factor) specifying the
-#'   group to which each cell in `x` belongs. Alternatively, String specifying
-#'   the field of `colData(x)` containing the grouping factor if `x` is a
-#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.
+#'   group to which each cell in `x` belongs. Alternatively, if `x` is a
+#'   [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment], e.g,
+#'   String specifying the field of `colData(x)` containing the grouping factor.
+#'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
+#'   extracted.  
 #' @param marker_list A named list contaning the markers for each cell types.
 #'   names indicate the cell type label and values indicate the markers for this
 #'   cell type.
@@ -109,44 +111,14 @@ setMethod("annotate_clusters", "ANY", annotate_clusters_internal)
 #' @param assay.type A string or integer scalar indicating which `assays` in the
 #' `x` contains the count matrix.
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
-#' @rdname annotate_clusters
-setMethod(
-    "annotate_clusters", "SingleCellExperiment",
-    function(x, clusters = NULL, ..., assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-            if (is.null(clusters)) {
-                cli::cli_abort("{.field label} never exist in {.arg x}.")
-            }
-        } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
-            clusters <- scater::retrieveCellInfo(
-                x, clusters,
-                search = "colData"
-            )$value
-        }
-        annotate_clusters_internal(
-            SummarizedExperiment::assay(x, assay.type),
-            clusters = clusters,
-            ...
-        )
-    }
-)
-
-#' @export
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @rdname annotate_clusters
 setMethod(
     "annotate_clusters", "SummarizedExperiment",
     function(x, clusters = NULL, ..., assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-            if (is.null(clusters)) {
-                cli::cli_abort("{.field label} never exist in {.arg x}.")
-            }
-        }
         annotate_clusters_internal(
             SummarizedExperiment::assay(x, assay.type),
-            clusters = clusters,
+            clusters = handle_column_data(x, clusters),
             ...
         )
     }

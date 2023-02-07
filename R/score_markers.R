@@ -24,10 +24,11 @@
 #' @param cellmarker A scalar logical indicates if search the CellMarker
 #' database use the `top_n` genes. See [cellmarker_search()]
 #' @param clusters A factor (or vector coercible into a factor) specifying the
-#'   group to which each cell in `x` belongs. Alternatively, String specifying
-#'   the field of `colData(x)` containing the grouping factor if `x` is a
-#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g.
-#'   See [scoreMarkers][scran::scoreMarkers] groups argument.
+#'   group to which each cell in `x` belongs. Alternatively, if `x` is a
+#'   [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment], e.g,
+#'   String specifying the field of `colData(x)` containing the grouping factor.
+#'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
+#'   extracted.  See [scoreMarkers][scran::scoreMarkers] groups argument.
 #' @param lfc A numeric scalar specifying the log-fold change threshold to
 #' compute effect sizes against.
 #' @param features This can be a logical, integer or character vector indicating
@@ -45,7 +46,7 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L, order_by =
     score_markers_list <- cached_score_markers(
         x,
         clusters = clusters, lfc = lfc,
-        features = features,
+        features = handle_row_data(object = x, features),
         ...
     )
     if (!is.null(restricted)) {
@@ -87,17 +88,7 @@ setMethod("score_markers", "ANY", score_markers_internal)
 setMethod(
     "score_markers", "SingleCellExperiment",
     function(x, ..., clusters = NULL, features = NULL, assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-            if (is.null(clusters)) {
-                cli::cli_abort("{.field label} never exist in {.arg x}.")
-            }
-        } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
-            clusters <- scater::retrieveCellInfo(
-                x, clusters,
-                search = "colData"
-            )$value
-        }
+        clusters <- handle_column_data(clusters)
         if (is.null(features)) {
             features <- SingleCellExperiment::rowSubset(
                 x,
@@ -106,7 +97,7 @@ setMethod(
         }
         score_markers_internal(x,
             clusters = clusters,
-            features = features,
+            features = handle_row_data(object = x, features),
             ...,
             assay.type = assay.type
         )
@@ -119,14 +110,8 @@ setMethod(
 setMethod(
     "score_markers", "SummarizedExperiment",
     function(x, ..., clusters = NULL, assay.type = "logcounts") {
-        if (is.null(clusters)) {
-            clusters <- x$label
-            if (is.null(clusters)) {
-                cli::cli_abort("{.field label} never exist in {.arg x}.")
-            }
-        }
         score_markers_internal(x,
-            clusters = clusters,
+            clusters = handle_column_data(clusters),
             ...,
             assay.type = assay.type
         )

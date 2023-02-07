@@ -64,10 +64,11 @@ recycled to \code{length(order_by)}.}
 database use the \code{top_n} genes. See \code{\link[=cellmarker_search]{cellmarker_search()}}}
 
 \item{clusters}{A factor (or vector coercible into a factor) specifying the
-group to which each cell in \code{x} belongs. Alternatively, String specifying
-the field of \code{colData(x)} containing the grouping factor if \code{x} is a
-\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.
-See \link[scran:scoreMarkers]{scoreMarkers} groups argument.}
+group to which each cell in \code{x} belongs. Alternatively, if \code{x} is a
+\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}, e.g,
+String specifying the field of \code{colData(x)} containing the grouping factor.
+In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
+extracted.  See \link[scran:scoreMarkers]{scoreMarkers} groups argument.}
 
 \item{lfc}{A numeric scalar specifying the log-fold change threshold to
 compute effect sizes against.}

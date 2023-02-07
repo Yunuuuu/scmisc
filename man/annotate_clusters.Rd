@@ -3,7 +3,6 @@
 \name{annotate_clusters}
 \alias{annotate_clusters}
 \alias{annotate_clusters,ANY-method}
-\alias{annotate_clusters,SingleCellExperiment-method}
 \alias{annotate_clusters,SummarizedExperiment-method}
 \alias{annotate_clusters,Seurat-method}
 \title{Annotate cluster cell types with provided markers}
@@ -11,8 +10,6 @@
 annotate_clusters(x, ...)
 
 \S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL)
-
-\S4method{annotate_clusters}{SingleCellExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
 \S4method{annotate_clusters}{SummarizedExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
@@ -30,9 +27,11 @@ containing such a matrix.}
 \item{...}{For the generic, further arguments to pass to specific methods.}
 
 \item{clusters}{A factor (or vector coercible into a factor) specifying the
-group to which each cell in \code{x} belongs. Alternatively, String specifying
-the field of \code{colData(x)} containing the grouping factor if \code{x} is a
-\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.}
+group to which each cell in \code{x} belongs. Alternatively, if \code{x} is a
+\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}, e.g,
+String specifying the field of \code{colData(x)} containing the grouping factor.
+In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
+extracted.}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
