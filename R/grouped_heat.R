@@ -37,18 +37,20 @@ grouped_heat_internal <- function(
         names = unlist(marker_list, recursive = FALSE, use.names = FALSE)
     )
     heat_se <- scuttle::summarizeAssayByGroup(
-        x, ids,
+        x,
+        ids = ids,
         subset.row = names(gene2cell),
         statistic = "mean"
     )
     if (!is.null(blocks)) {
         heat_matrix <- scuttle::correctGroupSummary(
-            heat_se,
+            SummarizedExperiment::assay(heat_se, "mean"),
             group = heat_se$group,
             block = heat_se$blocks
         )
     } else {
-        heat_matrix <- SummarizedExperiment::assay(heat_se)
+        colnames(heat_se) <- get_colData_column(heat_se, "clusters")
+        heat_matrix <- SummarizedExperiment::assay(heat_se, "mean")
     }
     # rows are genes
     # columns are clusters
@@ -111,6 +113,7 @@ setMethod(
 
 # Generated from function body. Editing this file has no effect.
 heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
+    names_list <- dimnames(x)
     if (center) {
         x <- x - rowMeans(x)
     }
@@ -134,6 +137,7 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
     }
     x[x < zlim[1L]] <- zlim[1L]
     x[x > zlim[2L]] <- zlim[2L]
+    dimnames(x) <- names_list
     list(
         x = x, colour = colour,
         colour_breaks = seq(zlim[1L], zlim[2L],
