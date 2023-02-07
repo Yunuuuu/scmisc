@@ -97,7 +97,7 @@ setMethod(
         }
         score_markers_internal(x,
             clusters = clusters,
-            features = handle_row_data(object = x, features),
+            features = features,
             ...,
             assay.type = assay.type
         )
