@@ -65,7 +65,6 @@ grouped_heat_internal <- function(
             heat_data_list$colour_breaks,
             colors = heat_data_list$colour
         ),
-        name = "",
         row_split = gene2cell[rownames(heat_data_list$x)],
         column_split = cluster2cell[colnames(heat_data_list$x)],
         ...
