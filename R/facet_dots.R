@@ -25,7 +25,7 @@ NULL
 
 #' @keywords internal
 facet_dots_internal <- function(x, marker_list, clusters = NULL, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
-    clusters <- handle_column_data(clusters)
+    clusters <- handle_column_data(object = x, clusters)
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),

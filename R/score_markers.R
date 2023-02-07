@@ -88,7 +88,7 @@ setMethod("score_markers", "ANY", score_markers_internal)
 setMethod(
     "score_markers", "SingleCellExperiment",
     function(x, ..., clusters = NULL, features = NULL, assay.type = "logcounts") {
-        clusters <- handle_column_data(clusters)
+        clusters <- handle_column_data(object = x, clusters)
         if (is.null(features)) {
             features <- SingleCellExperiment::rowSubset(
                 x,
@@ -111,7 +111,7 @@ setMethod(
     "score_markers", "SummarizedExperiment",
     function(x, ..., clusters = NULL, assay.type = "logcounts") {
         score_markers_internal(x,
-            clusters = handle_column_data(clusters),
+            clusters = handle_column_data(object = x, clusters),
             ...,
             assay.type = assay.type
         )

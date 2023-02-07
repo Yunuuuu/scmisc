@@ -118,7 +118,7 @@ setMethod(
     function(x, clusters = NULL, ..., assay.type = "logcounts") {
         annotate_clusters_internal(
             SummarizedExperiment::assay(x, assay.type),
-            clusters = handle_column_data(x, clusters),
+            clusters = handle_column_data(object = x, clusters),
             ...
         )
     }
