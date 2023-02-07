@@ -113,7 +113,6 @@ setMethod(
 
 # Generated from function body. Editing this file has no effect.
 heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
-    names_list <- dimnames(x)
     if (center) {
         x <- x - rowMeans(x)
     }
@@ -137,12 +136,9 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
     }
     x[x < zlim[1L]] <- zlim[1L]
     x[x > zlim[2L]] <- zlim[2L]
-    dimnames(x) <- names_list
     list(
         x = x, colour = colour,
-        colour_breaks = seq(zlim[1L], zlim[2L],
-            length.out = length(colour) + 1L
-        ),
+        colour_breaks = seq(zlim[1L], zlim[2L], length.out = length(colour)),
         zlim = zlim
     )
 }
