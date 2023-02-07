@@ -30,8 +30,14 @@ handle_column_data <- function(object, idx, arg = rlang::caller_arg(idx)) {
 swap_rownames <- function(object, swap_rownames = NULL) {
     if (is.null(swap_rownames)) {
         return(object)
+    } else if (rlang::is_scalar_character(swap_rownames) && nrow(object) > 1L) {
+        rownames(object) <- get_rowData_column(object, swap_rownames)
+    } else {
+        if (length(swap_rownames) != nrow(object)) {
+            cli::cli_abort("{.arg swap_rownames} should be of {.val NULL} or a string or of length {.val {nrow(object)}}.")
+        }
+        rownames(object) <- as.character(swap_rownames)
     }
-    rownames(object) <- handle_row_data(object, swap_rownames)
     object
 }
 
