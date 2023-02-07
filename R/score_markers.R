@@ -41,7 +41,7 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L, order_by =
     score_markers_list <- cached_score_markers(
         x,
         clusters = clusters, lfc = lfc,
-        subset.row = features,
+        features = features,
         ...
     )
     if (!is.null(restricted)) {
