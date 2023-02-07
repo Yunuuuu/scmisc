@@ -7,6 +7,7 @@
 #' @param x Currently, only
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object is
 #' supported.
+#' @inheritParams annotate_clusters
 #' @param clusters A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, String specifying
 #'   the field of `colData(x)` containing the grouping factor if `x` is a
@@ -16,13 +17,12 @@
 #' @param filp A scalar logical indicates whether flipping the plot.
 #' @param facet_args A named list passed to [facet_grid][ggplot2::facet_grid].
 #' @param ... Other arguments passed to [plotDots][scater::plotDots].
-#' @inheritParams annotate_clusters
 #' @return A ggplot2 object.
 #' @name facet_dots
 NULL
 
 #' @keywords internal
-facet_dots_internal <- function(x, clusters = NULL, marker_list, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
+facet_dots_internal <- function(x, marker_list, clusters = NULL, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
     if (is.null(clusters)) {
         clusters <- x$label
         if (is.null(clusters)) {

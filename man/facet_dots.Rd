@@ -10,8 +10,8 @@ facet_dots(x, ...)
 
 \S4method{facet_dots}{ANY}(
   x,
-  clusters = NULL,
   marker_list,
+  clusters = NULL,
   cluster2cell = NULL,
   flip = TRUE,
   facet_args = list(scales = "free", space = "free"),
@@ -20,8 +20,8 @@ facet_dots(x, ...)
 
 \S4method{facet_dots}{SingleCellExperiment}(
   x,
-  clusters = NULL,
   marker_list,
+  clusters = NULL,
   cluster2cell = NULL,
   flip = TRUE,
   facet_args = list(scales = "free", space = "free"),
@@ -35,14 +35,14 @@ supported.}
 
 \item{...}{Other arguments passed to \link[scater:plotDots]{plotDots}.}
 
+\item{marker_list}{A named list contaning the markers for each cell types.
+names indicate the cell type label and values indicate the markers for this
+cell type.}
+
 \item{clusters}{A factor (or vector coercible into a factor) specifying the
 group to which each cell in \code{x} belongs. Alternatively, String specifying
 the field of \code{colData(x)} containing the grouping factor if \code{x} is a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}, e.g.}
-
-\item{marker_list}{A named list contaning the markers for each cell types.
-names indicate the cell type label and values indicate the markers for this
-cell type.}
 
 \item{cluster2cell}{A named character or factor returned by
 \code{\link[=annotate_clusters]{annotate_clusters()}}.}
