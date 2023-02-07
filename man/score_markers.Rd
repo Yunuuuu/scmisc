@@ -78,6 +78,9 @@ argument}
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}
 }
+\value{
+A data.frame
+}
 \description{
 Compute various summary scores for potential marker genes to
 distinguish between groups of cells.

@@ -33,6 +33,7 @@
 #' the rows of x to use. See [scoreMarkers][scran::scoreMarkers] subset.row
 #' argument
 #' @param ... For the generic, further arguments to pass to specific methods.
+#' @return A data.frame
 #' @name score_markers
 NULL
 
