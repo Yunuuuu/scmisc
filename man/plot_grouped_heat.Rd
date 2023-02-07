@@ -24,7 +24,6 @@ plot_grouped_heat(x, ...)
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(
   x,
-  marker_list,
   ...,
   clusters = NULL,
   blocks = NULL,

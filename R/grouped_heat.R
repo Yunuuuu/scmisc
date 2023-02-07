@@ -96,7 +96,7 @@ setMethod("plot_grouped_heat", "ANY", grouped_heat_internal)
 #' @rdname plot_grouped_heat
 setMethod(
     "plot_grouped_heat", "SummarizedExperiment",
-    function(x, marker_list, ..., clusters = NULL, blocks = NULL, assay.type = "logcounts", swap_rownames = NULL) {
+    function(x, ..., clusters = NULL, blocks = NULL, assay.type = "logcounts", swap_rownames = NULL) {
         x <- swap_rownames(x, swap_rownames)
         if (!is.null(blocks)) {
             blocks <- handle_column_data(object = x, blocks)
