@@ -12,7 +12,8 @@
 #' interest.
 #' @param top_n A scalar integer indicates derive how many top features from the
 #' results. If cellmarker is `TRUE`, these features were then searched from
-#' cellmarker database.
+#' cellmarker database. If `NULL`, all features will be returned. Default:
+#' `20L`.
 #' @param order_by A character vector of column names by which to order. By
 #' default, sorts over `mean.AUC`. See [scoreMarkers][scran::scoreMarkers] for
 #' full summary scores names.

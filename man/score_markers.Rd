@@ -48,7 +48,8 @@ interest.}
 
 \item{top_n}{A scalar integer indicates derive how many top features from the
 results. If cellmarker is \code{TRUE}, these features were then searched from
-cellmarker database.}
+cellmarker database. If \code{NULL}, all features will be returned. Default:
+\code{20L}.}
 
 \item{order_by}{A character vector of column names by which to order. By
 default, sorts over \code{mean.AUC}. See \link[scran:scoreMarkers]{scoreMarkers} for
