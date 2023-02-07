@@ -61,9 +61,9 @@ grouped_heat_internal <- function(
     )
     ComplexHeatmap::Heatmap(
         heat_data_list$x,
-        color = circlize::colorRamp2(
-            heat_data_list$color_breaks,
-            colors = heat_data_list$color
+        col = circlize::colorRamp2(
+            heat_data_list$colour_breaks,
+            colors = heat_data_list$colour
         ),
         name = "",
         row_split = gene2cell[rownames(heat_data_list$x)],
@@ -126,18 +126,20 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
             zlim <- range(x)
         }
     }
-    if (is.null(color)) {
+    if (is.null(colour)) {
         if (center) {
-            color <- rev(RColorBrewer::brewer.pal(9L, "RdYlBu"))
+            colour <- rev(RColorBrewer::brewer.pal(9L, "RdYlBu"))
         } else {
-            color <- viridis::viridis(9L)
+            colour <- viridis::viridis(9L)
         }
     }
     x[x < zlim[1L]] <- zlim[1L]
     x[x > zlim[2L]] <- zlim[2L]
     list(
-        x = x, color = color,
-        color_breaks = seq(zlim[1L], zlim[2L], length.out = length(color) + 1L),
+        x = x, colour = colour,
+        colour_breaks = seq(zlim[1L], zlim[2L],
+            length.out = length(colour) + 1L
+        ),
         zlim = zlim
     )
 }
