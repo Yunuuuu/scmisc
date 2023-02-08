@@ -13,7 +13,7 @@
 #'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment], e.g,
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
-#'   extracted.  
+#'   extracted.
 #' @param cluster2cell A named character or factor returned by
 #' [`annotate_clusters()`][annotate_clusters].
 #' @param flip A scalar logical indicates whether flipping the plot.
@@ -24,8 +24,14 @@
 NULL
 
 #' @keywords internal
-facet_dots_internal <- function(x, marker_list, clusters = NULL, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
-    clusters <- handle_column_data(object = x, clusters)
+facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
+    assert_class(marker_list, is.list, "list", null_ok = FALSE)
+    if (length(marker_list) > 0L) {
+        if (all(!has_names(marker_list))) {
+            cli::cli_abort("All elements in {.arg marker_list} must be named.")
+        }
+    }
+    assert_class(clusters, is.character, "character", null_ok = TRUE)
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),
@@ -82,5 +88,10 @@ setMethod("facet_dots", "ANY", facet_dots_internal)
 #' @rdname facet_dots
 setMethod(
     "facet_dots", "SingleCellExperiment",
-    facet_dots_internal
+    function(x, ..., clusters = NULL) {
+        facet_dots_internal(x,
+            clusters = handle_column_data(object = x, clusters),
+            ...
+        )
+    }
 )

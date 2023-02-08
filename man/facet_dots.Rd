@@ -11,22 +11,14 @@ facet_dots(x, ...)
 \S4method{facet_dots}{ANY}(
   x,
   marker_list,
-  clusters = NULL,
+  clusters,
   cluster2cell = NULL,
   flip = TRUE,
   facet_args = list(scales = "free", space = "free"),
   ...
 )
 
-\S4method{facet_dots}{SingleCellExperiment}(
-  x,
-  marker_list,
-  clusters = NULL,
-  cluster2cell = NULL,
-  flip = TRUE,
-  facet_args = list(scales = "free", space = "free"),
-  ...
-)
+\S4method{facet_dots}{SingleCellExperiment}(x, ..., clusters = NULL)
 }
 \arguments{
 \item{x}{Currently, only

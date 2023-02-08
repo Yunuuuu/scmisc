@@ -29,6 +29,12 @@ grouped_heat_internal <- function(
     if (!is.null(blocks)) {
         ids$blocks <- blocks
     }
+    assert_class(marker_list, is.list, "list", null_ok = FALSE)
+    if (length(marker_list) > 0L) {
+        if (all(!has_names(marker_list))) {
+            cli::cli_abort("All elements in {.arg marker_list} must be named.")
+        }
+    }
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),
