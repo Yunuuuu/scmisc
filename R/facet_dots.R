@@ -31,7 +31,6 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
     }
-    assert_class(clusters, is.character, "character", null_ok = TRUE)
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),
