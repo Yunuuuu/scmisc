@@ -1,4 +1,4 @@
-#' @param statistic Character vector specifying the type of statistics to be
+#' @param statistics Character vector specifying the type of statistics to be
 #' computed, see Details. `c("mean", "sum", "num.detected", "prop.detected",
 #' "median")`
 #' @param blocks A factor or vector specifying the blocking level for each
@@ -8,7 +8,7 @@
 #' @param ... Other arguments passed to
 #' [correctGroupSummary][scuttle::correctGroupSummary].
 #' @keywords internal
-summarize_features_by_groups <- function(x, features, groups, statistic, blocks = NULL, id = NULL, check_dup = TRUE, threshold = 0L, ...) {
+summarize_features_by_groups <- function(x, features, groups, statistics, blocks = NULL, id = NULL, check_dup = TRUE, threshold = 0L, ...) {
     if (is.null(colnames(x))) {
         colnames(x) <- seq_len(ncol(x))
     }
@@ -42,7 +42,7 @@ summarize_features_by_groups <- function(x, features, groups, statistic, blocks 
         x,
         ids = ids,
         subset.row = features,
-        statistic = statistic,
+        statistics = statistics,
         store.number = "ncells",
         threshold = threshold
     )

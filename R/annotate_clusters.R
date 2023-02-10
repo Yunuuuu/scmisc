@@ -30,7 +30,7 @@
 #' @name annotate_clusters
 NULL
 
-annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) {
+annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
     if (length(marker_list) > 0L) {
@@ -80,7 +80,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
         sum_stats <- summarize_features_by_groups(
             x,
             features = markers, groups = clusters,
-            statistic = "sum", blocks = NULL,
+            statistics = "sum", blocks = blocks,
             id = sprintf("{.field %s} in {.arg %s}", i, "marker_list"),
             check_dup = TRUE
         )
