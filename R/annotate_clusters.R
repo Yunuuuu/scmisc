@@ -17,7 +17,7 @@
 #'   [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment], e.g,
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
-#'   extracted.  
+#'   extracted.
 #' @param marker_list A named list contaning the markers for each cell types.
 #'   names indicate the cell type label and values indicate the markers for this
 #'   cell type.
@@ -38,13 +38,60 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
     }
+
+    # prepare manual annotation
     if (length(manual) > 0L) {
         if (all(!has_names(manual))) {
             cli::cli_abort("All elements in {.arg manual} must be named.")
         }
+        manual_clusters <- as.character(
+            unlist(manual, recursive = FALSE, use.names = FALSE)
+        )
+        manual_labels <- rep(names(manual), times = lengths(manual))
+        if (anyNA(manual_clusters)) {
+            cli::cli_warn(c(
+                "{.val {NA}} is found in {.arg manual}",
+                "i" = "will omit {.val {NA}}"
+            ))
+            manual_clusters <- manual_clusters[!is.na(manual_clusters)]
+            manual_labels <- manual_labels[!is.na(manual_clusters)]
+        }
+        missed_clusters <- setdiff(manual_clusters, as.character(clusters))
+        if (length(missed_clusters) > 0L) {
+            cli::cli_abort(c(
+                "Missed items in {.arg clusters} provided by {.arg manual}",
+                "x" = "Missed items: {.val {missed_clusters}}"
+            ))
+        }
+        is_dup_clusters <- duplicated(manual_clusters, fromLast = TRUE)
+        dup_clusters <- unique(manual_clusters[is_dup_clusters])
+        if (length(dup_clusters) > 0L) {
+            cli::cli_warn(c(
+                "Duplicated clusters are provided in {.arg manual}",
+                "x" = "Duplicated items: {.val {dup_clusters}}",
+                "i" = "will use the later one"
+            ))
+            manual_clusters <- manual_clusters[!is_dup_clusters]
+            manual_labels <- manual_labels[!is_dup_clusters]
+        }
     }
-    cluster2cell <- lapply(marker_list, function(markers) {
-        markers <- unique(markers)
+    cluster2cell <- imap(marker_list, function(markers, i) {
+        if (anyNA(markers)) {
+            cli::cli_warn(c(
+                "{.val {NA}} is found in the {.field {i}} of {.arg marker_list}",
+                "i" = "will omit {.val {NA}}"
+            ))
+            markers <- markers[!is.na(markers)]
+        }
+        dup_markers <- unique(markers[duplicated(markers)])
+        if (length(dup_markers) > 0L) {
+            cli::cli_warn(c(
+                "Duplicated markers are provided in the {.field {i}} of {.arg marker_list}",
+                "x" = "Duplicated items: {.val {dup_markers}}",
+                "i" = "will use only once"
+            ))
+            markers <- unique(markers)
+        }
         # we firstly calculate the sum expression values of all markers in a
         # each cluster.
         sum_array <- scuttle::summarizeAssayByGroup(
@@ -80,12 +127,12 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
     ]
 
     # adjust results by manual.
-    if (length(manual) == 0L) {
+    # we put the annotated value of marker_list in the first and put manual
+    # label next to them.
+    if (length(manual_clusters) == 0L) {
         cluster2cell_levels <- intersect(names(marker_list), cluster2cell)
     } else {
-        cluster2cell[as.character(
-            unlist(manual, recursive = FALSE, use.names = FALSE)
-        )] <- rep(names(manual), times = lengths(manual))
+        cluster2cell[manual_clusters] <- manual_labels
         cluster2cell_levels <- c(
             intersect(names(marker_list), cluster2cell),
             setdiff(names(manual), names(marker_list))
@@ -130,7 +177,7 @@ setMethod(
 setMethod(
     "annotate_clusters", "Seurat",
     function(x, clusters = NULL, ..., assay.type = NULL) { # nolint
-        assay.type <- assay.type %||% SeuratObject::DefaultAssay(x) 
+        assay.type <- assay.type %||% SeuratObject::DefaultAssay(x)
         if (is.null(clusters)) {
             clusters <- SeuratObject::Idents(x)
             if (is.null(clusters)) {
