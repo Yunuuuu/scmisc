@@ -1,4 +1,4 @@
-summarize_features_by_groups <- function(x, features, groups, statistic, blocks = NULL, id = NULL) {
+summarize_features_by_groups <- function(x, features, groups, statistic, blocks = NULL, id = NULL, check_dup = TRUE) {
     if (is.null(colnames(x))) {
         colnames(x) <- seq_len(ncol(x))
     }
@@ -14,14 +14,17 @@ summarize_features_by_groups <- function(x, features, groups, statistic, blocks 
         ))
         features <- features[!is.na(features)]
     }
-    dup_features <- unique(features[duplicated(features)])
-    if (length(dup_features) > 0L) {
-        cli::cli_warn(c(
-            sprintf("Duplicated features are provided in %s.", msg),
-            "x" = "Duplicated items: {.val {dup_features}}",
-            "i" = "will use only once"
-        ))
-        features <- unique(features)
+
+    if (check_dup) {
+        dup_features <- unique(features[duplicated(features)])
+        if (length(dup_features) > 0L) {
+            cli::cli_warn(c(
+                sprintf("Duplicated features are provided in %s.", msg),
+                "x" = "Duplicated items: {.val {dup_features}}",
+                "i" = "will use only once"
+            ))
+            features <- unique(features)
+        }
     }
 
     # calculate the statistics then corrected by blocks
