@@ -9,7 +9,7 @@
 \usage{
 annotate_clusters(x, ...)
 
-\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL)
+\S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL, blocks = NULL)
 
 \S4method{annotate_clusters}{SummarizedExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
 
@@ -40,6 +40,14 @@ cell type.}
 \item{manual}{A named list contaning the manually annotated cell types for
 the clusters. The names indicate the cell type label and the values
 indicate the cluster labels (will be coerced to character).}
+
+\item{blocks}{A factor (or vector coercible into a factor) specifying the
+blocking factor to which each cell in \code{x} belongs (e.g., batch of origin).
+Alternatively, if \code{x} is a
+\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}, e.g,
+String specifying the field of \code{colData(x)} containing the grouping factor.
+In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
+extracted.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}

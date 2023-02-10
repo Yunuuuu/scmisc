@@ -24,6 +24,13 @@
 #' @param manual A named list contaning the manually annotated cell types for
 #'   the clusters. The names indicate the cell type label and the values
 #'   indicate the cluster labels (will be coerced to character).
+#' @param blocks A factor (or vector coercible into a factor) specifying the
+#'   blocking factor to which each cell in `x` belongs (e.g., batch of origin).
+#'   Alternatively, if `x` is a
+#'   [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment], e.g,
+#'   String specifying the field of `colData(x)` containing the grouping factor.
+#'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
+#'   extracted.
 #' @param ... For the generic, further arguments to pass to specific methods.
 #' @return A named character, names indicates the cluster labels and values
 #'   indicates the cell type names.
