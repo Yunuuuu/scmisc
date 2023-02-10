@@ -8,6 +8,7 @@
 #' @param threshold A numeric scalar specifying the threshold above which a gene
 #' is considered to be detected.
 #' @keywords internal
+#' @noRd 
 summarize_features_by_groups <- function(x, features, groups, statistics, blocks = NULL, threshold = 0L, id = NULL, check_dup = TRUE) {
     if (is.null(colnames(x))) {
         colnames(x) <- seq_len(ncol(x))
@@ -65,14 +66,13 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
                 )
             }
         )
-        numbers <- aggregate(numbers,
-            by = list(groups = stat_se$groups),
-            "sum", simplify = TRUE, drop = FALSE,
-            na.rm = TRUE
-        )
-        numbers <- numbers$x[
-            match(as.character(stat_se$groups), as.character(numbers$groups))
+        numbers <- data.table::data.table(
+            .numbers. = numbers,
+            .groups. = stat_se$groups
+        )[, list(.sums. = sum(.numbers., na.rm = TRUE)), by = ".groups."][
+            , structure(.sums., names = as.character(.groups.))
         ]
+        numbers <- numbers[as.character(stat_se$groups)]
     } else {
         colnames(stat_se) <- stat_se$groups
         stat_matrix_list <- SummarizedExperiment::assays(stat_se)
@@ -80,3 +80,5 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
     # rows are genes; columns are groups
     list(statistics = stat_matrix_list, numbers = numbers)
 }
+
+utils::globalVariables(c(".sums.", ".groups.", ".numbers."))
