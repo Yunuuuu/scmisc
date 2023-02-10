@@ -75,46 +75,19 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
             manual_labels <- manual_labels[!is_dup_clusters]
         }
     }
+    # duplicated markers shouldn't be calculated twice
     cluster2cell <- imap(marker_list, function(markers, i) {
-        if (anyNA(markers)) {
-            cli::cli_warn(c(
-                "{.val {NA}} is found in the {.field {i}} of {.arg marker_list}",
-                "i" = "will omit {.val {NA}}"
-            ))
-            markers <- markers[!is.na(markers)]
-        }
-        dup_markers <- unique(markers[duplicated(markers)])
-        if (length(dup_markers) > 0L) {
-            cli::cli_warn(c(
-                "Duplicated markers are provided in the {.field {i}} of {.arg marker_list}",
-                "x" = "Duplicated items: {.val {dup_markers}}",
-                "i" = "will use only once"
-            ))
-            markers <- unique(markers)
-        }
-        # we firstly calculate the sum expression values of all markers in a
-        # each cluster.
-        sum_array <- scuttle::summarizeAssayByGroup(
+        sum_stats <- summarize_features_by_groups(
             x,
-            subset.row = markers,
-            ids = clusters,
-            statistics = "sum"
+            features = markers, groups = clusters,
+            statistic = "sum", blocks = NULL,
+            id = sprintf("{.field %s} in {.arg %s}", i, "marker_list"),
+            check_dup = TRUE
         )
-        # a named numeric vector
-        cluster_sums <- colSums(
-            SummarizedExperiment::assay(sum_array, "sum"),
-            na.rm = TRUE
-        )
-        i <- names(cluster_sums)
-
-        # we then get the number of items: cells in this cluster * number of
-        # markers
-        # use `c` function to removing attributes except names
-        numbers <- c(table(clusters))
-        numbers <- numbers[i] * length(markers)
         data.table::data.table(
-            clusters = i,
-            means = cluster_sums / numbers
+            clusters = colnames(sum_stats$statistic),
+            means = colSums(sum_stats$statistic, na.rm = TRUE) /
+                (sum_stats$numbers * nrow(sum_stats$statistic))
         )
     })
     # we annotate the cluster as the celltype whose
