@@ -84,10 +84,11 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL) 
             id = sprintf("{.field %s} in {.arg %s}", i, "marker_list"),
             check_dup = TRUE
         )
+        sums <- sum_stats$statistics$sum
+        numbers <- sum_stats$numbers
         data.table::data.table(
-            clusters = colnames(sum_stats$statistic),
-            means = colSums(sum_stats$statistic, na.rm = TRUE) /
-                (sum_stats$numbers * nrow(sum_stats$statistic))
+            clusters = colnames(sums),
+            means = colSums(sums, na.rm = TRUE) / (numbers * nrow(sums))
         )
     })
     # we annotate the cluster as the celltype whose
