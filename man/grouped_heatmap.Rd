@@ -25,7 +25,7 @@ plot_grouped_heat(x, ...)
   scale = FALSE,
   zlim = NULL,
   flip = FALSE,
-  slice_border_gp = gpar(lwd = 0.5)
+  slice_border_gp = NULL
 )
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(

@@ -55,7 +55,7 @@ plot_grouped_heat_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, zlim = NULL, flip = FALSE, 
-    slice_border_gp = gpar(lwd = 0.5)) {
+    slice_border_gp = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
