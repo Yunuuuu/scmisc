@@ -129,8 +129,7 @@ A \link[ComplexHeatmap:Heatmap-class]{Heatmap-class} object
 \description{
 Create a heatmap of average expression values for each group of cells and
 specified features in a SingleCellExperiment object.
-}
-\details{
+
 Create a dot plot of expression values for a grouping of cells, where the
 size and color of each dot represents the proportion of detected expression
 values and the average expression, respectively, for each feature in each

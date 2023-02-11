@@ -1,5 +1,6 @@
 #' Plot heatmap or dots of group-level expression averages
 #'
+#' @description 
 #' Create a heatmap of average expression values for each group of cells and
 #' specified features in a SingleCellExperiment object.
 #'
