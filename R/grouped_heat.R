@@ -323,8 +323,6 @@ label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
         }
         if (all(has_names(x))) {
             x <- x[labels]
-        } else {
-            x <- labels
         }
     } else if (is.function(x) ||
         rlang::is_formula(x) ||
