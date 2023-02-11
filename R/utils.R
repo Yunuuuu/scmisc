@@ -62,6 +62,10 @@ assert_length <- function(x, length, null_ok = FALSE, arg = rlang::caller_arg(x)
     }
 }
 
+is_scalar_numeric <- function(x) {
+    length(x) == 1L && is.numeric(x)
+}
+
 #' Implement similar purrr::imap function
 #' @note this function won't keep the names of .x in the final result
 #' @keywords internal
