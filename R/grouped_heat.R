@@ -313,13 +313,13 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
 
 #' @param ref A scalar character, just for message usage
 #' @keywords internal
-#' @noRd 
+#' @noRd
 label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
     if (is.character(x)) {
         if (length(x) != length(labels)) {
-            cli::cli_abort(c(
+            cli::cli_abort(
                 "A chracter vector {.arg {arg}} must have the same length of {.arg {ref}}"
-            ))
+            )
         }
         if (all(has_names(x))) {
             x <- x[labels]
@@ -328,6 +328,11 @@ label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
         rlang::is_formula(x) ||
         rlang::is_quosure(x)) {
         x <- rlang::as_function(x)(labels)
+        if (length(x) != length(labels) || !is.character(x)) {
+            cli::cli_abort(
+                "{.fn {arg}} must returned a {.cls character} with the same length of {.arg {ref}}"
+            )
+        }
     } else if (is.null(x)) {
         x <- labels
     } else {
