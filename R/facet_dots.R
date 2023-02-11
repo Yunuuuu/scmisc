@@ -31,18 +31,23 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
     }
+    markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
+    if (anyDuplicated(markers) > 0L) {
+        cli::cli_abort(c(
+            "{.fn facet_dots} can't support duplicated markers in {.arg marker_list}",
+            i = "Try to use {.fn plot_grouped_dots} if you want to diplay duplicated markers."
+        ))
+    }
     gene2cell <- structure(
         factor(
             rep(names(marker_list), times = lengths(marker_list)),
             levels = names(marker_list)
         ),
-        names = unlist(marker_list,
-            recursive = FALSE, use.names = FALSE
-        )
+        names = markers
     )
     base_plot <- scater::plotDots(
         x,
-        features = names(gene2cell),
+        features = markers,
         group = I(clusters),
         other_fields = list(S4Vectors::DataFrame(
             ..marker_celltypes.. = unname(gene2cell[rownames(x)])
