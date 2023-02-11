@@ -182,8 +182,9 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         heat_data_list$colour_breaks,
         colors = heat_data_list$colour
     )
-    layer_fn <- switch(graph_type,
-        dots = function(j, i, x, y, width, height, fill) {
+    if (graph_type == "dots") {
+        rect_gp <- grid::gpar(type = "none")
+        layer_fn <- function(j, i, x, y, width, height, fill) {
             size <- ComplexHeatmap::pindex(
                 stat_list$prop.detected,
                 i = i, j = j
@@ -193,9 +194,11 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                 r = abs(size) / 2 * min(grid::unit.c(width, height)),
                 gp = grid::gpar(fill = fill, col = NA)
             )
-        },
-        square = NULL
-    )
+        }
+    } else {
+        rect_gp <- grid::gpar(col = NA)
+        layer_fn <- NULL
+    }
 
     if (is.null(cluster2cell)) {
         column_split <- NULL
@@ -216,6 +219,7 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         column_labels = colnames(heat_data_list$x),
         column_split = column_split,
         layer_fun = layer_fn,
+        rect_gp = rect_gp,
         ...
     )
 }
