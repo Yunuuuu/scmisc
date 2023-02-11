@@ -133,7 +133,7 @@ be One of:
 \itemize{
 \item \code{NULL} for the default labels. If flip is \code{FALSE}, row_labels are the
 same with \code{unlist(marker_list)} and the column_labels are the same with
-\code{groups}. Otherwise, the reverse is also true.
+\code{levels(groups)}. Otherwise, the reverse is also true.
 \item A character vector of labels. If named, they will be matched by indexing
 with the default labels, Otherwise, used as it is.
 \item A function that takes the default labels as input and returns a character

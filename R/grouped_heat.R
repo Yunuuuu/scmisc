@@ -41,7 +41,7 @@
 #'   be One of:
 #'   - `NULL` for the default labels. If flip is `FALSE`, row_labels are the
 #'     same with `unlist(marker_list)` and the column_labels are the same with
-#'     `groups`. Otherwise, the reverse is also true.
+#'     `levels(groups)`. Otherwise, the reverse is also true.
 #'   - A character vector of labels. If named, they will be matched by indexing
 #'     with the default labels, Otherwise, used as it is.
 #'   - A function that takes the default labels as input and returns a character
@@ -270,8 +270,8 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         } else {
             row_split <- cluster2cell[rownames(heat_matrix)]
         }
-        row_ref <- "groups"
-        column_ref <- "marker_list"
+        row_ref <- "levels(groups)"
+        column_ref <- "unlist(marker_list)"
     } else {
         if (is.null(cluster2cell)) {
             column_split <- NULL
@@ -283,8 +283,8 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         } else {
             row_split <- marker_groups
         }
-        row_ref <- "marker_list"
-        column_ref <- "groups"
+        row_ref <- "unlist(marker_list)"
+        column_ref <- "levels(groups)"
     }
     # prepare row_labels
     row_labels <- label_fn_helper(row_labels,
@@ -316,13 +316,12 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
 #' @noRd
 label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
     if (is.character(x)) {
-        if (length(x) != length(labels)) {
-            cli::cli_abort(
-                "A chracter vector {.arg {arg}} must have the same length of {.arg {ref}}"
-            )
-        }
         if (all(has_names(x))) {
             x <- x[labels]
+        } else if (length(x) != length(labels)) {
+            cli::cli_abort(
+                "An unnamed chracter vector {.arg {arg}} must have the same length of {.code {ref}}"
+            )
         }
     } else if (is.function(x) ||
         rlang::is_formula(x) ||
@@ -330,7 +329,7 @@ label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
         x <- rlang::as_function(x)(labels)
         if (length(x) != length(labels) || !is.character(x)) {
             cli::cli_abort(
-                "{.fn {arg}} must returned a {.cls character} with the same length of {.arg {ref}}"
+                "{.fn {arg}} must returned a {.cls character} with the same length of {.code {ref}}"
             )
         }
     } else if (is.null(x)) {
