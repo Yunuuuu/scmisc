@@ -37,6 +37,15 @@
 #' @param slice_border_gp Graphic parameters for drawing slice rectangles. The
 #'   value should be specified by [gpar][grid::gpar] and fill parameter is
 #'   always setted to "transparent". If `NULL`, no slice border will be drawn.
+#' @param row_labels,column_labels The row and column labels of the heatmap.
+#'   - `NULL` for the default labels. If flip is `FALSE`, row_labels are the
+#'     same with `unlist(marker_list)` and the column_labels are the same with
+#'     `groups`. Otherwise, the reverse is also true.
+#'   - A character vector of labels. If named, they will be matched by indexing
+#'     with the default labels, Otherwise, used as it is.
+#'   - A function that takes the default labels as input and returns a labels
+#'     as output. Also accepts rlang [lambda][rlang::as_function()] function
+#'     notation.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
@@ -54,16 +63,17 @@ setGeneric(
 plot_grouped_heat_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, zlim = NULL, flip = FALSE, 
-    slice_border_gp = NULL) {
+    scale = FALSE, zlim = NULL, flip = FALSE,
+    slice_border_gp = NULL, row_labels = NULL, column_labels = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
         cluster2cell = cluster2cell,
         center = center, scale = scale,
         zlim = zlim, threshold = 0L,
-        colour = colour, flip = flip, 
+        colour = colour, flip = flip,
         slice_border_gp = slice_border_gp,
+        row_labels = row_labels, column_labels = column_labels,
         ..., graph_type = "square"
     )
 }
@@ -112,7 +122,8 @@ plot_grouped_dots_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
-    flip = FALSE, slice_border_gp = gpar(lwd = 0.5)) {
+    flip = FALSE, slice_border_gp = gpar(lwd = 0.5),
+    row_labels = NULL, column_labels = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -122,6 +133,7 @@ plot_grouped_dots_internal <- function(
         zlim = zlim, threshold = threshold,
         colour = colour, flip = flip,
         slice_border_gp = slice_border_gp,
+        row_labels = row_labels, column_labels = column_labels,
         ..., graph_type = "dots"
     )
 }
@@ -159,6 +171,7 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   colour = NULL, ...,
                                   scale_dots = 1L, flip = FALSE,
                                   slice_border_gp = gpar(lwd = 0.5),
+                                  row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (length(marker_list) > 0L) {
@@ -256,6 +269,8 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         } else {
             row_split <- cluster2cell[rownames(heat_matrix)]
         }
+        row_ref <- "groups"
+        column_ref <- "marker_list"
     } else {
         if (is.null(cluster2cell)) {
             column_split <- NULL
@@ -267,7 +282,21 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         } else {
             row_split <- marker_groups
         }
+        row_ref <- "marker_list"
+        column_ref <- "groups"
     }
+    # prepare row_labels
+    row_labels <- label_fn_helper(row_labels,
+        labels = rownames(heat_matrix),
+        ref = row_ref
+    )
+
+    # prepare column labels
+    column_labels <- label_fn_helper(column_labels,
+        labels = colnames(heat_matrix),
+        ref = column_ref
+    )
+
     ComplexHeatmap::Heatmap(
         heat_matrix,
         col = col_fn,
@@ -275,8 +304,37 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         column_split = column_split,
         layer_fun = layer_fn,
         rect_gp = rect_gp,
+        row_labels = row_labels,
+        column_labels = column_labels,
         ...
     )
+}
+
+#' @param ref A scalar character, just for message usage
+#' @keywords internal
+#' @noRd 
+label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
+    if (is.character(x)) {
+        if (length(x) != length(labels)) {
+            cli::cli_abort(c(
+                "A chracter vector {.arg {arg}} must have the same length of {.arg {ref}}"
+            ))
+        }
+        if (all(has_names(x))) {
+            x <- x[labels]
+        } else {
+            x <- labels
+        }
+    } else if (is.function(x) ||
+        rlang::is_formula(x) ||
+        rlang::is_quosure(x)) {
+        x <- rlang::as_function(x)(labels)
+    } else if (is.null(x)) {
+        x <- labels
+    } else {
+        cli::cli_abort("{.arg {arg}} must be a {.cls character} or a {.cls function} or {.val {NULL}}")
+    }
+    x
 }
 
 heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {

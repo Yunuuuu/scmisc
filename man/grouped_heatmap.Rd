@@ -25,7 +25,9 @@ plot_grouped_heat(x, ...)
   scale = FALSE,
   zlim = NULL,
   flip = FALSE,
-  slice_border_gp = NULL
+  slice_border_gp = NULL,
+  row_labels = NULL,
+  column_labels = NULL
 )
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(
@@ -54,7 +56,9 @@ plot_grouped_dots(x, ...)
   zlim = NULL,
   scale_dots = 1L,
   flip = FALSE,
-  slice_border_gp = gpar(lwd = 0.5)
+  slice_border_gp = gpar(lwd = 0.5),
+  row_labels = NULL,
+  column_labels = NULL
 )
 
 \S4method{plot_grouped_dots}{SummarizedExperiment}(
@@ -123,6 +127,18 @@ are \code{groups}.}
 \item{slice_border_gp}{Graphic parameters for drawing slice rectangles. The
 value should be specified by \link[grid:gpar]{gpar} and fill parameter is
 always setted to "transparent". If \code{NULL}, no slice border will be drawn.}
+
+\item{row_labels, column_labels}{The row and column labels of the heatmap.
+\itemize{
+\item \code{NULL} for the default labels. If flip is \code{FALSE}, row_labels are the
+same with \code{unlist(marker_list)} and the column_labels are the same with
+\code{groups}. Otherwise, the reverse is also true.
+\item A character vector of labels. If named, they will be matched by indexing
+with the default labels, Otherwise, used as it is.
+\item A function that takes the default labels as input and returns a labels
+as output. Also accepts rlang \link[rlang:as_function]{lambda} function
+notation.
+}}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}
