@@ -23,7 +23,8 @@ plot_grouped_heat(x, ...)
   color = NULL,
   center = FALSE,
   scale = FALSE,
-  zlim = NULL
+  zlim = NULL,
+  flip = FALSE
 )
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(
@@ -50,7 +51,8 @@ plot_grouped_dots(x, ...)
   scale = FALSE,
   threshold = 0L,
   zlim = NULL,
-  scale_dots = 1L
+  scale_dots = 1L,
+  flip = FALSE
 )
 
 \S4method{plot_grouped_dots}{SummarizedExperiment}(
@@ -111,6 +113,10 @@ average expression values scaled to unit variance prior to plotting.}
 Values outside this range are set to the most extreme color.
 If \code{NULL}, it defaults to the range of the expression matrix.
 If \code{center=TRUE}, this defaults to the range of the centered expression matrix, made symmetric around zero.}
+
+\item{flip}{A scalar logical indicates whether flipping the axis, the default
+\code{FALSE} means rows are \code{features} specified in \code{marker_list} and columns
+are \code{groups}.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}

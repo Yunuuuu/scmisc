@@ -1,6 +1,6 @@
 #' Plot heatmap or dots of group-level expression averages
 #'
-#' @description 
+#' @description
 #' Create a heatmap of average expression values for each group of cells and
 #' specified features in a SingleCellExperiment object.
 #'
@@ -31,6 +31,9 @@
 #' @param scale_dots A scalar positive numeric specifying the scalar factor
 #'   multiplied by dots radius. Default value: 1L, means the max radius equal to
 #'   the heatmap `min(grid::unit.c(width, height))`.
+#' @param flip A scalar logical indicates whether flipping the axis, the default
+#'   `FALSE` means rows are `features` specified in `marker_list` and columns
+#'   are `groups`.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
@@ -48,14 +51,14 @@ setGeneric(
 plot_grouped_heat_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, zlim = NULL) {
+    scale = FALSE, zlim = NULL, flip = FALSE) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
         cluster2cell = cluster2cell,
         center = center, scale = scale,
         zlim = zlim, threshold = 0L,
-        colour = colour, ...,
+        colour = colour, flip = flip, ...,
         graph_type = "square"
     )
 }
@@ -103,7 +106,8 @@ setGeneric(
 plot_grouped_dots_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L) {
+    scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
+    flip = FALSE) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -111,7 +115,7 @@ plot_grouped_dots_internal <- function(
         scale_dots = scale_dots,
         center = center, scale = scale,
         zlim = zlim, threshold = threshold,
-        colour = colour, ...,
+        colour = colour, flip = flip, ...,
         graph_type = "dots"
     )
 }
@@ -145,7 +149,8 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, ..., scale_dots = 1L,
+                                  colour = NULL, scale_dots = 1L, ...,
+                                  flip = FALSE,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (length(marker_list) > 0L) {
@@ -157,6 +162,9 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     }
     if (!(is_scalar_numeric(scale_dots) && scale_dots >= 0L)) {
         cli::cli_abort("{.arg scale_dots} must be a scalar numeric and {.code > 0L}.")
+    }
+    if (!rlang::is_scalar_logical(flip)) {
+        cli::cli_abort("{.arg flip} must be a scalar logical value.")
     }
     # define the default value
     statistics <- switch(graph_type,
@@ -191,40 +199,51 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     )
     if (graph_type == "dots") {
         rect_gp <- grid::gpar(type = "none")
+        size_matrix <- stat_list$prop.detected
+        if (flip) size_matrix <- t(size_matrix)
         layer_fn <- function(j, i, x, y, width, height, fill) {
-            size <- ComplexHeatmap::pindex(
-                stat_list$prop.detected,
-                i = i, j = j
-            )
+            size <- ComplexHeatmap::pindex(size_matrix, i = i, j = j)
             grid::grid.circle(
                 x = x, y = y,
-                r = abs(size, na.rm = TRUE) / 2L * 
+                r = abs(size, na.rm = TRUE) / 2L *
                     min(grid::unit.c(width, height)) * scale_dots,
                 gp = grid::gpar(fill = fill, col = NA)
             )
         }
     } else {
+        heat_matrix <- heat_data_list$x
+        if (flip) heat_matrix <- t(heat_matrix)
         rect_gp <- grid::gpar(col = NA)
         layer_fn <- NULL
     }
-
-    if (is.null(cluster2cell)) {
-        column_split <- NULL
+    if (flip) {
+        if (nlevels(marker_groups) == 1L) {
+            column_split <- NULL
+        } else {
+            column_split <- marker_groups
+        }
+        if (is.null(cluster2cell)) {
+            row_split <- NULL
+        } else {
+            row_split <- cluster2cell[rownames(heat_matrix)]
+        }
     } else {
-        column_split <- cluster2cell[colnames(heat_data_list$x)]
+        if (is.null(cluster2cell)) {
+            column_split <- NULL
+        } else {
+            column_split <- cluster2cell[colnames(heat_matrix)]
+        }
+        if (nlevels(marker_groups) == 1L) {
+            row_split <- NULL
+        } else {
+            row_split <- marker_groups
+        }
     }
-    if (nlevels(marker_groups) == 1L) {
-        row_split <- NULL
-    } else {
-        row_split <- marker_groups
-    }
-    # column is groups; row is genes
+    # column is groups; row is genes if flip is FALSE
     ComplexHeatmap::Heatmap(
-        heat_data_list$x,
+        heat_matrix,
         col = col_fn,
-        row_labels = markers,
         row_split = row_split,
-        column_labels = colnames(heat_data_list$x),
         column_split = column_split,
         layer_fun = layer_fn,
         rect_gp = rect_gp,
