@@ -37,15 +37,16 @@
 #' @param slice_border_gp Graphic parameters for drawing slice rectangles. The
 #'   value should be specified by [gpar][grid::gpar] and fill parameter is
 #'   always setted to "transparent". If `NULL`, no slice border will be drawn.
-#' @param row_labels,column_labels The row and column labels of the heatmap.
+#' @param row_labels,column_labels The row and column labels of the heatmap. Can
+#'   be One of:
 #'   - `NULL` for the default labels. If flip is `FALSE`, row_labels are the
 #'     same with `unlist(marker_list)` and the column_labels are the same with
 #'     `groups`. Otherwise, the reverse is also true.
 #'   - A character vector of labels. If named, they will be matched by indexing
 #'     with the default labels, Otherwise, used as it is.
-#'   - A function that takes the default labels as input and returns a labels
-#'     as output. Also accepts rlang [lambda][rlang::as_function()] function
-#'     notation.
+#'   - A function that takes the default labels as input and returns a character
+#'    vector of the same length. Can be also a rlang
+#'     [lambda][rlang::as_function()] function notation.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
