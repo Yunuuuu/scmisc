@@ -34,10 +34,9 @@
 #' @param flip A scalar logical indicates whether flipping the axis, the default
 #'   `FALSE` means rows are `features` specified in `marker_list` and columns
 #'   are `groups`.
-#' @param slice_border_gp Graphic parameters for drawing rectangles (for heatmap
-#'   body). The value should be specified by [gpar][grid::gpar] and fill
-#'   parameter is always setted to "transparent". If `NULL`, no slice border
-#'   will be drawn.
+#' @param slice_border_gp Graphic parameters for drawing slice rectangles. The
+#'   value should be specified by [gpar][grid::gpar] and fill parameter is
+#'   always setted to "transparent". If `NULL`, no slice border will be drawn.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
@@ -56,7 +55,7 @@ plot_grouped_heat_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, zlim = NULL, flip = FALSE, 
-    slice_border_gp = gpar(lwd = 2)) {
+    slice_border_gp = gpar(lwd = 0.5)) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -113,7 +112,7 @@ plot_grouped_dots_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
-    flip = FALSE, slice_border_gp = gpar(lwd = 2)) {
+    flip = FALSE, slice_border_gp = gpar(lwd = 0.5)) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -159,7 +158,7 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   zlim = NULL, threshold = 0L,
                                   colour = NULL, ...,
                                   scale_dots = 1L, flip = FALSE,
-                                  slice_border_gp = gpar(lwd = 2),
+                                  slice_border_gp = gpar(lwd = 0.5),
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (length(marker_list) > 0L) {

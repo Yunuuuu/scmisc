@@ -25,7 +25,7 @@ plot_grouped_heat(x, ...)
   scale = FALSE,
   zlim = NULL,
   flip = FALSE,
-  slice_border_gp = gpar(lwd = 2)
+  slice_border_gp = gpar(lwd = 0.5)
 )
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(
@@ -54,7 +54,7 @@ plot_grouped_dots(x, ...)
   zlim = NULL,
   scale_dots = 1L,
   flip = FALSE,
-  slice_border_gp = gpar(lwd = 2)
+  slice_border_gp = gpar(lwd = 0.5)
 )
 
 \S4method{plot_grouped_dots}{SummarizedExperiment}(
@@ -120,10 +120,9 @@ If \code{center=TRUE}, this defaults to the range of the centered expression mat
 \code{FALSE} means rows are \code{features} specified in \code{marker_list} and columns
 are \code{groups}.}
 
-\item{slice_border_gp}{Graphic parameters for drawing rectangles (for heatmap
-body). The value should be specified by \link[grid:gpar]{gpar} and fill
-parameter is always setted to "transparent". If \code{NULL}, no slice border
-will be drawn.}
+\item{slice_border_gp}{Graphic parameters for drawing slice rectangles. The
+value should be specified by \link[grid:gpar]{gpar} and fill parameter is
+always setted to "transparent". If \code{NULL}, no slice border will be drawn.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}
