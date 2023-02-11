@@ -18,7 +18,8 @@ Imports:
     SingleCellExperiment,
     SummarizedExperiment,
     SeuratObject,
-    ggplot2
+    ggplot2,
+    grid
 Suggests: 
     batchelor,
     circlize,
