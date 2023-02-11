@@ -28,6 +28,9 @@
 #' @param colour Alias for color.
 #' @param threshold Numeric value specifying the cap on the proportion of
 #' detected expression values. Only used by `plot_grouped_dots`.
+#' @param scale_dots A scalar positive numeric specifying the scalar factor
+#'   multiplied by dots radius. Default value: 1L, means the max radius equal to
+#'   the heatmap `min(grid::unit.c(width, height))`.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
@@ -100,11 +103,12 @@ setGeneric(
 plot_grouped_dots_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, threshold = 0L, zlim = NULL) {
+    scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
         cluster2cell = cluster2cell,
+        scale_dots = scale_dots,
         center = center, scale = scale,
         zlim = zlim, threshold = threshold,
         colour = colour, ...,
@@ -141,7 +145,7 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, ...,
+                                  colour = NULL, ..., scale_dots = 1L,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (length(marker_list) > 0L) {
@@ -150,6 +154,9 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         }
     } else {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+    }
+    if (!(is_scalar_numeric(scale_dots) && scale_dots >= 0L)) {
+        cli::cli_abort("{.arg scale_dots} must be a scalar numeric and {.code > 0L}.")
     }
     # define the default value
     statistics <- switch(graph_type,
@@ -191,7 +198,8 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
             )
             grid::grid.circle(
                 x = x, y = y,
-                r = abs(size) / 2 * min(grid::unit.c(width, height)),
+                r = abs(size, na.rm = TRUE) / 2L * 
+                    min(grid::unit.c(width, height)) * scale_dots,
                 gp = grid::gpar(fill = fill, col = NA)
             )
         }

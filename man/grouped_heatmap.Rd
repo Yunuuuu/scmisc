@@ -49,7 +49,8 @@ plot_grouped_dots(x, ...)
   center = FALSE,
   scale = FALSE,
   threshold = 0L,
-  zlim = NULL
+  zlim = NULL,
+  scale_dots = 1L
 )
 
 \S4method{plot_grouped_dots}{SummarizedExperiment}(
@@ -122,6 +123,10 @@ String specifying the field of \code{rowData(x)} to be used.}
 
 \item{threshold}{Numeric value specifying the cap on the proportion of
 detected expression values. Only used by \code{plot_grouped_dots}.}
+
+\item{scale_dots}{A scalar positive numeric specifying the scalar factor
+multiplied by dots radius. Default value: 1L, means the max radius equal to
+the heatmap \code{min(grid::unit.c(width, height))}.}
 }
 \value{
 A \link[ComplexHeatmap:Heatmap-class]{Heatmap-class} object
