@@ -30,7 +30,7 @@
 #' detected expression values. Only used by `plot_grouped_dots`.
 #' @param scale_dots A scalar positive numeric specifying the scalar factor
 #'   multiplied by dots radius. Default value: 1L, means the max radius equal to
-#'   the heatmap `min(grid::unit.c(width, height))`.
+#'   the heatmap `min(grid::unit.c(width, height)) / 2L`.
 #' @param flip A scalar logical indicates whether flipping the axis, the default
 #'   `FALSE` means rows are `features` specified in `marker_list` and columns
 #'   are `groups`.

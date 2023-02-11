@@ -138,7 +138,7 @@ detected expression values. Only used by \code{plot_grouped_dots}.}
 
 \item{scale_dots}{A scalar positive numeric specifying the scalar factor
 multiplied by dots radius. Default value: 1L, means the max radius equal to
-the heatmap \code{min(grid::unit.c(width, height))}.}
+the heatmap \code{min(grid::unit.c(width, height)) / 2L}.}
 }
 \value{
 A \link[ComplexHeatmap:Heatmap-class]{Heatmap-class} object
