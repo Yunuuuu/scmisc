@@ -193,10 +193,17 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
         colour = colour,
         zlim = zlim
     )
+
+    # prepare matrix for heatmap
+    heat_matrix <- heat_data_list$x
+    if (flip) heat_matrix <- t(heat_matrix)
+
     col_fn <- circlize::colorRamp2(
         heat_data_list$colour_breaks,
         colors = heat_data_list$colour
     )
+
+    # prepare rect_gp and layer_fn
     if (graph_type == "dots") {
         rect_gp <- grid::gpar(type = "none")
         size_matrix <- stat_list$prop.detected
@@ -205,17 +212,19 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
             size <- ComplexHeatmap::pindex(size_matrix, i = i, j = j)
             grid::grid.circle(
                 x = x, y = y,
-                r = abs(size, na.rm = TRUE) / 2L *
-                    min(grid::unit.c(width, height)) * scale_dots,
+                r = abs(size) / 2L * 
+                    min(grid::unit.c(width, height)) * 
+                    scale_dots,
                 gp = grid::gpar(fill = fill, col = NA)
             )
         }
     } else {
-        heat_matrix <- heat_data_list$x
-        if (flip) heat_matrix <- t(heat_matrix)
         rect_gp <- grid::gpar(col = NA)
         layer_fn <- NULL
     }
+
+    # prepare column_split and row_split
+    # column is groups; row is genes if flip is FALSE
     if (flip) {
         if (nlevels(marker_groups) == 1L) {
             column_split <- NULL
@@ -239,7 +248,6 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
             row_split <- marker_groups
         }
     }
-    # column is groups; row is genes if flip is FALSE
     ComplexHeatmap::Heatmap(
         heat_matrix,
         col = col_fn,
