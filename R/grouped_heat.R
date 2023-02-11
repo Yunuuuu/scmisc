@@ -34,6 +34,10 @@
 #' @param flip A scalar logical indicates whether flipping the axis, the default
 #'   `FALSE` means rows are `features` specified in `marker_list` and columns
 #'   are `groups`.
+#' @param slice_border_gp Graphic parameters for drawing rectangles (for heatmap
+#'   body). The value should be specified by [gpar][grid::gpar] and fill
+#'   parameter is always setted to "transparent". If `NULL`, no slice border
+#'   will be drawn.
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @name grouped_heatmap
@@ -51,15 +55,17 @@ setGeneric(
 plot_grouped_heat_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, zlim = NULL, flip = FALSE) {
+    scale = FALSE, zlim = NULL, flip = FALSE, 
+    slice_border_gp = gpar(lwd = 2)) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
         cluster2cell = cluster2cell,
         center = center, scale = scale,
         zlim = zlim, threshold = 0L,
-        colour = colour, flip = flip, ...,
-        graph_type = "square"
+        colour = colour, flip = flip, 
+        slice_border_gp = slice_border_gp,
+        ..., graph_type = "square"
     )
 }
 
@@ -107,7 +113,7 @@ plot_grouped_dots_internal <- function(
     x, marker_list, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
-    flip = FALSE) {
+    flip = FALSE, slice_border_gp = gpar(lwd = 2)) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -115,8 +121,9 @@ plot_grouped_dots_internal <- function(
         scale_dots = scale_dots,
         center = center, scale = scale,
         zlim = zlim, threshold = threshold,
-        colour = colour, flip = flip, ...,
-        graph_type = "dots"
+        colour = colour, flip = flip,
+        slice_border_gp = slice_border_gp,
+        ..., graph_type = "dots"
     )
 }
 
@@ -145,12 +152,14 @@ setMethod(
 )
 
 ##################################################################
+#' @importFrom grid gpar
 grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, scale_dots = 1L, ...,
-                                  flip = FALSE,
+                                  colour = NULL, ...,
+                                  scale_dots = 1L, flip = FALSE,
+                                  slice_border_gp = gpar(lwd = 2),
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (length(marker_list) > 0L) {
@@ -204,23 +213,35 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     )
 
     # prepare rect_gp and layer_fn
+    if (!is.null(slice_border_gp)) {
+        slice_border_gp$fill <- "transparent"
+    }
     if (graph_type == "dots") {
-        rect_gp <- grid::gpar(type = "none")
+        rect_gp <- gpar(type = "none")
         size_matrix <- stat_list$prop.detected
         if (flip) size_matrix <- t(size_matrix)
         layer_fn <- function(j, i, x, y, width, height, fill) {
             size <- ComplexHeatmap::pindex(size_matrix, i = i, j = j)
             grid::grid.circle(
                 x = x, y = y,
-                r = abs(size) / 2L * 
-                    min(grid::unit.c(width, height)) * 
+                r = abs(size) / 2L *
+                    min(grid::unit.c(width, height)) *
                     scale_dots,
-                gp = grid::gpar(fill = fill, col = NA)
+                gp = gpar(fill = fill, col = NA)
             )
+            if (!is.null(slice_border_gp)) {
+                grid::grid.rect(gp = slice_border_gp)
+            }
         }
     } else {
-        rect_gp <- grid::gpar(col = NA)
-        layer_fn <- NULL
+        rect_gp <- gpar(col = NA)
+        if (is.null(slice_border_gp)) {
+            layer_fn <- NULL
+        } else {
+            layer_fn <- function(j, i, x, y, width, height, fill) {
+                grid::grid.rect(gp = slice_border_gp)
+            }
+        }
     }
 
     # prepare column_split and row_split
