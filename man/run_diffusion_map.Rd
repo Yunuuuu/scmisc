@@ -3,12 +3,15 @@
 \name{run_diffusion_map}
 \alias{run_diffusion_map}
 \alias{run_diffusion_map,ANY-method}
+\alias{run_diffusion_map,DiffusionMap-method}
 \alias{run_diffusion_map,SingleCellExperiment-method}
 \title{Create a diffusion map of cells}
 \usage{
 run_diffusion_map(x, ...)
 
 \S4method{run_diffusion_map}{ANY}(x, root = NULL, ..., w_width = 0.1, dpt = TRUE, size = 1L)
+
+\S4method{run_diffusion_map}{DiffusionMap}(x, root = NULL, ..., w_width = 0.1, dpt = TRUE, size = 1L)
 
 \S4method{run_diffusion_map}{SingleCellExperiment}(
   x,
@@ -53,7 +56,7 @@ dimred is specified.}
 }
 \value{
 A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
-object.
+object depend on \code{dpt}.
 }
 \description{
 A modified version of \link[destiny:DiffusionMap-class]{DiffusionMap}, this function

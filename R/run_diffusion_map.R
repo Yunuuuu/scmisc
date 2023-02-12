@@ -22,7 +22,7 @@
 #'   should be used.
 #' @param ... Other arguments passed to [DiffusionMap][destiny::DiffusionMap].
 #' @return A [DiffusionMap][destiny::DiffusionMap] or [DPT][destiny::DPT]
-#'   object. 
+#'   object depend on `dpt`.
 #' @name run_diffusion_map
 NULL
 
@@ -55,6 +55,27 @@ run_diffusion_map_internal <- function(x, root = NULL, ..., w_width = 0.1, dpt =
 #' @export
 #' @rdname run_diffusion_map
 setMethod("run_diffusion_map", "ANY", run_diffusion_map_internal)
+
+#' @export
+#' @rdname run_diffusion_map
+setMethod("run_diffusion_map", "DiffusionMap", function(x, root = NULL, ..., w_width = 0.1, dpt = TRUE, size = 1L) {
+    if (!rlang::is_scalar_logical(dpt)) {
+        cli::cli_abort("{.arg dpt} must be a scalar logical value.")
+    }
+    if (size <= 0 || size > 3L) {
+        cli::cli_abort("{.arg size} must range from 1L to 3L.")
+    }
+    out <- x
+    if (dpt) {
+        if (is.null(root)) {
+            out <- destiny::DPT(out, w_width = w_width)
+        } else {
+            root <- handle_root(out, root, size = size)
+            out <- destiny::DPT(out, tips = root, w_width = w_width)
+        }
+    }
+    out
+})
 
 #' @param dimred String or integer scalar specifying the existing dimensionality
 #'   reduction results to use.
