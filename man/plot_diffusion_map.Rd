@@ -31,7 +31,7 @@ object.}
 \item{y}{A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
 object.}
 
-\item{...}{For \code{plot_diffusion_map}, Other arguments passed to
+\item{...}{Other arguments passed to
 \link[scater:plotReducedDim]{plotReducedDim}.}
 
 \item{dimred}{A string or integer scalar indicating the reduced dimension
@@ -39,9 +39,7 @@ result in \code{reducedDims(x)} to plot.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the by argument in
-\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values. If
-"DPT", \code{x} must contain components "destiny_branch" and "destiny_dpt", and
-the DPT of root will be used.}
+\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values.}
 
 \item{add_paths}{A scalar logical value indicates whether to add path.}
 
@@ -62,12 +60,8 @@ plot, starting from the first dimension. Alternatively, a numeric vector
 specifying the dimensions to be plotted.}
 }
 \value{
-\itemize{
-\item \code{plot_diffusion_map}: A ggplot2 object depicting the Diffusion map, if
-add_paths is \code{TRUE}, DPT of the root is also added in this map.
-\item \code{plot_dpt_paths}: A ggplot2 object depicting the DPT paths.
-\item \code{add_dpt_paths}: A ggplot2 geom object containing the DPT paths.
-}
+A ggplot2 object depicting the Diffusion map, if add_paths is \code{TRUE},
+DPT of the root is also added in this map.
 }
 \description{
 Plot the diffusion map

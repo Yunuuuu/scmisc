@@ -3,14 +3,11 @@
 #'   object.
 #' @param y A [DiffusionMap][destiny::DiffusionMap] or [DPT][destiny::DPT]
 #'   object. 
-#' @param ... For `plot_diffusion_map`, Other arguments passed to
+#' @param ... Other arguments passed to
 #'   [plotReducedDim][scater::plotReducedDim].
 #' @name plot_diffusion_map
-#' @return
-#'   - `plot_diffusion_map`: A ggplot2 object depicting the Diffusion map, if
-#'     add_paths is `TRUE`, DPT of the root is also added in this map.
-#'   - `plot_dpt_paths`: A ggplot2 object depicting the DPT paths.
-#'   - `add_dpt_paths`: A ggplot2 geom object containing the DPT paths.
+#' @return A ggplot2 object depicting the Diffusion map, if add_paths is `TRUE`,
+#'     DPT of the root is also added in this map.
 NULL
 
 #' @export

@@ -29,9 +29,10 @@ containing such a matrix.}
 \item{...}{Other arguments passed to \link[destiny:DiffusionMap-class]{DiffusionMap}.}
 
 \item{root}{The cell index/indices from which to calculate the DPT(s)
-(integer of length 1-3). If length more than \code{size}, we will sample 3
-elements from it. Can be also a logical atomic value, in this way, we will
-sample the true integer index.}
+(integer of length 1-3). If length more than \code{size}, we will choose the top
+size elements with the maximal eigenvectors CD1 values. Can be also a
+logical atomic value, in this way, we will sample the elements with TRUE
+values.}
 
 \item{w_width}{Window width to use for deciding the branch cutoff.}
 

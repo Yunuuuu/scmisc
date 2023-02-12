@@ -11,9 +11,10 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
 #' containing such a matrix.
 #' @param root The cell index/indices from which to calculate the DPT(s)
-#'   (integer of length 1-3). If length more than `size`, we will sample 3
-#'   elements from it. Can be also a logical atomic value, in this way, we will
-#'   sample the true integer index.
+#'   (integer of length 1-3). If length more than `size`, we will choose the top
+#'   size elements with the maximal eigenvectors CD1 values. Can be also a
+#'   logical atomic value, in this way, we will sample the elements with TRUE
+#'   values.
 #' @param w_width Window width to use for deciding the branch cutoff.
 #' @param dpt A scalar logical value indicates whether to run
 #'   [DPT][destiny::DPT].
@@ -46,10 +47,8 @@ run_diffusion_map_internal <- function(x, root = NULL, ..., w_width = 0.1, dpt =
         if (is.null(root)) {
             out <- destiny::DPT(out, w_width = w_width)
         } else {
-            out <- destiny::DPT(out,
-                tips = handle_root(root, size = size),
-                w_width = w_width
-            )
+            root <- handle_root(out, root, size = size)
+            out <- destiny::DPT(out, tips = root, w_width = w_width)
         }
     }
     out
@@ -96,15 +95,20 @@ setMethod(
     }
 )
 
-handle_root <- function(root, size) {
-    if (is.logical(root)) {
-        return(sample(which(root, useNames = FALSE), size = size))
-    } else if (is.numeric(root)) {
-        if (length(root) > size) {
-            root <- sample(root, size)
+handle_root <- function(dm, root, size) {
+    if (is.numeric(root)) {
+        if (length(root) <= size) {
+            return(as.integer(root))
+        } else {
+            idx <- root
         }
-        return(as.integer(root))
+    } else if (is.logical(root)) {
+        idx <- which(root, useNames = FALSE)
     } else {
         cli::cli_abort("Unsupported type of {.arg root}")
     }
+    evs <- destiny::eigenvectors(dm)[, 1L]
+    seq_along(evs)[order(evs, decreasing = TRUE)][idx][
+        seq_len(size)
+    ]
 }
