@@ -116,11 +116,11 @@ setMethod(
 
 handle_root <- function(dm, root, size) {
     if (is.numeric(root)) {
+        root <- as.integer(root)
         if (length(root) <= size) {
-            return(as.integer(root))
-        } else {
-            idx <- root
+            return(root)
         }
+        idx <- root
     } else if (is.logical(root)) {
         idx <- which(root, useNames = FALSE)
     } else {
