@@ -42,14 +42,18 @@ run_diffusion_map_internal <- function(x, root = NULL, ..., w_width = 0.1, dpt =
     }
     out <- destiny::DiffusionMap(x, ...)
     if (dpt) {
-        if (is.null(root)) {
-            out <- destiny::DPT(out, w_width = w_width)
-        } else {
-            root <- handle_root(out, root, size = size)
-            out <- destiny::DPT(out, tips = root, w_width = w_width)
-        }
+        out <- run_dpt_helper(out, root = root, w_width = w_width, size = size)
     }
     out
+}
+
+run_dpt_helper <- function(x, root, w_width, size) {
+    if (is.null(root)) {
+        destiny::DPT(x, w_width = w_width)
+    } else {
+        root <- handle_root(x, root, size = size)
+        destiny::DPT(x, tips = root, w_width = w_width)
+    }
 }
 
 #' @export
@@ -65,16 +69,11 @@ setMethod("run_diffusion_map", "DiffusionMap", function(x, root = NULL, ..., w_w
     if (size <= 0 || size > 3L) {
         cli::cli_abort("{.arg size} must range from 1L to 3L.")
     }
-    out <- x
     if (dpt) {
-        if (is.null(root)) {
-            out <- destiny::DPT(out, w_width = w_width)
-        } else {
-            root <- handle_root(out, root, size = size)
-            out <- destiny::DPT(out, tips = root, w_width = w_width)
-        }
+        run_dpt_helper(x, root = root, w_width = w_width, size = size)
+    } else {
+        x
     }
-    out
 })
 
 #' @param dimred String or integer scalar specifying the existing dimensionality
