@@ -43,8 +43,9 @@ dimred is specified.}
 }
 \value{
 A list or a modified x that contains the DiffusionMap coordinates in
-reducedDim(x, "DiffusionMap"), if dpt is TRUE, branch and dpt are also kept
-in \code{colData(x)}.
+\code{reducedDim(x, "DiffusionMap")}, if \code{dpt} is TRUE, "branch" and "dpt" data
+are also kept in \code{colData(x)} named as "destiny_branch" and "destiny_dpt"
+respectively.
 }
 \description{
 A modified version of \link[destiny:DiffusionMap-class]{DiffusionMap}, this function

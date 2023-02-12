@@ -14,8 +14,9 @@
 #'   [DPT][destiny::DPT].
 #' @param ... Other arguments passed to [destiny][destiny::DiffusionMap]
 #' @return A list or a modified x that contains the DiffusionMap coordinates in
-#'   reducedDim(x, "DiffusionMap"), if dpt is TRUE, branch and dpt are also kept
-#'   in `colData(x)`.
+#'   `reducedDim(x, "DiffusionMap")`, if `dpt` is TRUE, "branch" and "dpt" data
+#'   are also kept in `colData(x)` named as "destiny_branch" and "destiny_dpt"
+#'   respectively.
 #' @name run_diffusion_map
 NULL
 
