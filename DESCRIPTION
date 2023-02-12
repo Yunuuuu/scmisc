@@ -24,6 +24,7 @@ Suggests:
     batchelor,
     circlize,
     ComplexHeatmap,
+    destiny,
     pipeline,
     RColorBrewer,
     roxygen2,
