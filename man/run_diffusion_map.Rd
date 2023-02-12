@@ -12,9 +12,9 @@ run_diffusion_map(x, ...)
 
 \S4method{run_diffusion_map}{SingleCellExperiment}(
   x,
+  dimred = "PCA",
   ...,
   dpt = TRUE,
-  dimred = "PCA",
   n_dimred = NULL,
   assay.type = "logcounts"
 )

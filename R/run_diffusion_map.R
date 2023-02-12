@@ -15,7 +15,7 @@
 #' @param ... Other arguments passed to [destiny][destiny::DiffusionMap]
 #' @return A list or a modified x that contains the DiffusionMap coordinates in
 #'   reducedDim(x, "DiffusionMap"), if dpt is TRUE, branch and dpt are also kept
-#'   in `colData(x)`. 
+#'   in `colData(x)`.
 #' @name run_diffusion_map
 NULL
 
@@ -62,8 +62,7 @@ setMethod("run_diffusion_map", "ANY", run_diffusion_map_internal)
 #' @rdname run_diffusion_map
 setMethod(
     "run_diffusion_map", "SingleCellExperiment",
-    function(x, ..., dpt = TRUE,
-             dimred = "PCA", 
+    function(x, dimred = "PCA", ..., dpt = TRUE,
              n_dimred = NULL,
              assay.type = "logcounts") {
         if (is.null(dimred) && is.null(assay.type)) {
