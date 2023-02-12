@@ -27,7 +27,7 @@ Alternatively, a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object
 containing such a matrix.}
 
-\item{...}{Other arguments passed to \link[destiny:DiffusionMap-class]{destiny}}
+\item{...}{Other arguments passed to \link[destiny:DiffusionMap-class]{DiffusionMap}.}
 
 \item{dpt}{A scalar logical value indicates whether to run
 \link[destiny:DPT]{DPT}.}

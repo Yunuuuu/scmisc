@@ -12,7 +12,7 @@
 #' containing such a matrix.
 #' @param dpt A scalar logical value indicates whether to run
 #'   [DPT][destiny::DPT].
-#' @param ... Other arguments passed to [destiny][destiny::DiffusionMap]
+#' @param ... Other arguments passed to [DiffusionMap][destiny::DiffusionMap].
 #' @return A list or a modified x that contains the DiffusionMap coordinates in
 #'   `reducedDim(x, "DiffusionMap")`, if `dpt` is TRUE, "branch" and "dpt" data
 #'   are also kept in `colData(x)` named as "destiny_branch" and "destiny_dpt"
