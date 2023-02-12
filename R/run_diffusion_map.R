@@ -10,8 +10,15 @@
 #' Alternatively, a
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
 #' containing such a matrix.
+#' @param root The cell index/indices from which to calculate the DPT(s)
+#'   (integer of length 1-3). If length more than `size`, we will sample 3
+#'   elements from it. Can be also a logical atomic value, in this way, we will
+#'   sample the true integer index.
+#' @param w_width Window width to use for deciding the branch cutoff.
 #' @param dpt A scalar logical value indicates whether to run
 #'   [DPT][destiny::DPT].
+#' @param size A scalar numeric ranges from 1 to 3 specifying how many roots
+#'   should be used.
 #' @param ... Other arguments passed to [DiffusionMap][destiny::DiffusionMap].
 #' @return A list or a modified x that contains the DiffusionMap coordinates in
 #'   `reducedDim(x, "DiffusionMap")`, if `dpt` is TRUE, "branch" and "dpt" data
@@ -27,23 +34,23 @@ setGeneric(
     function(x, ...) standardGeneric("run_diffusion_map")
 )
 
-run_diffusion_map_internal <- function(x, dpt = TRUE, ...) {
+run_diffusion_map_internal <- function(x, root = NULL, ..., w_width = 0.1, dpt = TRUE, size = 1L) {
     if (!rlang::is_scalar_logical(dpt)) {
         cli::cli_abort("{.arg dpt} must be a scalar logical value.")
     }
-    dm_res <- destiny::DiffusionMap(x, ...)
-    out <- list(evs = destiny::eigenvectors(dm_res))
+    if (size <= 0 || size > 3L) {
+        cli::cli_abort("{.arg size} must range from 1L to 3L.")
+    }
+    out <- destiny::DiffusionMap(x, ...)
     if (dpt) {
-        dpt_res <- destiny::DPT(dm_res)
-
-        # save branch data
-        destiny_branch <- dpt_res@branch[, 1L, drop = TRUE]
-
-        # save DPT data
-        tip_cells <- destiny::tips(dpt_res) # ordered by the branch ids
-        destiny_dpt <- S4Vectors::DataFrame(t(dpt_res[tip_cells]))
-        S4Vectors::metadata(destiny_dpt) <- list(tip_cells = tip_cells)
-        out <- c(out, list(branch = destiny_branch, dpt = destiny_dpt))
+        if (is.null(root)) {
+            out <- destiny::DPT(out, w_width = w_width)
+        } else {
+            out <- destiny::DPT(out,
+                tips = handle_root(root, size = size),
+                w_width = w_width
+            )
+        }
     }
     out
 }
@@ -63,7 +70,7 @@ setMethod("run_diffusion_map", "ANY", run_diffusion_map_internal)
 #' @rdname run_diffusion_map
 setMethod(
     "run_diffusion_map", "SingleCellExperiment",
-    function(x, dimred = "PCA", ..., dpt = TRUE,
+    function(x, dimred = "PCA", ...,
              n_dimred = NULL,
              assay.type = "logcounts") {
         if (is.null(dimred) && is.null(assay.type)) {
@@ -85,12 +92,19 @@ setMethod(
                 diffusion_input, assay.type
             )
         }
-        res <- run_diffusion_map_internal(x = diffusion_input, dpt = dpt, ...)
-        SingleCellExperiment::reducedDim(x, "DiffusionMap") <- res$evs
-        if (dpt) {
-            x$destiny_branch <- res$branch
-            x$destiny_dpt <- res$dpt
-        }
-        x
+        run_diffusion_map_internal(x = diffusion_input, ...)
     }
 )
+
+handle_root <- function(root, size) {
+    if (is.logical(root)) {
+        return(sample(which(root, useNames = FALSE), size = size))
+    } else if (is.numeric(root)) {
+        if (length(root) > size) {
+            root <- sample(root, size)
+        }
+        return(as.integer(root))
+    } else {
+        cli::cli_abort("Unsupported type of {.arg root}")
+    }
+}

@@ -8,13 +8,12 @@
 \usage{
 run_diffusion_map(x, ...)
 
-\S4method{run_diffusion_map}{ANY}(x, dpt = TRUE, ...)
+\S4method{run_diffusion_map}{ANY}(x, root = NULL, ..., w_width = 0.1, dpt = TRUE, size = 1L)
 
 \S4method{run_diffusion_map}{SingleCellExperiment}(
   x,
   dimred = "PCA",
   ...,
-  dpt = TRUE,
   n_dimred = NULL,
   assay.type = "logcounts"
 )
@@ -29,8 +28,18 @@ containing such a matrix.}
 
 \item{...}{Other arguments passed to \link[destiny:DiffusionMap-class]{DiffusionMap}.}
 
+\item{root}{The cell index/indices from which to calculate the DPT(s)
+(integer of length 1-3). If length more than \code{size}, we will sample 3
+elements from it. Can be also a logical atomic value, in this way, we will
+sample the true integer index.}
+
+\item{w_width}{Window width to use for deciding the branch cutoff.}
+
 \item{dpt}{A scalar logical value indicates whether to run
 \link[destiny:DPT]{DPT}.}
+
+\item{size}{A scalar numeric ranges from 1 to 3 specifying how many roots
+should be used.}
 
 \item{dimred}{String or integer scalar specifying the existing dimensionality
 reduction results to use.}

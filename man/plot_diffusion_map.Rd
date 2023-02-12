@@ -2,12 +2,18 @@
 % Please edit documentation in R/plot_diffusion_map.R
 \name{plot_diffusion_map}
 \alias{plot_diffusion_map}
-\alias{add_dpt_paths}
-\alias{plot_dpt_paths}
+\alias{plot_diffusion_map,SingleCellExperiment,DiffusionMap-method}
+\alias{plot_diffusion_map,SingleCellExperiment,DPT-method}
 \title{Plot the diffusion map}
 \usage{
-plot_diffusion_map(
+plot_diffusion_map(x, y, ...)
+
+\S4method{plot_diffusion_map}{SingleCellExperiment,DiffusionMap}(x, y, ...)
+
+\S4method{plot_diffusion_map}{SingleCellExperiment,DPT}(
   x,
+  y,
+  dimred = "DiffusionMap",
   colour_by = "DPT",
   add_paths = TRUE,
   root = NULL,
@@ -17,22 +23,19 @@ plot_diffusion_map(
   ...,
   ncomponents = 2L
 )
-
-add_dpt_paths(
-  x,
-  root = NULL,
-  paths_to = NULL,
-  w_width = 0.1,
-  ...,
-  ncomponents = 2L
-)
-
-plot_dpt_paths(...)
 }
 \arguments{
 \item{x}{A \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment}
-object with \code{DiffusionMap} reducedDim component and \code{DPT} component if
-add_paths is \code{TRUE}.}
+object.}
+
+\item{y}{A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
+object.}
+
+\item{...}{For \code{plot_diffusion_map}, Other arguments passed to
+\link[scater:plotReducedDim]{plotReducedDim}.}
+
+\item{dimred}{A string or integer scalar indicating the reduced dimension
+result in \code{reducedDims(x)} to plot.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the by argument in
@@ -53,11 +56,6 @@ draw.}
 
 \item{w_width}{Window width for smoothing the path (see
 \link[smoother:smth.gaussian]{smth.gaussian}).}
-
-\item{...}{For \code{plot_diffusion_map}, Other arguments passed to
-\link[scater:plotReducedDim]{plotReducedDim}; for \code{add_dpt_paths}, other
-arguments passed to \link[ggplot2:geom_path]{geom_path}; and for
-\code{plot_dpt_paths}, other arguments passed to \link{add_dpt_paths}}
 
 \item{ncomponents}{A numeric scalar indicating the number of dimensions to
 plot, starting from the first dimension. Alternatively, a numeric vector
