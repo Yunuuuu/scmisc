@@ -21,10 +21,8 @@
 #' @param size A scalar numeric ranges from 1 to 3 specifying how many roots
 #'   should be used.
 #' @param ... Other arguments passed to [DiffusionMap][destiny::DiffusionMap].
-#' @return A list or a modified x that contains the DiffusionMap coordinates in
-#'   `reducedDim(x, "DiffusionMap")`, if `dpt` is TRUE, "branch" and "dpt" data
-#'   are also kept in `colData(x)` named as "destiny_branch" and "destiny_dpt"
-#'   respectively.
+#' @return A [DiffusionMap][destiny::DiffusionMap] or [DPT][destiny::DPT]
+#'   object. 
 #' @name run_diffusion_map
 NULL
 

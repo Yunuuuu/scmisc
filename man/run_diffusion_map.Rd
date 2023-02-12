@@ -52,10 +52,8 @@ dimred is specified.}
 \code{x} contains the count matrix. Only used when dimred is \code{NULL}.}
 }
 \value{
-A list or a modified x that contains the DiffusionMap coordinates in
-\code{reducedDim(x, "DiffusionMap")}, if \code{dpt} is TRUE, "branch" and "dpt" data
-are also kept in \code{colData(x)} named as "destiny_branch" and "destiny_dpt"
-respectively.
+A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
+object.
 }
 \description{
 A modified version of \link[destiny:DiffusionMap-class]{DiffusionMap}, this function
