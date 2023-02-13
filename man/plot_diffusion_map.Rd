@@ -18,7 +18,7 @@ plot_diffusion_map(x, y, ...)
   add_paths = TRUE,
   root = NULL,
   paths_to = NULL,
-  path_args = list(),
+  path_args = list(color = rev(palette())),
   w_width = 0.1,
   ...,
   ncomponents = 2L
@@ -39,18 +39,22 @@ result in \code{reducedDims(x)} to plot.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the by argument in
-\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values.}
+\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values. IF y
+is a \link[destiny:DPT]{DPT} object, this can also be "DPT" (or starting by
+"DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" e.g. which will be
+extracted from \code{y}. See also \link[destiny:plot.DPT]{plot.DPT}.}
 
 \item{add_paths}{A scalar logical value indicates whether to add path.}
 
 \item{root}{Root branch ID. Will be used as the start of the DPT. (default:
 lowest branch ID).}
 
-\item{paths_to}{Numeric Branch IDs. Are used as target(s) for the path(s) to
-draw.}
+\item{paths_to}{Numeric Branch IDs, which are used as target(s) for the
+path(s) to draw.}
 
 \item{path_args}{A list of arguments to passed to
-\link[ggplot2:geom_path]{geom_path}.}
+\link[ggplot2:geom_path]{geom_path}. Elements of the list can be the same
+length of \code{paths_to}.}
 
 \item{w_width}{Window width for smoothing the path (see
 \link[smoother:smth.gaussian]{smth.gaussian}).}
