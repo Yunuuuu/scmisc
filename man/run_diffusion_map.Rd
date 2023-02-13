@@ -37,10 +37,9 @@ object.}
 logical atomic vector with the compatible length of \code{x}(the same length of
 \code{ncol(x)} if x is a simple matrix or
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} or the
-same length of \verb{nrow(}\link[destiny:destiny-generics]{eigenvectors}\verb{(x))} if x is a
-\link[destiny:DiffusionMap-class]{DiffusionMap} object), we will index with root
-value and choose the top \code{size} elements with the maximal
-\link[destiny:destiny-generics]{eigenvectors} CD1 values.}
+same length of \code{x@d} if x is a \link[destiny:DiffusionMap-class]{DiffusionMap}
+object), we will index with root value and choose the top \code{size} elements
+with the maximal \link[destiny:destiny-generics]{eigenvectors} CD1 values.}
 
 \item{w_width}{Window width to use for deciding the branch cutoff.}
 

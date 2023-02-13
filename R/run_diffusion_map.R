@@ -15,10 +15,9 @@
 #'   logical atomic vector with the compatible length of `x`(the same length of
 #'   `ncol(x)` if x is a simple matrix or
 #'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] or the
-#'   same length of `nrow(`[eigenvectors][destiny::eigenvectors]`(x))` if x is a
-#'   [DiffusionMap][destiny::DiffusionMap] object), we will index with root
-#'   value and choose the top `size` elements with the maximal
-#'   [eigenvectors][destiny::eigenvectors] CD1 values.
+#'   same length of `x@@d` if x is a [DiffusionMap][destiny::DiffusionMap]
+#'   object), we will index with root value and choose the top `size` elements
+#'   with the maximal [eigenvectors][destiny::eigenvectors] CD1 values.
 #' @param w_width Window width to use for deciding the branch cutoff.
 #' @param dpt A scalar logical value indicates whether to run
 #'   [DPT][destiny::DPT].
@@ -118,7 +117,6 @@ setMethod(
 )
 
 handle_root <- function(dm, root, size) {
-    evs <- destiny::eigenvectors(dm)[, 1L, drop = TRUE]
     if (is.numeric(root)) {
         root <- as.integer(root)
         if (length(root) <= size) {
@@ -126,15 +124,16 @@ handle_root <- function(dm, root, size) {
         }
         idx <- root
     } else if (is.logical(root)) {
-        if (length(root) == length(evs)) {
+        if (length(root) == length(dm@d)) {
             idx <- which(root, useNames = FALSE)
         } else {
-            cli::cli_abort("the length of logical {.arg root} must be the same with {.arg x}.")
+            cli::cli_abort("the length of logical {.arg root} must be compatible with {.arg x}.")
         }
     } else {
         cli::cli_abort("Unsupported type of {.arg root}")
     }
     # order the index of `evs` firstly
+    evs <- destiny::eigenvectors(dm)[, 1L, drop = TRUE]
     res <- seq_along(evs)[order(evs, decreasing = TRUE, na.last = TRUE)]
 
     # choose the index specified in root and get the top size elments
