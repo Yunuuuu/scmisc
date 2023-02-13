@@ -27,22 +27,27 @@ rows.
 
 Alternatively, a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object
-containing such a matrix.}
+containing such a matrix, or a \link[destiny:DiffusionMap-class]{DiffusionMap}
+object.}
 
 \item{...}{Other arguments passed to \link[destiny:DiffusionMap-class]{DiffusionMap}.}
 
 \item{root}{The cell index/indices from which to calculate the DPT(s)
-(integer of length 1-3). If length more than \code{size}, we will choose the top
-size elements with the maximal eigenvectors CD1 values. Can be also a
-logical atomic value, in this way, we will sample the elements with TRUE
-values.}
+(integer of length \code{1-3}). If the length of root is more than \code{size} or  a
+logical atomic vector with the compatible length of \code{x}(the same length of
+\code{ncol(x)} if x is a simple matrix or
+\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} or the
+same length of \verb{nrow(}\link[destiny:destiny-generics]{eigenvectors}\verb{(x))} if x is a
+\link[destiny:DiffusionMap-class]{DiffusionMap} object), we will index with root
+value and choose the top \code{size} elements with the maximal
+\link[destiny:destiny-generics]{eigenvectors} CD1 values.}
 
 \item{w_width}{Window width to use for deciding the branch cutoff.}
 
 \item{dpt}{A scalar logical value indicates whether to run
 \link[destiny:DPT]{DPT}.}
 
-\item{size}{A scalar numeric ranges from 1 to 3 specifying how many roots
+\item{size}{A scalar integer ranges from 1 to 3 specifying how many roots
 should be used.}
 
 \item{dimred}{String or integer scalar specifying the existing dimensionality
@@ -59,7 +64,6 @@ A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
 object depend on \code{dpt}.
 }
 \description{
-A modified version of \link[destiny:DiffusionMap-class]{DiffusionMap}, this function
-will add the DiffusionMap results components into x if it is a
-\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object.
+A modified version of \link[destiny:DiffusionMap-class]{DiffusionMap} and
+\link[destiny:DPT]{DPT}.
 }

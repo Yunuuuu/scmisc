@@ -1,24 +1,28 @@
 #' Create a diffusion map of cells
 #'
 #' @description
-#' A modified version of [DiffusionMap][destiny::DiffusionMap], this function
-#' will add the DiffusionMap results components into x if it is a
-#' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object.
+#' A modified version of [DiffusionMap][destiny::DiffusionMap] and
+#' [DPT][destiny::DPT].
 #' @param x A numeric matrix of counts with cells in columns and features in
-#' rows.
+#'   rows.
 #'
-#' Alternatively, a
-#' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
-#' containing such a matrix.
+#'   Alternatively, a
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
+#'   containing such a matrix, or a [DiffusionMap][destiny::DiffusionMap]
+#'   object.
 #' @param root The cell index/indices from which to calculate the DPT(s)
-#'   (integer of length 1-3). If length more than `size`, we will choose the top
-#'   size elements with the maximal eigenvectors CD1 values. Can be also a
-#'   logical atomic value, in this way, we will sample the elements with TRUE
-#'   values.
+#'   (integer of length `1-3`). If the length of root is more than `size` or  a
+#'   logical atomic vector with the compatible length of `x`(the same length of
+#'   `ncol(x)` if x is a simple matrix or
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] or the
+#'   same length of `nrow(`[eigenvectors][destiny::eigenvectors]`(x))` if x is a
+#'   [DiffusionMap][destiny::DiffusionMap] object), we will index with root
+#'   value and choose the top `size` elements with the maximal
+#'   [eigenvectors][destiny::eigenvectors] CD1 values.
 #' @param w_width Window width to use for deciding the branch cutoff.
 #' @param dpt A scalar logical value indicates whether to run
 #'   [DPT][destiny::DPT].
-#' @param size A scalar numeric ranges from 1 to 3 specifying how many roots
+#' @param size A scalar integer ranges from 1 to 3 specifying how many roots
 #'   should be used.
 #' @param ... Other arguments passed to [DiffusionMap][destiny::DiffusionMap].
 #' @return A [DiffusionMap][destiny::DiffusionMap] or [DPT][destiny::DPT]
@@ -114,6 +118,7 @@ setMethod(
 )
 
 handle_root <- function(dm, root, size) {
+    evs <- destiny::eigenvectors(dm)[, 1L, drop = TRUE]
     if (is.numeric(root)) {
         root <- as.integer(root)
         if (length(root) <= size) {
@@ -121,12 +126,17 @@ handle_root <- function(dm, root, size) {
         }
         idx <- root
     } else if (is.logical(root)) {
-        idx <- which(root, useNames = FALSE)
+        if (length(root) == length(evs)) {
+            idx <- which(root, useNames = FALSE)
+        } else {
+            cli::cli_abort("the length of logical {.arg root} must be the same with {.arg x}.")
+        }
     } else {
         cli::cli_abort("Unsupported type of {.arg root}")
     }
-    evs <- destiny::eigenvectors(dm)[, 1L]
-    seq_along(evs)[order(evs, decreasing = TRUE)][idx][
-        seq_len(size)
-    ]
+    # order the index of `evs` firstly
+    res <- seq_along(evs)[order(evs, decreasing = TRUE, na.last = TRUE)]
+
+    # choose the index specified in root and get the top size elments
+    res[res %in% idx][seq_len(size)]
 }
