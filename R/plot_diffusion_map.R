@@ -39,7 +39,7 @@ setMethod(
 #'   result in `reducedDims(x)` to plot.
 #' @param colour_by Specification of a column metadata field or a feature to
 #'   colour by, see the by argument in
-#'   [`?retrieveCellInfo`][scater::retrieveCellInfo()] for possible values. IF y
+#'   [`?retrieveCellInfo`][scater::retrieveCellInfo()] for possible values. If y
 #'   is a [DPT][destiny::DPT] object, this can also be "DPT" (or starting by
 #'   "DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" e.g. which will be
 #'   extracted from `y`. See also [plot.DPT][destiny::plot.DPT].
@@ -50,7 +50,10 @@ setMethod(
 #'   path(s) to draw.
 #' @param path_args A list of arguments to passed to
 #'   [geom_path][ggplot2::geom_path]. Elements of the list can be the same
-#'   length of `paths_to`.
+#'   length of `paths_to`. If you want to pass a complicated oject into
+#'   `path_args`, try to wrap it with [list][base::list] function, since the
+#'   internal use `rep_len` parallelly to get the same length of `paths_to`. for
+#'   example `list(grid::arrow(ends = "last"))`. 
 #' @param w_width Window width for smoothing the path (see
 #'   [smth.gaussian][smoother::smth.gaussian]).
 #' @param ncomponents A numeric scalar indicating the number of dimensions to

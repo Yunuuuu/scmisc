@@ -39,7 +39,7 @@ result in \code{reducedDims(x)} to plot.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the by argument in
-\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values. IF y
+\code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values. If y
 is a \link[destiny:DPT]{DPT} object, this can also be "DPT" (or starting by
 "DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" e.g. which will be
 extracted from \code{y}. See also \link[destiny:plot.DPT]{plot.DPT}.}
@@ -54,7 +54,10 @@ path(s) to draw.}
 
 \item{path_args}{A list of arguments to passed to
 \link[ggplot2:geom_path]{geom_path}. Elements of the list can be the same
-length of \code{paths_to}.}
+length of \code{paths_to}. If you want to pass a complicated oject into
+\code{path_args}, try to wrap it with \link[base:list]{list} function, since the
+internal use \code{rep_len} parallelly to get the same length of \code{paths_to}. for
+example \code{list(grid::arrow(ends = "last"))}.}
 
 \item{w_width}{Window width for smoothing the path (see
 \link[smoother:smth.gaussian]{smth.gaussian}).}
