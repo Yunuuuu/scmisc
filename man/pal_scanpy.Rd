@@ -8,7 +8,8 @@ pal_scanpy(palette = c("zeileis", "godsnot"), alpha = 1)
 }
 \arguments{
 \item{palette}{Palette type.
-Currently there is one available option: \code{"default"} (102-color palette).}
+Currently there is two available option: \code{"zeileis"} (28-color palette) and
+\code{"godsnot"} (102-color palette).}
 
 \item{alpha}{Transparency level, a real number in \verb{(0, 1]}.
 See \code{alpha} in \link[grDevices:rgb]{rgb} for details.}

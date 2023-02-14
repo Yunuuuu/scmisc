@@ -4,9 +4,10 @@
 #' <https://github.com/scverse/scanpy/blob/master/scanpy/plotting/palettes.py>.
 #'
 #' @param palette Palette type.
-#' Currently there is one available option: `"default"` (102-color palette).
+#'   Currently there is two available option: `"zeileis"` (28-color palette) and
+#'   `"godsnot"` (102-color palette).
 #' @param alpha Transparency level, a real number in `(0, 1]`.
-#' See `alpha` in [rgb][grDevices::rgb] for details.
+#'   See `alpha` in [rgb][grDevices::rgb] for details.
 #' @export
 pal_scanpy <- function(palette = c("zeileis", "godsnot"), alpha = 1) {
     palette <- match.arg(palette)
