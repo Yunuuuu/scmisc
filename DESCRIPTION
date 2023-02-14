@@ -29,6 +29,7 @@ Suggests:
     RColorBrewer,
     roxygen2,
     S4Vectors,
+    scales,
     scater,
     scran,
     scuttle,
