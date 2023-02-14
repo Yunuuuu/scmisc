@@ -14,6 +14,6 @@ Currently there is one available option: \code{"default"} (102-color palette).}
 See \code{alpha} in \link[grDevices:rgb]{rgb} for details.}
 }
 \description{
-Color palette inspired by plots in
-\emph{The New England Journal of Medicine}.
+Color palette inspired by scanpy in
+\url{https://github.com/scverse/scanpy/blob/master/scanpy/plotting/palettes.py}.
 }

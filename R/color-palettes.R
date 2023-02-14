@@ -1,7 +1,7 @@
 #' SCANPY Color Palettes
 #'
-#' Color palette inspired by plots in
-#' \emph{The New England Journal of Medicine}.
+#' Color palette inspired by scanpy in
+#' <https://github.com/scverse/scanpy/blob/master/scanpy/plotting/palettes.py>.
 #'
 #' @param palette Palette type.
 #' Currently there is one available option: `"default"` (102-color palette).
