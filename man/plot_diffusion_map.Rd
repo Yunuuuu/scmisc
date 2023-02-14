@@ -18,7 +18,8 @@ plot_diffusion_map(x, y, ...)
   add_paths = TRUE,
   root = NULL,
   paths_to = NULL,
-  path_args = list(color = rev(palette())),
+  path_args = list(color = c("gray62", "#F5C710", "#CD0BBC", "#28E2E5", "#2297E6",
+    "#61D04F", "#DF536B", "black")),
   w_width = 0.1,
   ...,
   ncomponents = 2L
