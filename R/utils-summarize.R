@@ -72,7 +72,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
         )[, list(.sums. = sum(.numbers., na.rm = TRUE)), by = ".groups."][
             , structure(.sums., names = as.character(.groups.))
         ]
-        numbers <- numbers[as.character(stat_se$groups)]
+        numbers <- unname(numbers[as.character(stat_se$groups)])
     } else {
         colnames(stat_se) <- stat_se$groups
         stat_matrix_list <- SummarizedExperiment::assays(stat_se)
