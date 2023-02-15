@@ -81,6 +81,8 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
             manual_clusters <- manual_clusters[!is_dup_clusters]
             manual_labels <- manual_labels[!is_dup_clusters]
         }
+    } else {
+        manual_clusters <- NULL
     }
     # duplicated markers shouldn't be calculated twice
     cluster2cell <- imap(marker_list, function(markers, i) {
