@@ -75,8 +75,8 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
         if (length(dup_clusters) > 0L) {
             cli::cli_warn(c(
                 "Duplicated clusters are provided in {.arg manual}",
-                "x" = "Duplicated items: {.val {dup_clusters}}",
-                "i" = "will use the later one"
+                "!" = "Duplicated items: {.val {dup_clusters}}",
+                "!" = "will use the later one"
             ))
             manual_clusters <- manual_clusters[!is_dup_clusters]
             manual_labels <- manual_labels[!is_dup_clusters]
