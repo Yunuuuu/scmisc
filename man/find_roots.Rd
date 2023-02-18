@@ -4,7 +4,7 @@
 \alias{find_roots}
 \title{Find roots in a DiffusionMap object}
 \usage{
-find_roots(dm, start, ends, ref)
+find_roots(dm, start, ends, ref, n_root = 100L)
 }
 \arguments{
 \item{dm}{A \link[destiny:DiffusionMap-class]{DiffusionMap} object.}
@@ -15,6 +15,8 @@ ends must exist in \code{ref}.}
 
 \item{ref}{All cell identity of \code{dm}, this must have the same length of
 \code{dm@d}.}
+
+\item{n_root}{The number of nodes we should test.}
 }
 \value{
 An integer index .
@@ -22,6 +24,6 @@ An integer index .
 \description{
 Find roots in a DiffusionMap object. If we know the \code{start} and \code{end} of a
 root, we then check if the tips of the root are in the start and ends node we
-already known. This function in this way check all nodes in the start cluster
-and return roots meet this criteria.
+already known. This function in this way check \code{n_root} nodes with the top
+\code{GPT} in the start cluster and return roots meet this criteria.
 }
