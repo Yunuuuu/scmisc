@@ -4,7 +4,9 @@
 \alias{plot_diffusion_map}
 \alias{plot_diffusion_map,SingleCellExperiment,DiffusionMap-method}
 \alias{plot_diffusion_map,SingleCellExperiment,DPT-method}
-\title{Plot the diffusion map}
+\alias{add_dpt_paths}
+\alias{add_dpt_paths,SingleCellExperiment,DPT-method}
+\title{Plot the diffusion map and the DPT paths}
 \usage{
 plot_diffusion_map(x, y, ...)
 
@@ -18,8 +20,22 @@ plot_diffusion_map(x, y, ...)
   add_paths = TRUE,
   root = NULL,
   paths_to = NULL,
-  path_args = list(color = c("gray62", "#F5C710", "#CD0BBC", "#28E2E5", "#2297E6",
-    "#61D04F", "#DF536B", "black")),
+  path_args = list(),
+  w_width = 0.1,
+  ...,
+  ncomponents = 2L
+)
+
+add_dpt_paths(x, y, ...)
+
+\S4method{add_dpt_paths}{SingleCellExperiment,DPT}(
+  x,
+  y,
+  root = NULL,
+  paths_to = NULL,
+  colour = c("gray62", "#F5C710", "#CD0BBC", "#28E2E5", "#2297E6", "#61D04F", "#DF536B",
+    "black"),
+  color = colour,
   w_width = 0.1,
   ...,
   ncomponents = 2L
@@ -32,8 +48,9 @@ object.}
 \item{y}{A \link[destiny:DiffusionMap-class]{DiffusionMap} or \link[destiny:DPT]{DPT}
 object.}
 
-\item{...}{Other arguments passed to
-\link[scater:plotReducedDim]{plotReducedDim}.}
+\item{...}{For \code{plot_diffusion_map}, other arguments passed to
+\link[scater:plotReducedDim]{plotReducedDim}; for \code{add_dpt_paths}, other
+arguments passed to \link[ggplot2:geom_path]{geom_path}.}
 
 \item{dimred}{A string or integer scalar indicating the reduced dimension
 result in \code{reducedDims(x)} to plot.}
@@ -66,11 +83,16 @@ example \code{list(grid::arrow(ends = "last"))}.}
 \item{ncomponents}{A numeric scalar indicating the number of dimensions to
 plot, starting from the first dimension. Alternatively, a numeric vector
 specifying the dimensions to be plotted.}
+
+\item{colour}{The color of the paths.}
+
+\item{color}{The color of the paths.}
 }
 \value{
-A ggplot2 object depicting the Diffusion map, if add_paths is \code{TRUE},
-DPT of the root is also added in this map.
+For \code{plot_diffusion_map}, A ggplot2 object depicting the Diffusion
+map, if add_paths is \code{TRUE}, DPT path of the root is also added in this
+map. for \code{add_dpt_paths}, a ggplot2 geom object is returned.
 }
 \description{
-Plot the diffusion map
+Plot the diffusion map and the DPT paths
 }

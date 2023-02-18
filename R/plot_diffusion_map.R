@@ -1,15 +1,18 @@
-#' Plot the diffusion map
+#' Plot the diffusion map and the DPT paths
 #' @param x A [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment]
 #'   object.
 #' @param y A [DiffusionMap][destiny::DiffusionMap] or [DPT][destiny::DPT]
 #'   object.
-#' @param ... Other arguments passed to
-#'   [plotReducedDim][scater::plotReducedDim].
+#' @param ... For `plot_diffusion_map`, other arguments passed to
+#'   [plotReducedDim][scater::plotReducedDim]; for `add_dpt_paths`, other
+#'   arguments passed to [geom_path][ggplot2::geom_path].
 #' @name plot_diffusion_map
-#' @return A ggplot2 object depicting the Diffusion map, if add_paths is `TRUE`,
-#'     DPT of the root is also added in this map.
+#' @return For `plot_diffusion_map`, A ggplot2 object depicting the Diffusion
+#'   map, if add_paths is `TRUE`, DPT path of the root is also added in this
+#'   map. for `add_dpt_paths`, a ggplot2 geom object is returned.
 NULL
 
+##########################################################################
 #' @export
 #' @rdname plot_diffusion_map
 setGeneric(
@@ -53,24 +56,22 @@ setMethod(
 #'   length of `paths_to`. If you want to pass a complicated oject into
 #'   `path_args`, try to wrap it with [list][base::list] function, since the
 #'   internal use `rep_len` parallelly to get the same length of `paths_to`. for
-#'   example `list(grid::arrow(ends = "last"))`. 
+#'   example `list(grid::arrow(ends = "last"))`.
 #' @param w_width Window width for smoothing the path (see
 #'   [smth.gaussian][smoother::smth.gaussian]).
 #' @param ncomponents A numeric scalar indicating the number of dimensions to
 #'   plot, starting from the first dimension. Alternatively, a numeric vector
 #'   specifying the dimensions to be plotted.
 #' @rdname plot_diffusion_map
-#' @export
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importClassesFrom destiny DPT
+#' @export
 setMethod(
     "plot_diffusion_map",
     c("SingleCellExperiment", "DPT"),
     function(x, y, dimred = "DiffusionMap", colour_by = "DPT",
              add_paths = TRUE, root = NULL, paths_to = NULL,
-             path_args = list(color = c(
-                "gray62", "#F5C710", "#CD0BBC", "#28E2E5",
-                "#2297E6", "#61D04F", "#DF536B", "black"
-             )), 
+             path_args = list(),
              w_width = 0.1, ..., ncomponents = 2L) {
         if (!rlang::is_scalar_logical(add_paths)) {
             cli::cli_abort("{.arg add_paths} must be a scalar logical value.")
@@ -136,21 +137,80 @@ setMethod(
         }
 
         if (add_paths) {
-            if (length(ncomponents) == 1L) {
-                ncomponents <- seq_len(ncomponents)
-            }
-            evs <- destiny::eigenvectors(dm)[, ncomponents, drop = FALSE]
-            plot_res <- plot_res + geom_dpt_paths_helper(
-                root = root, paths_to = paths_to,
-                branch = branch_data,
-                dpt = dpt_data, evs = evs,
-                w_width = w_width,
-                path_args = path_args
+            plot_res <- plot_res + rlang::exec(
+                add_dpt_paths,
+                x = x, y = y, root = root, paths_to = paths_to,
+                w_width = w_width, ncomponents = ncomponents,
+                !!!path_args
             )
         }
         plot_res
     }
 )
+######################################################################
+
+
+######################################################################
+#' @rdname plot_diffusion_map
+#' @export
+setGeneric(
+    "add_dpt_paths",
+    function(x, y, ...) standardGeneric("add_dpt_paths"),
+    signature = c("x", "y")
+)
+
+#' @param colour The color of the paths.
+#' @param color The color of the paths.
+#' @importClassesFrom SingleCellExperiment SingleCellExperiment
+#' @importClassesFrom destiny DPT
+#' @rdname plot_diffusion_map
+#' @export
+setMethod(
+    "add_dpt_paths",
+    c("SingleCellExperiment", "DPT"),
+    function(x, y, root = NULL, paths_to = NULL,
+             colour = c(
+                 "gray62", "#F5C710", "#CD0BBC", "#28E2E5",
+                 "#2297E6", "#61D04F", "#DF536B", "black"
+             ),
+             color = colour,
+             w_width = 0.1, ..., ncomponents = 2L) {
+
+        assert_length(root, 1L, null_ok = TRUE)
+        assert_class(root, is.numeric, "numeric", null_ok = TRUE)
+
+        # extract branch data
+        branch_data <- y@branch[, 1L, drop = TRUE]
+
+        # extract DPT data
+        dpt_data <- as.data.frame(t(y[destiny::tips(y)]),
+            make.names = FALSE
+        )
+        if (is.null(root)) {
+            root <- min(branch_data, na.rm = TRUE)
+        } else {
+            root <- as.integer(root)
+        }
+        dpt_data <- dpt_data[[root]]
+
+        dm <- y@dm
+        if (!methods::is(dm, "DiffusionMap")) {
+            cli::cli_abort("{.field dm} slot in {.arg y} must be a {.cls DiffusionMap} object.")
+        }
+        if (length(ncomponents) == 1L) {
+            ncomponents <- seq_len(ncomponents)
+        }
+        evs <- destiny::eigenvectors(dm)[, ncomponents, drop = FALSE]
+        geom_dpt_paths_helper(
+            root = root, paths_to = paths_to,
+            branch = branch_data,
+            dpt = dpt_data, evs = evs,
+            w_width = w_width,
+            path_args = rlang::list2(color = color, ...)
+        )
+    }
+)
+#####################################################################
 
 geom_dpt_paths_helper <- function(root = integer(), paths_to, branch, dpt, evs, w_width = 0.1, path_args = list()) {
     if (is.null(paths_to)) {
