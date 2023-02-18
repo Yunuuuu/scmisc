@@ -43,6 +43,7 @@ find_roots <- function(dm, start, ends = NULL, ref, n_root = 100L) {
         dm = dm
     )
     dpt <- dpt[sample(roots, size = 1L)][roots]
+    n_root <- max(n_root, length(roots), na.rm = TRUE)
     roots <- roots[order(dpt, decreasing = TRUE)][seq_len(n_root)]
 
     roots[vapply(
