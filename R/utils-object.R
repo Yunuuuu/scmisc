@@ -34,7 +34,7 @@ swap_rownames <- function(object, swap_rownames = NULL) {
         rownames(object) <- get_rowData_column(object, swap_rownames)
     } else {
         if (length(swap_rownames) != nrow(object)) {
-            cli::cli_abort("{.arg swap_rownames} should be {.val NULL} or a string or of length {.val {nrow(object)}} characters.")
+            cli::cli_abort("{.arg swap_rownames} should be {.code NULL} or a string or of length {.val {nrow(object)}} characters.")
         }
         rownames(object) <- as.character(swap_rownames)
     }
