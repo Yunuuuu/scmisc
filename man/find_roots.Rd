@@ -4,7 +4,7 @@
 \alias{find_roots}
 \title{Find roots in a DiffusionMap object}
 \usage{
-find_roots(dm, start, ref, ends = NULL, n_root = 100L)
+find_roots(dm, start, ends = NULL, ref, n_root = 100L)
 }
 \arguments{
 \item{dm}{A \link[destiny:DiffusionMap-class]{DiffusionMap} object.}

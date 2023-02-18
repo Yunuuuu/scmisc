@@ -16,7 +16,7 @@
 #' @param n_root The number of nodes we should test.
 #' @return An integer index .
 #' @export
-find_roots <- function(dm, start, ref, ends = NULL, n_root = 100L) {
+find_roots <- function(dm, start, ends = NULL, ref, n_root = 100L) {
     if (!methods::is(dm, "DiffusionMap")) {
         cli::cli_abort("{.arg dm} must be a {.cls DiffusionMap}.")
     }
