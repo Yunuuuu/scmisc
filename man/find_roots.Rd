@@ -26,6 +26,6 @@ An integer index .
 Find roots in a DiffusionMap object. If we know the \code{start} and \code{end} of a
 root, we then check if the tips of the root are in the start and ends node we
 already known (see \link[destiny:find_tips]{find_tips}). This function in this
-way check \code{n_root} nodes with the top \code{GPT} in the start cluster and return
+way check \code{n_root} nodes with the top \code{DPT} in the start cluster and return
 roots meet this criteria.
 }

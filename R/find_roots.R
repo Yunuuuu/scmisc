@@ -4,7 +4,7 @@
 #' Find roots in a DiffusionMap object. If we know the `start` and `end` of a
 #' root, we then check if the tips of the root are in the start and ends node we
 #' already known (see [find_tips][destiny::find_tips]). This function in this
-#' way check `n_root` nodes with the top `GPT` in the start cluster and return
+#' way check `n_root` nodes with the top `DPT` in the start cluster and return
 #' roots meet this criteria.
 #' @param dm A [DiffusionMap][destiny::DiffusionMap] object.
 #' @param start,ends The start and ends cluster identity. start must have a
