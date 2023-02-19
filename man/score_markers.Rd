@@ -39,7 +39,7 @@ with genes in rows and cells in columns. Alternatively, a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object
 containing such a matrix in its assays.}
 
-\item{...}{For the generic, further arguments to pass to specific methods.}
+\item{...}{Other arguments passed to \link[scran:scoreMarkers]{scoreMarkers}.}
 
 \item{restricted}{An atomic vector coerced to characters containing the
 subset of groups in clusters to be returned. By default, all unique groups in

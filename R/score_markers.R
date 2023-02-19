@@ -36,7 +36,7 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
 #' [rowSubset][SingleCellExperiment::rowSubset] is used to derive the features.
 #' See [scoreMarkers][scran::scoreMarkers] subset.row argument.
-#' @param ... For the generic, further arguments to pass to specific methods.
+#' @param ... Other arguments passed to [scoreMarkers][scran::scoreMarkers].
 #' @return A data.frame
 #' @name score_markers
 NULL
@@ -59,7 +59,7 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L, order_by =
         if (cellmarker) {
             cellmarker_search(score_markers$genes)
         } else {
-            data.table::setDF(score_markers)[]
+            data.table::setDF(score_markers)
         }
     })
     if (length(res) == 1L) {
