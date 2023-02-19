@@ -10,15 +10,22 @@
 \usage{
 plot_diffusion_map(x, y, ...)
 
-\S4method{plot_diffusion_map}{SingleCellExperiment,DiffusionMap}(x, y, ...)
+\S4method{plot_diffusion_map}{SingleCellExperiment,DiffusionMap}(
+  x,
+  y,
+  dimred = "DiffusionMap",
+  colour_by = "DPT",
+  root = NULL,
+  ...
+)
 
 \S4method{plot_diffusion_map}{SingleCellExperiment,DPT}(
   x,
   y,
   dimred = "DiffusionMap",
   colour_by = "DPT",
-  add_paths = TRUE,
   root = NULL,
+  add_paths = TRUE,
   paths_to = NULL,
   path_args = list(),
   w_width = 0.1,
@@ -53,19 +60,22 @@ object.}
 arguments passed to \link[ggplot2:geom_path]{geom_path}.}
 
 \item{dimred}{A string or integer scalar indicating the reduced dimension
-result in \code{reducedDims(x)} to plot.}
+result in \code{reducedDims(x)} to plot. If "DiffusionMap", the \code{eigenvectors}
+of \code{y} will be ploted.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the by argument in
 \code{\link[scater:retrieveCellInfo]{?retrieveCellInfo}} for possible values. If y
 is a \link[destiny:DPT]{DPT} object, this can also be "DPT" (or starting by
-"DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" e.g. which will be
-extracted from \code{y}. See also \link[destiny:plot.DPT]{plot.DPT}.}
+"DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" (only for \code{DPT} of
+y method) e.g. which will be extracted from \code{y}. If See also
+\link[destiny:plot.DPT]{plot.DPT}.}
+
+\item{root}{Root cell index. Will be used as the start of the \code{DPT} (default:
+the first tip index for \code{DPT} method or \link[destiny:random_root]{random_root}
+for \code{DiffusionMap} method).}
 
 \item{add_paths}{A scalar logical value indicates whether to add path.}
-
-\item{root}{Root branch ID. Will be used as the start of the DPT. (default:
-lowest branch ID).}
 
 \item{paths_to}{Numeric Branch IDs, which are used as target(s) for the
 path(s) to draw.}

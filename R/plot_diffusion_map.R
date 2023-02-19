@@ -13,42 +13,74 @@
 NULL
 
 ##########################################################################
-#' @export
 #' @rdname plot_diffusion_map
+#' @export
 setGeneric(
     "plot_diffusion_map",
     function(x, y, ...) standardGeneric("plot_diffusion_map"),
     signature = c("x", "y")
 )
 
-#' @export
-#' @rdname plot_diffusion_map
+#' @param dimred A string or integer scalar indicating the reduced dimension
+#'   result in `reducedDims(x)` to plot. If "DiffusionMap", the `eigenvectors`
+#'   of `y` will be ploted.
+#' @param colour_by Specification of a column metadata field or a feature to
+#'   colour by, see the by argument in
+#'   [`?retrieveCellInfo`][scater::retrieveCellInfo()] for possible values. If y
+#'   is a [DPT][destiny::DPT] object, this can also be "DPT" (or starting by
+#'   "DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" (only for `DPT` of
+#'   y method) e.g. which will be extracted from `y`. If See also
+#'   [plot.DPT][destiny::plot.DPT].
+#' @param root Root cell index. Will be used as the start of the `DPT` (default:
+#'   the first tip index for `DPT` method or [random_root][destiny::random_root]
+#'   for `DiffusionMap` method).
 #' @importClassesFrom destiny DiffusionMap
+#' @rdname plot_diffusion_map
+#' @export
 setMethod(
     "plot_diffusion_map",
     c("SingleCellExperiment", "DiffusionMap"),
-    function(x, y, ...) {
-        evs <- destiny::eigenvectors(y)
-        SingleCellExperiment::reducedDim(x, "DiffusionMap") <- evs
+    function(x, y, dimred = "DiffusionMap", colour_by = "DPT", root = NULL, ...) {
+        if (identical(dimred, "DiffusionMap")) {
+            evs <- destiny::eigenvectors(y)
+            SingleCellExperiment::reducedDim(x, "DiffusionMap") <- evs
+        }
+
+        is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
+        if (is_colour_by_dpt) {
+            assert_length(root, 1L, null_ok = TRUE)
+            assert_class(root, is.numeric, "numeric", null_ok = TRUE)
+            dpt <- methods::new("DPT",
+                branch = matrix(), tips = matrix(),
+                dm = y
+            )
+            if (is.null(root)) {
+                root <- which.max(dpt[sample.int(nrow(dpt), 1L), ])
+            } else {
+                root <- as.integer(root)
+            }
+            # extract DPT data
+            if (identical(colour_by, "DPT")) {
+                dpt_data <- dpt[root, , drop = TRUE]
+            } else {
+                dpt_data <- dpt[[colour_by]]
+            }
+            colour_by <- rlang::exec(
+                quote(data.frame),
+                !!colour_by := dpt_data,
+                check.names = FALSE
+            )
+        }
         scater::plotReducedDim(
             x,
-            dimred = "DiffusionMap",
+            dimred = dimred,
+            colour_by = colour_by,
             ...
         )
     }
 )
 
-#' @param dimred A string or integer scalar indicating the reduced dimension
-#'   result in `reducedDims(x)` to plot.
-#' @param colour_by Specification of a column metadata field or a feature to
-#'   colour by, see the by argument in
-#'   [`?retrieveCellInfo`][scater::retrieveCellInfo()] for possible values. If y
-#'   is a [DPT][destiny::DPT] object, this can also be "DPT" (or starting by
-#'   "DPT", such as "DPT1", "DPT2" ...), "branch" or "Branch" e.g. which will be
-#'   extracted from `y`. See also [plot.DPT][destiny::plot.DPT].
 #' @param add_paths A scalar logical value indicates whether to add path.
-#' @param root Root branch ID. Will be used as the start of the DPT. (default:
-#'   lowest branch ID).
 #' @param paths_to Numeric Branch IDs, which are used as target(s) for the
 #'   path(s) to draw.
 #' @param path_args A list of arguments to passed to
@@ -70,72 +102,49 @@ setMethod(
     "plot_diffusion_map",
     c("SingleCellExperiment", "DPT"),
     function(x, y, dimred = "DiffusionMap", colour_by = "DPT",
-             add_paths = TRUE, root = NULL, paths_to = NULL,
+             root = NULL, add_paths = TRUE, paths_to = NULL,
              path_args = list(),
              w_width = 0.1, ..., ncomponents = 2L) {
         if (!rlang::is_scalar_logical(add_paths)) {
             cli::cli_abort("{.arg add_paths} must be a scalar logical value.")
         }
 
-        is_colour_by_destiny_data <- grepl("^DPT", colour_by, perl = TRUE) ||
-            identical(colour_by, "Branch") ||
+        is_colour_by_branch <- identical(colour_by, "Branch") ||
             identical(colour_by, "branch")
 
-        if (is_colour_by_destiny_data || add_paths) {
-            assert_length(root, 1L, null_ok = TRUE)
-            assert_class(root, is.numeric, "numeric", null_ok = TRUE)
-
+        if (is_colour_by_branch) {
             # extract branch data
-            branch_data <- y@branch[, 1L, drop = TRUE]
-
-            # extract DPT data
-            dpt_data <- as.data.frame(t(y[destiny::tips(y)]),
-                make.names = FALSE
-            )
-            if (is.null(root)) {
-                root <- min(branch_data, na.rm = TRUE)
-            } else {
-                root <- as.integer(root)
-            }
-            dpt_data <- dpt_data[[root]]
-        }
-
-        if (is_colour_by_destiny_data) {
             colour_by <- rlang::exec(
-                quote(S4Vectors::DataFrame),
-                !!colour_by := switch(colour_by,
-                    DPT = dpt_data,
-                    branch = ,
-                    Branch = branch_data,
-                    y[[colour_by]]
-                ),
+                quote(data.frame),
+                !!colour_by := y@branch[, 1L, drop = TRUE],
                 check.names = FALSE
             )
         }
-        if (add_paths || identical(dimred, "DiffusionMap")) {
-            dm <- y@dm
-            if (!methods::is(dm, "DiffusionMap")) {
-                cli::cli_abort("{.field dm} slot in {.arg y} must be a {.cls DiffusionMap} object.")
+        is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
+        if (is_colour_by_dpt) {
+            assert_length(root, 1L, null_ok = TRUE)
+            assert_class(root, is.numeric, "numeric", null_ok = TRUE)
+            if (is.null(root)) {
+                root <- destiny::tips(y)[[1L]]
+            } else {
+                root <- as.integer(root)
             }
         }
 
-        if (identical(dimred, "DiffusionMap")) {
-            plot_res <- plot_diffusion_map(
-                x, dm,
-                colour_by = colour_by,
-                ncomponents = ncomponents,
-                ...
-            )
-        } else {
-            plot_res <- scater::plotReducedDim(
-                x,
-                dimred = dimred,
-                colour_by = colour_by,
-                ncomponents = ncomponents,
-                ...
-            )
+        dm <- y@dm
+        if (!methods::is(dm, "DiffusionMap")) {
+            cli::cli_abort("{.field dm} slot in {.arg y} must be a {.cls DiffusionMap} object.")
         }
 
+        # plot diffusion map
+        plot_res <- plot_diffusion_map(
+            x, dm,
+            dimred = dimred,
+            colour_by = colour_by,
+            root = root,
+            ncomponents = ncomponents,
+            ...
+        )
         if (add_paths) {
             plot_res <- plot_res + rlang::exec(
                 add_dpt_paths,
@@ -175,23 +184,16 @@ setMethod(
              ),
              color = colour,
              w_width = 0.1, ..., ncomponents = 2L) {
-
-        assert_length(root, 1L, null_ok = TRUE)
-        assert_class(root, is.numeric, "numeric", null_ok = TRUE)
-
         # extract branch data
         branch_data <- y@branch[, 1L, drop = TRUE]
 
         # extract DPT data
-        dpt_data <- as.data.frame(t(y[destiny::tips(y)]),
-            make.names = FALSE
-        )
         if (is.null(root)) {
-            root <- min(branch_data, na.rm = TRUE)
+            root <- destiny::tips(y)[[1L]]
         } else {
             root <- as.integer(root)
         }
-        dpt_data <- dpt_data[[root]]
+        dpt_data <- y[root, , drop = TRUE]
 
         dm <- y@dm
         if (!methods::is(dm, "DiffusionMap")) {
@@ -214,7 +216,7 @@ setMethod(
 
 geom_dpt_paths_helper <- function(root = integer(), paths_to, branch, dpt, evs, w_width = 0.1, path_args = list()) {
     if (is.null(paths_to)) {
-        paths_to <- setdiff(branch[!is.na(branch)], root)
+        paths_to <- setdiff(branch[!is.na(branch)], branch[root])
     }
     if (length(paths_to) > 0L) {
         args_list <- list(path_id = paths_to)
@@ -233,7 +235,7 @@ geom_dpt_paths_helper <- function(root = integer(), paths_to, branch, dpt, evs, 
         args_list <- c(args_list, path_args)
     }
     .mapply(function(path_id, ...) {
-        path_idx <- which(branch %in% c(root, path_id))
+        path_idx <- which(branch %in% c(branch[root], path_id))
         path_pt <- dpt[path_idx]
         path_evs <- evs[path_idx, , drop = FALSE]
         path_data <- path_evs[order(path_pt), ]
