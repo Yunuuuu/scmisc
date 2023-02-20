@@ -18,6 +18,7 @@ Imports:
     SingleCellExperiment,
     SummarizedExperiment,
     SeuratObject,
+    S4Vectors,
     ggplot2,
     grid,
     destiny
@@ -28,7 +29,6 @@ Suggests:
     pipeline,
     RColorBrewer,
     roxygen2,
-    S4Vectors,
     scales,
     scater,
     scran,
