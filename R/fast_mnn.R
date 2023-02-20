@@ -63,6 +63,14 @@
 #' "PCA" matrix in the `reducedDims` slot, containing the first d PCs returned
 #' by `multiBatchPCA` for each cell. A "corrected" matrix in the `reducedDims`
 #' slot, containing corrected low-dimensional coordinates for each cell.
+#' @note 
+#'  - <https://support.bioconductor.org/p/127544/#127553>
+#'  - <https://github.com/MarioniLab/FurtherMNN2018/issues/6>
+#'  - <https://support.bioconductor.org/p/9145895/#9145905>
+#' Just a note for self-usage, from above threads, I preferred to re-run
+#' `fast_mnn` after subsetting large cell sets (subset epithelium from all cell
+#' types), for sub-clustering in smaller cell sets (subset a specific T cell
+#' type from all T cells ).
 #' @seealso 
 #' - [multiBatchNorm][batchelor::multiBatchNorm]
 #' - [multiBatchPCA][batchelor::multiBatchPCA]
@@ -102,18 +110,17 @@ fast_mnn <- function(
     )
     # nromalization, adjust for differences in sequencing depth --------
     # This can be done before variance-modelling or after.
-    # - http://bioconductor.org/books/3.15/OSCA.multisample/integrating-datasets.html#slower-setup;
-    #   in this book, variance-modelling is performed before `multiBatchNorm`
     # - https://github.com/LTLA/batchelor/blob/master/R/quickCorrect.R; in the
     #   source code of `quickCorrect`, variance-modelling is performed after
     #   multiBatchNorm.
-    #
-    # so both method should be okay. but I prefered to use multiBatchNorm for
-    # the batch corrected logcounts. As batchelor::quickCorrect use this firstly
-    # and then run modelGeneVar on the returned `logcounts` assay, we just do
-    # this firstly. The class of the returned `logcounts` will determined by the
-    # class of "counts" assay.  If the computer has a large memory, it's better
-    # to use `dgCMatrix` since it's much faster and accurater.
+    # All following threads suggested run variance-modelling in the original
+    # counts.
+    # - https://bioconductor.riken.jp/packages/3.8/workflows/vignettes/simpleSingleCell/inst/doc/work-5-mnn.html
+    # - https://support.bioconductor.org/p/9145895/#9145905
+    # - http://bioconductor.org/books/3.16/OSCA.multisample/integrating-datasets.html#slower-setup
+    # So I prefered to use multiBatchNorm only for the batch corrected logcounts
+    # (Don't touch the original logcounts). If the computer has a large memory,
+    # it's better to use `dgCMatrix` since it's much faster and accurater.
     #
     # - multiBatchNorm need size factor, if it's NULL, the internal will
     #   calculate it with `librarySizeFactors` function

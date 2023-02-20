@@ -132,6 +132,17 @@ the need to manually split the matrix or SingleCellExperiment object into
 separate objects for input into \code{fastMNN}.  In this situation, the order
 of input batches is defined by the order of levels in \code{batch}.
 }
+\note{
+\itemize{
+\item \url{https://support.bioconductor.org/p/127544/#127553}
+\item \url{https://github.com/MarioniLab/FurtherMNN2018/issues/6}
+\item \url{https://support.bioconductor.org/p/9145895/#9145905}
+Just a note for self-usage, from above threads, I preferred to re-run
+\code{fast_mnn} after subsetting large cell sets (subset epithelium from all cell
+types), for sub-clustering in smaller cell sets (subset a specific T cell
+type from all T cells ).
+}
+}
 \examples{
 d1 <- matrix(rnbinom(50000, mu = 10, size = 1), ncol = 100)
 d2 <- matrix(rnbinom(20000, mu = 50, size = 1), ncol = 40)
