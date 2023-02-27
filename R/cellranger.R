@@ -10,7 +10,7 @@
 #' @param other_args Other arguments passed to cellranger count.
 #' @inheritParams run_cellranger
 #' @export 
-run_cellranger_count <- function(id, fastqs, transcriptome = NULL, sample = NULL, cores = NULL, other_args = character("--nosecondary"), cellranger_cmd = NULL, sys_args = list()) {
+run_cellranger_count <- function(id, fastqs, transcriptome = NULL, sample = NULL, cores = NULL, other_args = c("--nosecondary"), cellranger_cmd = NULL, sys_args = list()) {
     args <- c(
         handle_arg(id, "--id", sep = "="),
         handle_arg(fastqs, "--fastqs", sep = "="),

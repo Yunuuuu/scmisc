@@ -10,7 +10,7 @@ run_cellranger_count(
   transcriptome = NULL,
   sample = NULL,
   cores = NULL,
-  other_args = character("--nosecondary"),
+  other_args = c("--nosecondary"),
   cellranger_cmd = NULL,
   sys_args = list()
 )
