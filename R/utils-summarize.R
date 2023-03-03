@@ -49,17 +49,17 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
     )
     numbers <- stat_se$ncells
     if (!is.null(blocks)) {
-        stat_matrix_list <- lapply(
-            SummarizedExperiment::assayNames(stat_se),
-            function(assay) {
-                transform <- switch(assay,
+        stat_matrix_list <- imap(
+            SummarizedExperiment::assays(stat_se),
+            function(assay, assay_name) {
+                transform <- switch(assay_name,
                     mean = ,
                     sum = "raw",
                     num.detected = , 
                     prop.detected = "logit"
                 )
                 scuttle::correctGroupSummary(
-                    SummarizedExperiment::assay(stat_se, assay),
+                    assay,
                     group = stat_se$groups,
                     block = stat_se$blocks,
                     transform = transform

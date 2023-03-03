@@ -71,11 +71,14 @@ is_scalar_numeric <- function(x) {
 #' @keywords internal
 #' @noRd
 imap <- function(.x, .f, ...) {
-    .mapply(
+    names_idx <- names(.x) %||% as.character(seq_along(.x))
+    out <- .mapply(
         rlang::as_function(.f),
-        dots = list(.x, names(.x) %||% as.character(seq_along(.x))),
+        dots = list(.x, names_idx),
         MoreArgs = list(...)
     )
+    names(out) <- names_idx
+    out
 }
 
 #' Rename elements in a list, data.frame or vector
