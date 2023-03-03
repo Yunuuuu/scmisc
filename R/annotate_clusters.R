@@ -96,7 +96,6 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
         sums <- sum_stats$statistics$sum
         numbers <- sum_stats$numbers
         data.table::data.table(
-            celltype = i,
             clusters = colnames(sums),
             means = colSums(sums, na.rm = TRUE) / (numbers * nrow(sums))
         )
@@ -104,7 +103,8 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
     # we annotate the cluster as the celltype whose
     cluster2cell <- data.table::rbindlist(
         cluster2cell,
-        use.names = FALSE
+        use.names = FALSE,
+        idcol = "celltype"
     )[, list(celltype = celltype[[which.max(means)]]), by = "clusters"][ 
         , structure(celltype, names = clusters) # nolint
     ]
