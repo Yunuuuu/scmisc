@@ -161,11 +161,18 @@ the heatmap \code{min(grid::unit.c(width, height)) / 2L}.}
 A \link[ComplexHeatmap:Heatmap-class]{Heatmap-class} object
 }
 \description{
-Create a heatmap of average expression values for each group of cells and
-specified features in a SingleCellExperiment object.
+\code{plot_grouped_heat} create a heatmap of average expression values for each
+group of cells and specified features in a SingleCellExperiment object.
 
-Create a dot plot of expression values for a grouping of cells, where the
-size and color of each dot represents the proportion of detected expression
-values and the average expression, respectively, for each feature in each
-group of cells.
+\code{plot_grouped_dots} create a dot plot of expression values for a grouping of
+cells, where the size and color of each dot represents the proportion of
+detected expression values and the average expression, respectively, for each
+feature in each group of cells.
+
+The order of the row or column will be the same with \code{unlist(marker_list)} or
+\code{levels(groups)} depend on whether flip is \code{TRUE} or \code{FALSE} if
+ComplexHeatmap clustering is turned off (if groups isn't a factor, the
+internal will coerce it as a factor). So we can easily add annotation in
+Heatmap as long as we provide a
+\link[ComplexHeatmap:HeatmapAnnotation]{HeatmapAnnotation} in the same order.
 }

@@ -1,13 +1,21 @@
 #' Plot heatmap or dots of group-level expression averages
 #'
 #' @description
-#' Create a heatmap of average expression values for each group of cells and
-#' specified features in a SingleCellExperiment object.
+#' `plot_grouped_heat` create a heatmap of average expression values for each
+#' group of cells and specified features in a SingleCellExperiment object.
 #'
-#' Create a dot plot of expression values for a grouping of cells, where the
-#' size and color of each dot represents the proportion of detected expression
-#' values and the average expression, respectively, for each feature in each
-#' group of cells.
+#' `plot_grouped_dots` create a dot plot of expression values for a grouping of
+#' cells, where the size and color of each dot represents the proportion of
+#' detected expression values and the average expression, respectively, for each
+#' feature in each group of cells.
+#' 
+#' The order of the row or column will be the same with `unlist(marker_list)` or
+#' `levels(groups)` depend on whether flip is `TRUE` or `FALSE` if
+#' ComplexHeatmap clustering is turned off (if groups isn't a factor, the
+#' internal will coerce it as a factor). So we can easily add annotation in
+#' Heatmap as long as we provide a
+#' [HeatmapAnnotation][ComplexHeatmap::HeatmapAnnotation] in the same order.
+#' 
 #' @param x A numeric matrix of counts with cells in columns and features in
 #' rows.
 #'
