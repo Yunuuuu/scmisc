@@ -190,7 +190,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     if (!is.null(marker_list)) {
         if (any(!has_names(marker_list))) {
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
-        } else {
+        } else if (length(marker_list) == 0L) {
             cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
         }
         if (anyDuplicated(names(marker_list))) {

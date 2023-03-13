@@ -28,7 +28,7 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     if (any(!has_names(marker_list))) {
         cli::cli_abort("All elements in {.arg marker_list} must be named.")
-    } else {
+    } else if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     }
     markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)

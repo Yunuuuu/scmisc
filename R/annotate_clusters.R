@@ -42,7 +42,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
     assert_class(manual, is.list, "list", null_ok = TRUE)
     if (any(!has_names(marker_list))) {
         cli::cli_abort("All elements in {.arg marker_list} must be named.")
-    } else {
+    } else if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     }
 
