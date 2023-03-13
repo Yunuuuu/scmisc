@@ -19,6 +19,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
         ids$blocks <- blocks
     }
     msg <- id %||% "{.arg features}"
+    features <- as.character(features)
     if (anyNA(features)) {
         cli::cli_warn(c(
             sprintf("{.val {NA}} is found in %s.", msg),
@@ -31,8 +32,8 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
         if (length(dup_features) > 0L) {
             cli::cli_warn(c(
                 sprintf("Duplicated features are provided in %s.", msg),
-                "x" = "Duplicated items: {.val {dup_features}}",
-                "i" = "will use only once"
+                "x" = "Duplicated feature{?s}: {.val {dup_features}}",
+                "i" = "Only one will be used"
             ))
             features <- unique(features)
         }
@@ -44,7 +45,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
                 "Finding {.val {sum(!is_existed)}} non-existed feature{?s} provided in %s", msg
             ),
             "x" = "Non-existed feature{?s}: {.val {features[!is_existed]}}",
-            "i" = "will omit them"
+            "i" = "Will be omitted"
         ))
         features <- features[is_existed]
     }
