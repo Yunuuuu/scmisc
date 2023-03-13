@@ -40,10 +40,8 @@ NULL
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
     assert_class(manual, is.list, "list", null_ok = TRUE)
-    if (length(marker_list) > 0L) {
-        if (all(!has_names(marker_list))) {
-            cli::cli_abort("All elements in {.arg marker_list} must be named.")
-        }
+    if (any(!has_names(marker_list))) {
+        cli::cli_abort("All elements in {.arg marker_list} must be named.")
     } else {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     }
@@ -86,14 +84,44 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
     } else {
         manual_clusters <- NULL
     }
+
     # duplicated markers shouldn't be calculated twice
     cluster2cell <- imap(marker_list, function(markers, i) {
+        msg <- sprintf("{.field %s} of {.arg %s}", i, "marker_list")
+        if (anyNA(markers)) {
+            cli::cli_warn(c(
+                sprintf("{.val {NA}} is found in %s", msg),
+                "!" = "Will omit {.val NA} value"
+            ))
+            markers <- markers[!is.na(markers)]
+        }
+        dup_markers <- unique(markers[duplicated(markers)])
+        if (length(dup_markers) > 0L) {
+            cli::cli_warn(c(
+                sprintf("Duplicated markers are provided in %s", msg),
+                "x" = "Duplicated feature{?s}: {.val {dup_markers}}",
+                "i" = "Only one will be used"
+            ))
+            markers <- unique(markers)
+        }
+        is_existed <- markers %chin% rownames(x) # nolint
+        if (!all(is_existed)) {
+            cli::cli_warn(c(
+                sprintf(
+                    "Finding {.val {sum(!is_existed)}} non-existed feature{?s} in %s", msg
+                ),
+                "!" = "Non-existed feature{?s}: {.val {markers[!is_existed]}}",
+                "i" = "Will be omitted directly"
+            ))
+            markers <- markers[is_existed]
+        }
+        if (length(markers) == 0L) {
+            return(NULL)
+        }
         sum_stats <- summarize_features_by_groups(
             x,
             features = markers, groups = clusters,
-            statistics = "sum", blocks = blocks,
-            id = sprintf("{.field %s} of {.arg %s}", i, "marker_list"),
-            allow_dup = FALSE
+            statistics = "sum", blocks = blocks
         )
         sums <- sum_stats$statistics$sum
         numbers <- sum_stats$numbers
@@ -102,12 +130,13 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
             means = colSums(sums, na.rm = TRUE) / (numbers * nrow(sums))
         )
     })
+
     # we annotate the cluster as the celltype whose
     cluster2cell <- data.table::rbindlist(
         cluster2cell,
         use.names = FALSE,
         idcol = "celltype"
-    )[, list(celltype = celltype[[which.max(means)]]), by = "clusters"][ 
+    )[, list(celltype = celltype[[which.max(means)]]), by = "clusters"][
         , structure(celltype, names = clusters) # nolint
     ]
 

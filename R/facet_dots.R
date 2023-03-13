@@ -26,10 +26,10 @@ NULL
 #' @keywords internal
 facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
     assert_class(marker_list, is.list, "list", null_ok = FALSE)
-    if (length(marker_list) > 0L) {
-        if (all(!has_names(marker_list))) {
-            cli::cli_abort("All elements in {.arg marker_list} must be named.")
-        }
+    if (any(!has_names(marker_list))) {
+        cli::cli_abort("All elements in {.arg marker_list} must be named.")
+    } else {
+        cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     }
     markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
     if (anyDuplicated(markers) > 0L) {
@@ -37,6 +37,9 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
             "{.fn facet_dots} can't support duplicated markers in {.arg marker_list}",
             i = "Try to use {.fn plot_grouped_dots} if you want to diplay duplicated markers."
         ))
+    }
+    if (anyDuplicated(names(marker_list))) {
+        cli::cli_abort("Duplicated names found in {.arg marker_list}")
     }
     gene2cell <- structure(
         factor(
@@ -69,9 +72,8 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
         names(facet_args_list) <- c("rows", "cols")[seq_along(facet_args_list)]
     }
     facet_args_list <- c(facet_args_list, facet_args)
-    base_plot +
-        rlang::exec(ggplot2::facet_grid, !!!facet_args_list) +
-        ggplot2::theme(strip.clip = "off")
+    facet_obj <- do.call(ggplot2::facet_grid, facet_args_list)
+    base_plot + facet_obj + ggplot2::theme(strip.clip = "off")
 }
 
 utils::globalVariables(c("..marker_celltypes..", "Group"))

@@ -14,7 +14,7 @@ plot_grouped_heat(x, ...)
 
 \S4method{plot_grouped_heat}{ANY}(
   x,
-  marker_list,
+  marker_list = NULL,
   cluster2cell = NULL,
   groups = NULL,
   ...,
@@ -43,7 +43,7 @@ plot_grouped_dots(x, ...)
 
 \S4method{plot_grouped_dots}{ANY}(
   x,
-  marker_list,
+  marker_list = NULL,
   cluster2cell = NULL,
   groups = NULL,
   ...,
@@ -79,11 +79,12 @@ Alternatively, a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object
 containing such a matrix.}
 
-\item{...}{Other arguments passed to \link[ComplexHeatmap:Heatmap]{Heatmap}}
+\item{...}{Other arguments passed to \link[ComplexHeatmap:Heatmap]{Heatmap} and
+specific methods.}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
 names indicate the cell type label and values indicate the markers for this
-cell type.}
+cell type. If NULL, defaults to all features in \strong{x}.}
 
 \item{cluster2cell}{A named character or factor returned by
 \code{\link[=annotate_clusters]{annotate_clusters()}}.}

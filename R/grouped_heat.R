@@ -8,14 +8,14 @@
 #' cells, where the size and color of each dot represents the proportion of
 #' detected expression values and the average expression, respectively, for each
 #' feature in each group of cells.
-#' 
+#'
 #' The order of the row or column will be the same with `unlist(marker_list)` or
 #' `levels(groups)` depend on whether flip is `TRUE` or `FALSE` if
 #' ComplexHeatmap clustering is turned off (if groups isn't a factor, the
 #' internal will coerce it as a factor). So we can easily add annotation in
 #' Heatmap as long as we provide a
 #' [HeatmapAnnotation][ComplexHeatmap::HeatmapAnnotation] in the same order.
-#' 
+#'
 #' @param x A numeric matrix of counts with cells in columns and features in
 #' rows.
 #'
@@ -24,6 +24,9 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
 #' containing such a matrix.
 #' @inheritParams annotate_clusters
+#' @param marker_list A named list contaning the markers for each cell types.
+#'   names indicate the cell type label and values indicate the markers for this
+#'   cell type. If NULL, defaults to all features in __x__.
 #' @param cluster2cell A named character or factor returned by
 #' [`annotate_clusters()`][annotate_clusters].
 #' @param groups A factor (or vector coercible into a factor) specifying the
@@ -32,7 +35,8 @@
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if groups is `NULL`, "label" in `colData(x)` will be
 #'   extracted.
-#' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap]
+#' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap] and
+#'   specific methods.
 #' @param colour Alias for color.
 #' @param threshold Numeric value specifying the cap on the proportion of
 #' detected expression values. Only used by `plot_grouped_dots`.
@@ -70,7 +74,7 @@ setGeneric(
 )
 
 plot_grouped_heat_internal <- function(
-    x, marker_list, cluster2cell = NULL, groups = NULL, ...,
+    x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, zlim = NULL, flip = FALSE,
     slice_border_gp = NULL, row_labels = NULL, column_labels = NULL) {
@@ -128,7 +132,7 @@ setGeneric(
 )
 
 plot_grouped_dots_internal <- function(
-    x, marker_list, cluster2cell = NULL, groups = NULL, ...,
+    x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
     flip = FALSE, slice_border_gp = gpar(lwd = 0.5),
@@ -173,7 +177,7 @@ setMethod(
 
 ##################################################################
 #' @importFrom grid gpar
-grouped_heat_internal <- function(x, marker_list, groups = NULL,
+grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
@@ -182,13 +186,16 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
                                   slice_border_gp = gpar(lwd = 0.5),
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
-    assert_class(marker_list, is.list, "list", null_ok = FALSE)
-    if (length(marker_list) > 0L) {
-        if (all(!has_names(marker_list))) {
+    assert_class(marker_list, is.list, "list", null_ok = TRUE)
+    if (!is.null(marker_list)) {
+        if (any(!has_names(marker_list))) {
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
+        } else {
+            cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
         }
-    } else {
-        cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+        if (anyDuplicated(names(marker_list))) {
+            cli::cli_abort("Duplicated names found in {.arg marker_list}")
+        }
     }
     if (!(is_scalar_numeric(scale_dots) && scale_dots >= 0L)) {
         cli::cli_abort("{.arg scale_dots} must be a scalar numeric and {.code > 0L}.")
@@ -203,17 +210,31 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     )
     groups <- groups %||% rep_len("Group", ncol(x))
 
-    # calculate statistics for all markers in marker_list
-    markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
-    marker_groups <- rep(names(marker_list), times = lengths(marker_list))
-    marker_groups <- factor(marker_groups, names(marker_list))
-    marker_groups <- data.table::fdroplevels(marker_groups)
+    if (!is.null(marker_list)) {
+        # calculate statistics for all markers in marker_list
+        markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
+        marker_groups <- rep(names(marker_list), times = lengths(marker_list))
+        marker_groups <- factor(marker_groups, names(marker_list))
+        marker_groups <- data.table::fdroplevels(marker_groups)
+        markers <- as.character(markers)
+        if (anyNA(markers)) {
+            cli::cli_abort("{.val {NA}} is found in {.arg marker_list}")
+        }
+        is_existed <- markers %chin% rownames(x) # nolint
+        if (!all(is_existed)) {
+            cli::cli_abort(c(
+                "Finding {.val {sum(!is_existed)}} non-existed feature{?s} in {.arg marker_list}",
+                "!" = "Non-existed feature{?s}: {.val {markers[!is_existed]}}"
+            ))
+        }
+    } else {
+        markers <- NULL
+    }
+
     stat_list <- summarize_features_by_groups(
         x = x, features = markers, groups = groups,
         statistics = statistics, blocks = blocks,
-        id = "{.arg marker_list}",
-        threshold = threshold,
-        allow_dup = TRUE
+        threshold = threshold
     )$statistics
 
     # rows are genes
