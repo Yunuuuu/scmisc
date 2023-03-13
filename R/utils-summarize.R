@@ -19,35 +19,43 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
         ids$blocks <- blocks
     }
     msg <- id %||% "{.arg features}"
-    features <- as.character(features)
-    if (anyNA(features)) {
-        cli::cli_warn(c(
-            sprintf("{.val {NA}} is found in %s.", msg),
-            "i" = "will omit {.val {NA}}"
-        ))
-        features <- features[!is.na(features)]
-    }
-    if (allow_dup) {
-        dup_features <- unique(features[duplicated(features)])
-        if (length(dup_features) > 0L) {
+
+    if (!is.null(features)) {
+        features <- as.character(features)
+        if (anyNA(features)) {
             cli::cli_warn(c(
-                sprintf("Duplicated features are provided in %s.", msg),
-                "x" = "Duplicated feature{?s}: {.val {dup_features}}",
-                "i" = "Only one will be used"
+                sprintf("{.val {NA}} is found in %s.", msg),
+                "i" = "will omit {.val {NA}}"
             ))
-            features <- unique(features)
+            features <- features[!is.na(features)]
         }
-    }
-    is_existed <- features %chin% rownames(x)
-    if (!all(is_existed)) {
-        cli::cli_warn(c(
-            sprintf(
-                "Finding {.val {sum(!is_existed)}} non-existed feature{?s} provided in %s", msg
-            ),
-            "x" = "Non-existed feature{?s}: {.val {features[!is_existed]}}",
-            "i" = "Will be omitted"
-        ))
-        features <- features[is_existed]
+        if (allow_dup) {
+            dup_features <- unique(features[duplicated(features)])
+            if (length(dup_features) > 0L) {
+                cli::cli_warn(c(
+                    sprintf("Duplicated features are provided in %s.", msg),
+                    "x" = "Duplicated feature{?s}: {.val {dup_features}}",
+                    "i" = "Only one will be used"
+                ))
+                features <- unique(features)
+            }
+        }
+        is_existed <- features %chin% rownames(x) # nolint
+        if (!all(is_existed)) {
+            cli::cli_warn(c(
+                sprintf(
+                    "Finding {.val {sum(!is_existed)}} non-existed feature{?s} provided in %s", msg
+                ),
+                "x" = "Non-existed feature{?s}: {.val {features[!is_existed]}}",
+                "i" = "Will be omitted"
+            ))
+            features <- features[is_existed]
+        }
+        if (length(features) == 0L) {
+            cli::cli_abort(sprintf(
+                "No features provided in %s can be used to calculate the statistics", msg
+            ))
+        }
     }
 
     # calculate the statistics then corrected by blocks
