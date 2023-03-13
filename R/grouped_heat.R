@@ -207,6 +207,7 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
     marker_groups <- rep(names(marker_list), times = lengths(marker_list))
     marker_groups <- factor(marker_groups, names(marker_list))
+    marker_groups <- data.table::fdroplevels(marker_groups)
     stat_list <- summarize_features_by_groups(
         x = x, features = markers, groups = groups,
         statistics = statistics, blocks = blocks,
