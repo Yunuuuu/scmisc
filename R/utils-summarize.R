@@ -7,9 +7,10 @@
 #' column of x, e.g., batch of origin.
 #' @param threshold A numeric scalar specifying the threshold above which a gene
 #' is considered to be detected.
+#' @importFrom data.table %chin%
 #' @keywords internal
-#' @noRd 
-summarize_features_by_groups <- function(x, features, groups, statistics, blocks = NULL, threshold = 0L, id = NULL, check_dup = TRUE) {
+#' @noRd
+summarize_features_by_groups <- function(x, features, groups, statistics, blocks = NULL, threshold = 0L, id = NULL, allow_dup = FALSE) {
     if (is.null(colnames(x))) {
         colnames(x) <- seq_len(ncol(x))
     }
@@ -17,7 +18,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
     if (!is.null(blocks)) {
         ids$blocks <- blocks
     }
-    msg <- id %||% ""
+    msg <- id %||% "{.arg features}"
     if (anyNA(features)) {
         cli::cli_warn(c(
             sprintf("{.val {NA}} is found in %s.", msg),
@@ -25,8 +26,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
         ))
         features <- features[!is.na(features)]
     }
-
-    if (check_dup) {
+    if (allow_dup) {
         dup_features <- unique(features[duplicated(features)])
         if (length(dup_features) > 0L) {
             cli::cli_warn(c(
@@ -36,6 +36,17 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
             ))
             features <- unique(features)
         }
+    }
+    is_existed <- features %chin% rownames(x)
+    if (!all(is_existed)) {
+        cli::cli_warn(c(
+            sprintf(
+                "Finding {.val {sum(!is_existed)}} non-existed feature{?s} provided in %s", msg
+            ),
+            "x" = "Non-existed feature{?s}: {.val {features[!is_existed]}}",
+            "i" = "will omit them"
+        ))
+        features <- features[is_existed]
     }
 
     # calculate the statistics then corrected by blocks
@@ -55,7 +66,7 @@ summarize_features_by_groups <- function(x, features, groups, statistics, blocks
                 transform <- switch(assay_name,
                     mean = ,
                     sum = "raw",
-                    num.detected = , 
+                    num.detected = ,
                     prop.detected = "logit"
                 )
                 scuttle::correctGroupSummary(

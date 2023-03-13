@@ -210,8 +210,9 @@ grouped_heat_internal <- function(x, marker_list, groups = NULL,
     stat_list <- summarize_features_by_groups(
         x = x, features = markers, groups = groups,
         statistics = statistics, blocks = blocks,
+        id = "{.arg marker_list}",
         threshold = threshold,
-        check_dup = FALSE
+        allow_dup = TRUE
     )$statistics
 
     # rows are genes

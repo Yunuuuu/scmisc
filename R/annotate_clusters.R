@@ -44,6 +44,8 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
         if (all(!has_names(marker_list))) {
             cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
+    } else {
+        cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     }
 
     # prepare manual annotation
@@ -76,7 +78,7 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
             cli::cli_warn(c(
                 "Duplicated clusters are provided in {.arg manual}",
                 "!" = "Duplicated items: {.val {dup_clusters}}",
-                "!" = "will use the later one"
+                "i" = "will use the later one"
             ))
             manual_clusters <- manual_clusters[!is_dup_clusters]
             manual_labels <- manual_labels[!is_dup_clusters]
@@ -90,8 +92,8 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
             x,
             features = markers, groups = clusters,
             statistics = "sum", blocks = blocks,
-            id = sprintf("{.field %s} in {.arg %s}", i, "marker_list"),
-            check_dup = TRUE
+            id = sprintf("{.field %s} of {.arg %s}", i, "marker_list"),
+            allow_dup = FALSE
         )
         sums <- sum_stats$statistics$sum
         numbers <- sum_stats$numbers

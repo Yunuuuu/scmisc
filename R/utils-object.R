@@ -69,7 +69,7 @@ index_features <- function(object, idx) {
         idx <- rownames(object)[idx]
     } else if (is.character(idx) || is.factor(idx)) {
         idx <- as.character(idx)
-        if (!all(idx %in% rownames(object))) {
+        if (!all(idx %chin% rownames(object))) {
             cli::cli_abort("Some features are not in the input object.")
         }
     } else {
