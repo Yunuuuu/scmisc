@@ -33,11 +33,13 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, dots_size = c(0.1, 1), dots_
     dots_size <- rep_len(dots_size, 2L)
     matrix_size <- matrix_size %||% matrix
     assert_class(matrix_size, is.numeric, "numeric")
-    if (is.atomic(matrix_size)) {
-        cli::cli_alert_info("convert simple vector to one-column matrix")
-        matrix_size <- matrix(matrix_size, ncol = 1L)
-    } else if (!is.matrix(matrix)) {
-        cli::cli_abort("{.arg matrix_size} must be a matrix or a simple vector.")
+    if (!is.matrix(matrix)) {
+        if (is.atomic(matrix_size)) {
+            cli::cli_alert_info("convert simple vector to one-column matrix")
+            matrix_size <- matrix(matrix_size, ncol = 1L)
+        } else {
+            cli::cli_abort("{.arg matrix_size} must be a matrix or a simple vector.")
+        }
     }
 
     if (!all(dim(matrix) == dim(matrix_size))) {
@@ -105,11 +107,11 @@ methods::setClass(
 
 #' @importFrom ComplexHeatmap draw
 #' @export
-#' @noRd 
+#' @noRd
 ComplexHeatmap::draw
 
 #' Draw a Dots Heatmap
-#' @description 
+#' @description
 #'  These objects are imported from other packages. Follow the links below to
 #'  see their documentation.
 #' \describe{
@@ -117,7 +119,7 @@ ComplexHeatmap::draw
 #' }
 #' @param object A [DotsHeatmap] object.
 #' @param ... Arguments passed to
-#'   [Heatmap][ComplexHeatmap::draw,HeatmapList-method]. 
+#'   [Heatmap][ComplexHeatmap::draw,HeatmapList-method].
 #' @export
 #' @rdname draw
 methods::setMethod("draw", signature = "DotsHeatmap", function(object, ...) {

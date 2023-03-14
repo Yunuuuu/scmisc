@@ -29,8 +29,7 @@ plot_grouped_dots_internal <- function(
     x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL,
-    flip = FALSE, slice_border_gp = gpar(lwd = 0.5),
-    row_labels = NULL, column_labels = NULL) {
+    flip = FALSE, row_labels = NULL, column_labels = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -38,7 +37,6 @@ plot_grouped_dots_internal <- function(
         center = center, scale = scale,
         zlim = zlim, threshold = threshold,
         colour = colour, flip = flip,
-        slice_border_gp = slice_border_gp,
         row_labels = row_labels, column_labels = column_labels,
         ..., graph_type = "dots"
     )

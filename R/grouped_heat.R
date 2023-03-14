@@ -111,7 +111,8 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, ..., flip = FALSE,
+                                  colour = NULL, slice_border_gp = NULL,
+                                  ..., flip = FALSE,
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = TRUE)
@@ -251,7 +252,8 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     } else {
         heat_obj <- DotsHeatmap(
             heat_matrix,
-            matrix_size = stat_list$prop.detected,
+            matrix_size = size_matrix,
+            slice_border_gp = slice_border_gp,
             col = col_fn,
             row_split = row_split,
             column_split = column_split,
