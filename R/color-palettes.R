@@ -33,8 +33,7 @@ pal_scanpy <- function(palette = c("zeileis", "godsnot"), alpha = 1) {
 #' See \code{\link{pal_scanpy}} for details.
 #'
 #' @inheritParams pal_scanpy
-#' @param ... additional parameters for
-#' [discrete_scale][ggplot2::discrete_scale]
+#' @inheritDotParams ggplot2::discrete_scale -aesthetics -palette -scale_name
 #'
 #' @rdname scale_scanpy
 #' @export 

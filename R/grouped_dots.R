@@ -19,6 +19,7 @@
 #' @return A [DotsHeatmap] Object
 #' @export
 #' @name grouped_dots
+#' @aliases plot_grouped_dots
 setGeneric(
     "plot_grouped_dots",
     function(x, ...) standardGeneric("plot_grouped_dots")

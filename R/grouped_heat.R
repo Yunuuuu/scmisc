@@ -51,6 +51,7 @@
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
 #' @export
 #' @name grouped_heatmap
+#' @aliases plot_grouped_heat
 setGeneric(
     "plot_grouped_heat",
     function(x, ...) standardGeneric("plot_grouped_heat")

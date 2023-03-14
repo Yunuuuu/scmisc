@@ -5,8 +5,8 @@
 #' values and the average expression, respectively, for each feature in each
 #' group of cells.
 #' @param x Currently, only
-#' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object is
-#' supported.
+#'   [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
+#'   is supported.
 #' @inheritParams annotate_clusters
 #' @param clusters A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, if `x` is a
@@ -15,10 +15,11 @@
 #'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
 #'   extracted.
 #' @param cluster2cell A named character or factor returned by
-#' [`annotate_clusters()`][annotate_clusters].
+#'   [`annotate_clusters()`][annotate_clusters].
 #' @param flip A scalar logical indicates whether flipping the plot.
-#' @param facet_args A named list passed to [facet_grid][ggplot2::facet_grid].
-#' @param ... Other arguments passed to [plotDots][scater::plotDots].
+#' @param facet_args A named arguments list passed to
+#'   [facet_grid][ggplot2::facet_grid].
+#' @inheritDotParams scater::plotDots -object -features -group -other_fields
 #' @return A ggplot2 object.
 #' @name facet_dots
 NULL

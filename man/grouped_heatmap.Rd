@@ -2,6 +2,7 @@
 % Please edit documentation in R/grouped_heat.R
 \name{grouped_heatmap}
 \alias{grouped_heatmap}
+\alias{plot_grouped_heat}
 \alias{plot_grouped_heat,ANY-method}
 \alias{plot_grouped_heat,SummarizedExperiment-method}
 \title{Plot heatmap of group-level expression averages}

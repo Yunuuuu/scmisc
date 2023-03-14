@@ -13,18 +13,16 @@
 #'   `min(grid::unit.c(width, height)) / 2L` and the minimal value will equal to
 #'   `0.1 * min(grid::unit.c(width, height)) / 2L`.
 #' @param dots_size_legend_param Other arguments passed to
-#'   [`Legend()`][ComplexHeatmap::Legend]. This will be used to define the dots
-#'   size legend.
+#'   [Legend][ComplexHeatmap::Legend]. This will be used to define the dots size
+#'   legend.
 #' @param slice_border_gp Graphic parameters for drawing slice rectangles. The
 #'   value should be specified by [gpar][grid::gpar] and fill parameter is
 #'   always setted to "transparent". If `NULL`, no slice border will be drawn.
-#' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap] and
-#'   specific methods.
-#' @inheritParams ComplexHeatmap::Heatmap
+#' @inheritDotParams ComplexHeatmap::Heatmap -matrix -rect_gp -layer_fun
 #' @return A [DotsHeatmap] object
 #' @name DotsHeatmap
 #' @export
-DotsHeatmap <- function(matrix, matrix_size = NULL, col = NULL, dots_size = c(0.1, 1), dots_size_legend_param = list(), slice_border_gp = NULL, ...) {
+DotsHeatmap <- function(matrix, matrix_size = NULL, dots_size = c(0.1, 1), dots_size_legend_param = list(), slice_border_gp = NULL, ...) {
     assert_class(dots_size, is.numeric, "numeric")
     if (!data.table::between(length(dots_size), 1L, 2L)) {
         cli::cli_abort("{.arg dots_size} must be a numeric with a length 1 or 2")
@@ -61,7 +59,6 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, col = NULL, dots_size = c(0.
         "DotsHeatmap",
         heatmap = ComplexHeatmap::Heatmap(
             matrix,
-            col = col,
             rect_gp = gpar(type = "none"),
             layer_fun = function(j, i, x, y, width, height, fill) {
                 size_values <- ComplexHeatmap::pindex(matrix_size, i = i, j = j)
@@ -108,14 +105,21 @@ methods::setClass(
 
 #' @importFrom ComplexHeatmap draw
 #' @export
+#' @noRd 
 ComplexHeatmap::draw
 
 #' Draw a Dots Heatmap
-#' @param object A [DotsHeatmap] object returned by [DotsHeatmap].
-#' @param ... Other arguments passed to
-#'   [draw-HeatmapList-method][ComplexHeatmap::draw,HeatmapList-method].
+#' @description 
+#'  These objects are imported from other packages. Follow the links below to
+#'  see their documentation.
+#' \describe{
+#'   \item{draw}{\code{\link[ComplexHeatmap]{draw}}}
+#' }
+#' @param object A [DotsHeatmap] object.
+#' @param ... Arguments passed to
+#'   [Heatmap][ComplexHeatmap::draw,HeatmapList-method]. 
 #' @export
-#' @rdname DotsHeatmap
+#' @rdname draw
 methods::setMethod("draw", signature = "DotsHeatmap", function(object, ...) {
     draw(object@heatmap, heatmap_legend_list = object@dots_legend, ...)
 })

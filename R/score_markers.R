@@ -36,7 +36,7 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
 #' [rowSubset][SingleCellExperiment::rowSubset] is used to derive the features.
 #' See [scoreMarkers][scran::scoreMarkers] subset.row argument.
-#' @param ... Other arguments passed to [scoreMarkers][scran::scoreMarkers].
+#' @inheritDotParams scran::scoreMarkers
 #' @return A data.frame
 #' @name score_markers
 NULL

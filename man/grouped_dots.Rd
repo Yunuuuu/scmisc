@@ -2,6 +2,7 @@
 % Please edit documentation in R/grouped_dots.R
 \name{grouped_dots}
 \alias{grouped_dots}
+\alias{plot_grouped_dots}
 \alias{plot_grouped_dots,ANY-method}
 \alias{plot_grouped_dots,SummarizedExperiment-method}
 \title{Plot dots heatmap of group-level expression averages}
