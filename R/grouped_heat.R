@@ -1,13 +1,8 @@
-#' Plot heatmap or dots of group-level expression averages
+#' Plot heatmap of group-level expression averages
 #'
 #' @description
 #' `plot_grouped_heat` create a heatmap of average expression values for each
 #' group of cells and specified features in a SingleCellExperiment object.
-#'
-#' `plot_grouped_dots` create a dot plot of expression values for a grouping of
-#' cells, where the size and color of each dot represents the proportion of
-#' detected expression values and the average expression, respectively, for each
-#' feature in each group of cells.
 #'
 #' The order of the row or column will be the same with `unlist(marker_list)` or
 #' `levels(groups)` depend on whether flip is `TRUE` or `FALSE` if
@@ -35,20 +30,10 @@
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if groups is `NULL`, "label" in `colData(x)` will be
 #'   extracted.
-#' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap] and
-#'   specific methods.
 #' @param colour Alias for color.
-#' @param threshold Numeric value specifying the cap on the proportion of
-#' detected expression values. Only used by `plot_grouped_dots`.
-#' @param scale_dots A scalar positive numeric specifying the scalar factor
-#'   multiplied by dots radius. Default value: 1L, means the max radius equal to
-#'   the heatmap `min(grid::unit.c(width, height)) / 2L`.
 #' @param flip A scalar logical indicates whether flipping the axis, the default
 #'   `FALSE` means rows are `features` specified in `marker_list` and columns
 #'   are `groups`.
-#' @param slice_border_gp Graphic parameters for drawing slice rectangles. The
-#'   value should be specified by [gpar][grid::gpar] and fill parameter is
-#'   always setted to "transparent". If `NULL`, no slice border will be drawn.
 #' @param row_labels,column_labels The row and column labels of the heatmap. Can
 #'   be One of:
 #'   - `NULL` for the default labels. If flip is `FALSE`, row_labels are the
@@ -59,15 +44,13 @@
 #'   - A function that takes the default labels as input and returns a character
 #'    vector of the same length. Can be also a rlang
 #'     [lambda][rlang::as_function()] function notation.
+#' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap] and
+#'   specific methods.
+#' @inheritParams DotsHeatmap
 #' @inheritParams scater::plotDots
 #' @return A [Heatmap-class][ComplexHeatmap::Heatmap-class] object
-#' @name grouped_heatmap
-NULL
-
-#############################################################################
-# for plot_grouped_heat
 #' @export
-#' @rdname grouped_heatmap
+#' @name grouped_heatmap
 setGeneric(
     "plot_grouped_heat",
     function(x, ...) standardGeneric("plot_grouped_heat")
@@ -122,68 +105,12 @@ setMethod(
     }
 )
 
-##############################################################################
-# for plot_grouped_dots
-#' @export
-#' @rdname grouped_heatmap
-setGeneric(
-    "plot_grouped_dots",
-    function(x, ...) standardGeneric("plot_grouped_dots")
-)
-
-plot_grouped_dots_internal <- function(
-    x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
-    blocks = NULL, colour = color, color = NULL, center = FALSE,
-    scale = FALSE, threshold = 0L, zlim = NULL, scale_dots = 1L,
-    flip = FALSE, slice_border_gp = gpar(lwd = 0.5),
-    row_labels = NULL, column_labels = NULL) {
-    grouped_heat_internal(
-        x = x, marker_list = marker_list,
-        groups = groups, blocks = blocks,
-        cluster2cell = cluster2cell,
-        scale_dots = scale_dots,
-        center = center, scale = scale,
-        zlim = zlim, threshold = threshold,
-        colour = colour, flip = flip,
-        slice_border_gp = slice_border_gp,
-        row_labels = row_labels, column_labels = column_labels,
-        ..., graph_type = "dots"
-    )
-}
-
-#' @export
-#' @rdname grouped_heatmap
-setMethod("plot_grouped_dots", "ANY", plot_grouped_dots_internal)
-
-#' @export
-#' @importClassesFrom SingleCellExperiment SingleCellExperiment
-#' @importClassesFrom SummarizedExperiment SummarizedExperiment
-#' @rdname grouped_heatmap
-setMethod(
-    "plot_grouped_dots", "SummarizedExperiment",
-    function(x, ..., groups = NULL, blocks = NULL, assay.type = "logcounts", swap_rownames = NULL) {
-        x <- swap_rownames(x, swap_rownames)
-        if (!is.null(blocks)) {
-            blocks <- handle_column_data(object = x, blocks)
-        }
-        plot_grouped_dots_internal(
-            x = SummarizedExperiment::assay(x, assay.type),
-            groups = handle_column_data(object = x, groups),
-            blocks = blocks,
-            ...
-        )
-    }
-)
-
 ##################################################################
-#' @importFrom grid gpar
 grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, ...,
-                                  scale_dots = 1L, flip = FALSE,
-                                  slice_border_gp = gpar(lwd = 0.5),
+                                  colour = NULL, ..., flip = FALSE,
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, is.list, "list", null_ok = TRUE)
@@ -197,9 +124,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
             cli::cli_abort("Duplicated names found in {.arg marker_list}")
         }
     }
-    if (!(is_scalar_numeric(scale_dots) && scale_dots >= 0L)) {
-        cli::cli_abort("{.arg scale_dots} must be a scalar numeric and {.code > 0L}.")
-    }
+
     if (!rlang::is_scalar_logical(flip)) {
         cli::cli_abort("{.arg flip} must be a scalar logical value.")
     }
@@ -229,6 +154,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         }
     } else {
         markers <- NULL
+        marker_groups <- factor(rep_len("Group", nrow(x)), "Group")
     }
 
     stat_list <- summarize_features_by_groups(
@@ -249,44 +175,17 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
 
     # prepare matrix for heatmap
     heat_matrix <- heat_data_list$x
-    if (flip) heat_matrix <- t(heat_matrix)
+    size_matrix <- stat_list$prop.detected
+
+    if (flip) {
+        heat_matrix <- t(heat_matrix)
+        size_matrix <- t(size_matrix)
+    }
 
     col_fn <- circlize::colorRamp2(
         heat_data_list$colour_breaks,
         colors = heat_data_list$colour
     )
-
-    # prepare rect_gp and layer_fn
-    if (!is.null(slice_border_gp)) {
-        slice_border_gp$fill <- "transparent"
-    }
-    if (graph_type == "dots") {
-        rect_gp <- gpar(type = "none")
-        size_matrix <- stat_list$prop.detected
-        if (flip) size_matrix <- t(size_matrix)
-        layer_fn <- function(j, i, x, y, width, height, fill) {
-            size <- ComplexHeatmap::pindex(size_matrix, i = i, j = j)
-            grid::grid.circle(
-                x = x, y = y,
-                r = abs(size) / 2L *
-                    min(grid::unit.c(width, height)) *
-                    scale_dots,
-                gp = gpar(fill = fill, col = NA)
-            )
-            if (!is.null(slice_border_gp)) {
-                grid::grid.rect(gp = slice_border_gp)
-            }
-        }
-    } else {
-        rect_gp <- gpar(col = NA)
-        if (is.null(slice_border_gp)) {
-            layer_fn <- NULL
-        } else {
-            layer_fn <- function(j, i, x, y, width, height, fill) {
-                grid::grid.rect(gp = slice_border_gp)
-            }
-        }
-    }
 
     # prepare column_split and row_split
     # column is groups; row is genes if flip is FALSE
@@ -329,17 +228,39 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         ref = column_ref
     )
 
-    ComplexHeatmap::Heatmap(
-        heat_matrix,
-        col = col_fn,
-        row_split = row_split,
-        column_split = column_split,
-        layer_fun = layer_fn,
-        rect_gp = rect_gp,
-        row_labels = row_labels,
-        column_labels = column_labels,
-        ...
-    )
+    if (graph_type == "square") {
+        if (is.null(slice_border_gp)) {
+            layer_fn <- NULL
+        } else {
+            slice_border_gp$fill <- "transparent"
+            layer_fn <- function(j, i, x, y, width, height, fill) {
+                grid::grid.rect(gp = slice_border_gp)
+            }
+        }
+        heat_obj <- ComplexHeatmap::Heatmap(
+            heat_matrix,
+            col = col_fn,
+            row_split = row_split,
+            column_split = column_split,
+            layer_fun = layer_fn,
+            row_labels = row_labels,
+            column_labels = column_labels,
+            ...
+        )
+    } else {
+        heat_obj <- DotsHeatmap(
+            heat_matrix,
+            matrix_size = stat_list$prop.detected,
+            col = col_fn,
+            row_split = row_split,
+            column_split = column_split,
+            layer_fun = layer_fn,
+            row_labels = row_labels,
+            column_labels = column_labels,
+            ...
+        )
+    }
+    heat_obj
 }
 
 #' @param ref A scalar character, just for message usage
@@ -388,10 +309,11 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
     }
     if (is.null(colour)) {
         if (center) {
-            colour <- rev(RColorBrewer::brewer.pal(9L, "RdYlBu"))
+            colour_fn <- scales::brewer_pal(palette = "RdYlBu", direction = -1L)
         } else {
-            colour <- viridis::viridis(9L)
+            colour_fn <- scales::viridis_pal(option = "D")
         }
+        colour <- colour_fn(9L)
     }
     x[x < zlim[1L]] <- zlim[1L]
     x[x > zlim[2L]] <- zlim[2L]
