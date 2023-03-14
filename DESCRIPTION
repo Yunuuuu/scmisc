@@ -15,6 +15,7 @@ Imports:
     memoise,
     methods,
     rlang (>= 0.4.11),
+    ComplexHeatmap,
     SingleCellExperiment,
     SummarizedExperiment,
     SeuratObject,
@@ -25,17 +26,14 @@ Imports:
 Suggests: 
     batchelor,
     circlize,
-    ComplexHeatmap,
     pipeline,
-    RColorBrewer,
     roxygen2,
     scales,
     scater,
     scran,
     scuttle,
     smoother,
-    testthat (>= 3.0.0),
-    viridis
+    testthat (>= 3.0.0)
 Remotes:
     Yunuuuu/pipeline
 Depends: 
