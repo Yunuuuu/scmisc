@@ -7,7 +7,7 @@
 DotsHeatmap(
   matrix,
   matrix_size = NULL,
-  dots_size = c(0.1, 1),
+  radius_range = c(1, 5),
   dots_size_legend_param = list(),
   slice_border_gp = NULL,
   ...
@@ -21,18 +21,22 @@ color.}
 \item{matrix_size}{A numeric matrix or vector. If it is a simple vector, it
 will be converted to a one-column matrix. Only used for dot size.}
 
-\item{dots_size}{A numeric vector of length one or two specifying the the
-minimal and maximal relative dots radius compared with the heatmap
-\code{min(grid::unit.c(width, height)) / 2L}. If length one, all dots will have
-the same size. If length two with different values, the \code{matrix_size} will
-be scaled into \code{dots_size}. Default value: \code{c(0.1, 1)}, means the maximal
-value in matrix_size will have a radius equal to the heatmap
-\code{min(grid::unit.c(width, height)) / 2L} and the minimal value will equal to
-\code{0.1 * min(grid::unit.c(width, height)) / 2L}.}
+\item{radius_range}{A numeric vector of length one or two specifying the
+minimal and maximal dots radius (measured in "mm"). If length one, all dots
+will have the same size. If length two with different values, the
+\code{matrix_size} will be scaled into \code{radius_range}. Default value: \code{c(1, 6)}.}
 
 \item{dots_size_legend_param}{Other arguments passed to
 \link[ComplexHeatmap:Legend]{Legend}. This will be used to define the dots size
-legend.}
+legend. Two extra arguments (\code{radius_range} and \code{radius}) are added to
+enhance the circle legend creation. \code{radius_range} define the minimal and
+maximal legend dots radius (measured in "mm") and an \link[grid:unit]{unit} or
+numeric \code{radius} directly specify the dots radius. If both \code{radius_range}
+and \code{radius} are specified, only \code{radius_range} will be used. \code{radius} must
+have the same length of \code{at}, the default \code{at} is created with
+\link[scales:breaks_extended]{breaks_extended}.  \code{dots_size_legend_param} can
+also be \code{NULL}, in this way, no legend for dots size will be created and a
+\link[ComplexHeatmap:Heatmap]{Heatmap} object will be returned.}
 
 \item{slice_border_gp}{Graphic parameters for drawing slice rectangles. The
 value should be specified by \link[grid:gpar]{gpar} and fill parameter is
@@ -47,7 +51,6 @@ always setted to "transparent". If \code{NULL}, no slice border will be drawn.}
     \item{\code{color_space}}{The color space in which colors are interpolated. Only used if \code{matrix} is numeric and  \code{col} is a vector of colors. Pass to \code{\link[circlize]{colorRamp2}}.}
     \item{\code{border}}{Whether draw border. The value can be logical or a string of color.}
     \item{\code{border_gp}}{Graphic parameters for the borders. If you want to set different parameters for different heatmap slices, please consider to use \code{\link[ComplexHeatmap]{decorate_heatmap_body}}.}
-    \item{\code{cell_fun}}{Self-defined function to add graphics on each cell. Seven parameters will be passed into  this function: \code{j}, \code{i}, \code{x}, \code{y}, \code{width}, \code{height}, \code{fill} which are column index, row index in \code{matrix}, coordinate of the cell, the width and height of the cell and the filled color. \code{x}, \code{y}, \code{width} and \code{height} are all \code{\link[grid]{unit}} objects.}
     \item{\code{jitter}}{Random shifts added to the matrix. The value can be logical or a single numeric value. It it is \code{TRUE}, random  values from uniform distribution between 0 and 1e-10 are generated. If it is a numeric value, the range for the uniform distribution is (0, \code{jitter}). It is mainly to solve the problem of "Error: node stack overflow" when there are too many identical rows/columns for plotting the dendrograms. ADD: From version 2.5.6, the error of node stack overflow has been fixed, now this argument is ignored.}
     \item{\code{row_title}}{Title on the row.}
     \item{\code{row_title_side}}{Will the title be put on the left or right of the heatmap?}
@@ -124,7 +127,9 @@ always setted to "transparent". If \code{NULL}, no slice border will be drawn.}
   }}
 }
 \value{
-A \link{DotsHeatmap} object
+If dots_size_legend_param is a list, a \link{DotsHeatmap} object will be
+returned, if dots_size_legend_param is NULL, a
+\link[ComplexHeatmap:Heatmap]{Heatmap} object.
 }
 \description{
 Constructor method for DotsHeatmap class

@@ -123,7 +123,8 @@ A \link[ComplexHeatmap:Heatmap-class]{Heatmap-class} object
 \description{
 \code{plot_grouped_heat} create a heatmap of average expression values for each
 group of cells and specified features in a SingleCellExperiment object.
-
+}
+\details{
 The order of the row or column will be the same with \code{unlist(marker_list)} or
 \code{levels(groups)} depend on whether flip is \code{TRUE} or \code{FALSE} if
 ComplexHeatmap clustering is turned off (if groups isn't a factor, the

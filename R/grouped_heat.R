@@ -4,6 +4,7 @@
 #' `plot_grouped_heat` create a heatmap of average expression values for each
 #' group of cells and specified features in a SingleCellExperiment object.
 #'
+#' @details
 #' The order of the row or column will be the same with `unlist(marker_list)` or
 #' `levels(groups)` depend on whether flip is `TRUE` or `FALSE` if
 #' ComplexHeatmap clustering is turned off (if groups isn't a factor, the
@@ -179,11 +180,6 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     heat_matrix <- heat_data_list$x
     size_matrix <- stat_list$prop.detected
 
-    if (flip) {
-        heat_matrix <- t(heat_matrix)
-        size_matrix <- t(size_matrix)
-    }
-
     col_fn <- circlize::colorRamp2(
         heat_data_list$colour_breaks,
         colors = heat_data_list$colour
@@ -192,6 +188,8 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     # prepare column_split and row_split
     # column is groups; row is genes if flip is FALSE
     if (flip) {
+        heat_matrix <- t(heat_matrix)
+        size_matrix <- t(size_matrix)
         if (nlevels(marker_groups) == 1L) {
             column_split <- NULL
         } else {
@@ -202,8 +200,8 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         } else {
             row_split <- cluster2cell[rownames(heat_matrix)]
         }
-        row_ref <- "levels(groups)"
-        column_ref <- "unlist(marker_list)"
+        row_label_arg <- "levels(groups)"
+        column_label_arg <- "unlist(marker_list)"
     } else {
         if (is.null(cluster2cell)) {
             column_split <- NULL
@@ -215,19 +213,19 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         } else {
             row_split <- marker_groups
         }
-        row_ref <- "unlist(marker_list)"
-        column_ref <- "levels(groups)"
+        row_label_arg <- "unlist(marker_list)"
+        column_label_arg <- "levels(groups)"
     }
     # prepare row_labels
     row_labels <- label_fn_helper(row_labels,
         labels = rownames(heat_matrix),
-        ref = row_ref
+        label_arg = row_label_arg
     )
 
     # prepare column labels
     column_labels <- label_fn_helper(column_labels,
         labels = colnames(heat_matrix),
-        ref = column_ref
+        label_arg = column_label_arg
     )
 
     if (graph_type == "square") {
@@ -257,7 +255,6 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
             col = col_fn,
             row_split = row_split,
             column_split = column_split,
-            layer_fun = layer_fn,
             row_labels = row_labels,
             column_labels = column_labels,
             ...
@@ -266,16 +263,16 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     heat_obj
 }
 
-#' @param ref A scalar character, just for message usage
 #' @keywords internal
 #' @noRd
-label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
+label_fn_helper <- function(x, labels, arg = rlang::caller_arg(x), label_arg = rlang::caller_arg(labels), call = rlang::caller_env()) {
     if (is.character(x)) {
         if (all(has_names(x))) {
             x <- x[labels]
         } else if (length(x) != length(labels)) {
             cli::cli_abort(
-                "An unnamed chracter vector {.arg {arg}} must have the same length of {.code {ref}}"
+                "An unnamed chracter vector {.arg {arg}} must have the same length of {.arg {label_arg}}",
+                call = call
             )
         }
     } else if (is.function(x) ||
@@ -284,13 +281,14 @@ label_fn_helper <- function(x, labels, ref, arg = rlang::caller_arg(x)) {
         x <- rlang::as_function(x)(labels)
         if (length(x) != length(labels) || !is.character(x)) {
             cli::cli_abort(
-                "{.fn {arg}} must returned a {.cls character} with the same length of {.code {ref}}"
+                "{.fn {arg}} must returned a {.cls character} with the same length of {.arg {label_arg}}",
+                call = call
             )
         }
     } else if (is.null(x)) {
         x <- labels
     } else {
-        cli::cli_abort("{.arg {arg}} must be a {.cls character} or a {.cls function} or {.val {NULL}}")
+        cli::cli_abort("{.arg {arg}} must be a {.cls character} or a {.cls function} or {.val {NULL}}", call = call)
     }
     x
 }
@@ -307,7 +305,7 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
             extreme <- max(abs(x), na.rm = TRUE)
             zlim <- extreme * c(-1L, 1L)
         } else {
-            zlim <- range(x, na.rm = TRUE)
+            zlim <- range(x, na.rm = TRUE, finite = TRUE)
         }
     }
     if (is.null(colour)) {

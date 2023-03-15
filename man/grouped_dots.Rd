@@ -116,14 +116,17 @@ elements.  Alternatively, if \code{x} is a
 String specifying the field of \code{rowData(x)} to be used.}
 }
 \value{
-A \link{DotsHeatmap} Object
+If dots_size_legend_param is a list, a \link{DotsHeatmap} object will be
+returned, if dots_size_legend_param is NULL, a
+\link[ComplexHeatmap:Heatmap]{Heatmap} object.
 }
 \description{
 \code{plot_grouped_dots} create a dot plot of expression values for a grouping of
 cells, where the size and color of each dot represents the proportion of
 detected expression values and the average expression, respectively, for each
 feature in each group of cells.
-
+}
+\details{
 The order of the row or column will be the same with \code{unlist(marker_list)} or
 \code{levels(groups)} depend on whether flip is \code{TRUE} or \code{FALSE} if
 ComplexHeatmap clustering is turned off (if groups isn't a factor, the
