@@ -94,8 +94,6 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, radius_range = c(1, 5), dots
     } else {
         dots_size_legend_param$radius <- scale_size(dots_size_legend_param$at)
     }
-    dots_size_legend_param$title <- dots_size_legend_param$title %||%
-        "Proportion"
     dots_size_legend_param$graphics <- vector("list",
         length = length(dots_size_legend_param$radius)
     )
