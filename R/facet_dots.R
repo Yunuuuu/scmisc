@@ -31,16 +31,17 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
         cli::cli_abort("All elements in {.arg marker_list} must be named.")
     } else if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+    } else if (anyDuplicated(names(marker_list))) {
+        cli::cli_abort("Duplicated names found in {.arg marker_list}")
     }
     markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
-    if (anyDuplicated(markers) > 0L) {
+    dup_markers <- unique(markers[duplicated(markers)])
+    if (length(dup_markers) > 0L) {
         cli::cli_abort(c(
-            "{.fn facet_dots} can't support duplicated markers in {.arg marker_list}",
+            "Duplicated markers are provided in {.arg marker_list}",
+            "!" = "Duplicated marker{?s}: {.val {dup_markers}}",
             i = "Try to use {.fn plot_grouped_dots} if you want to diplay duplicated markers."
         ))
-    }
-    if (anyDuplicated(names(marker_list))) {
-        cli::cli_abort("Duplicated names found in {.arg marker_list}")
     }
     gene2cell <- structure(
         factor(
