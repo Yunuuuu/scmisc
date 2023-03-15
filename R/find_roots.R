@@ -22,7 +22,7 @@ find_roots <- function(dm, start, ends = NULL, ref, n_root = 100L) {
     }
     assert_length(start, 1L, null_ok = FALSE)
     assert_length(n_root, 1L, null_ok = FALSE)
-    assert_class(n_root, is.numeric, "numeric", null_ok = FALSE)
+    assert_class(n_root, "numeric", is.numeric, null_ok = FALSE)
 
     if (length(dm@d) != length(ref)) {
         cli::cli_abort("{.arg ref} must have the same length {.code length(dm@d)} ({length(dm@d)})")

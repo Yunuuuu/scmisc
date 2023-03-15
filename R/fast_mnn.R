@@ -106,7 +106,8 @@ fast_mnn <- function(
     BPPARAM = BiocParallel::SerialParam()) {
     assert_class(
         x,
-        function(x) methods::is(x, "SingleCellExperiment"), "SingleCellExperiment"
+        "SingleCellExperiment",
+        function(x) methods::is(x, "SingleCellExperiment")
     )
     # nromalization, adjust for differences in sequencing depth --------
     # This can be done before variance-modelling or after.

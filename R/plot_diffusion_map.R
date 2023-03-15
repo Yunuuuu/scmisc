@@ -49,7 +49,7 @@ setMethod(
         is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
         if (is_colour_by_dpt) {
             assert_length(root, 1L, null_ok = TRUE)
-            assert_class(root, is.numeric, "numeric", null_ok = TRUE)
+            assert_class(root, "numeric", is.numeric, null_ok = TRUE)
             dpt <- methods::new("DPT",
                 branch = matrix(), tips = matrix(),
                 dm = y
@@ -123,7 +123,7 @@ setMethod(
         is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
         if (is_colour_by_dpt) {
             assert_length(root, 1L, null_ok = TRUE)
-            assert_class(root, is.numeric, "numeric", null_ok = TRUE)
+            assert_class(root, "numeric", is.numeric, null_ok = TRUE)
             if (is.null(root)) {
                 root <- destiny::tips(y)[[1L]]
             } else {

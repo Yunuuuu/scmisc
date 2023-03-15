@@ -116,7 +116,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   ..., flip = FALSE,
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
-    assert_class(marker_list, is.list, "list", null_ok = TRUE)
+    assert_class(marker_list, "list", is.list, null_ok = TRUE)
     if (!is.null(marker_list)) {
         if (any(!has_names(marker_list))) {
             cli::cli_abort("All elements in {.arg marker_list} must be named.")

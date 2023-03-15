@@ -29,16 +29,17 @@
 #' @name DotsHeatmap
 #' @export
 DotsHeatmap <- function(matrix, matrix_size = NULL, radius_range = c(1, 5), dots_size_legend_param = list(), slice_border_gp = NULL, ...) {
-    assert_class(radius_range, is.numeric, "numeric")
+    assert_class(radius_range, "numeric", is.numeric)
     if (!data.table::between(length(radius_range), 1L, 2L)) {
         cli::cli_abort("{.arg radius_range} must be a numeric with a length 1 or 2")
     }
     if (anyNA(radius_range) || any(radius_range < 0L)) {
         cli::cli_abort("{.arg radius_range} must not be negative or {.val NA}")
     }
-    assert_class(dots_size_legend_param, is.list, "list", null_ok = TRUE)
+    assert_class(dots_size_legend_param, "list", is.list, null_ok = TRUE)
+    assert_class(slice_border_gp, "gpar", null_ok = TRUE)
     matrix_size <- matrix_size %||% matrix
-    assert_class(matrix_size, is.numeric, "numeric")
+    assert_class(matrix_size, "numeric", is.numeric)
     if (!is.matrix(matrix)) {
         if (is.atomic(matrix_size)) {
             cli::cli_alert_info("convert simple vector to one-column matrix")
@@ -51,6 +52,9 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, radius_range = c(1, 5), dots
         cli::cli_abort("{.arg matrix} and {.arg matrix_size} must have the same dimensions")
     }
     scale_size <- scale_range(unclass(radius_range), matrix_size)
+    if (!is.null(slice_border_gp)) {
+        slice_border_gp$fill <- "transparent"
+    }
     heatmap <- ComplexHeatmap::Heatmap(
         matrix,
         rect_gp = gpar(type = "none"),

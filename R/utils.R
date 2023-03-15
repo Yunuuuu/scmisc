@@ -14,7 +14,13 @@ has_names <- function(x) {
 #'
 #' @keywords internal
 #' @noRd
-assert_class <- function(x, is_class, class, null_ok = FALSE, arg = rlang::caller_arg(x), call = parent.frame()) {
+assert_class <- function(x, class, is_class = NULL, null_ok = FALSE, arg = rlang::caller_arg(x), call = parent.frame()) {
+    force(class)
+    if (is.null(is_class)) {
+        is_class <- function(x) {
+            inherits(x, what = class)
+        }
+    }
     message <- "{.cls {class}} object"
     if (null_ok) {
         message <- paste(message, "or {.code NULL}", sep = " ")

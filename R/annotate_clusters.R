@@ -38,8 +38,8 @@
 NULL
 
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
-    assert_class(marker_list, is.list, "list", null_ok = FALSE)
-    assert_class(manual, is.list, "list", null_ok = TRUE)
+    assert_class(marker_list, "list", is.list, null_ok = FALSE)
+    assert_class(manual, "list", is.list, null_ok = TRUE)
     if (any(!has_names(marker_list))) {
         cli::cli_abort("All elements in {.arg marker_list} must be named.")
     } else if (length(marker_list) == 0L) {
