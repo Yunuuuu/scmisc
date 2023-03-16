@@ -2,14 +2,6 @@
     if (is.null(x)) y else x
 }
 
-has_names <- function(x) {
-    nms <- names(x)
-    if (is.null(nms)) {
-        return(rep_len(FALSE, length(x)))
-    }
-    !is.na(nms) & nms != ""
-}
-
 #' Report if an argument is a specific class
 #'
 #' @keywords internal
@@ -132,11 +124,8 @@ modify_list <- function(x, replace) {
 
 check_dots_named <- function(..., call = parent.frame()) {
     dots <- rlang::dots_list(..., .named = NULL, .homonyms = "error")
-    if (!all(has_names(dots))) {
-        cli::cli_abort(
-            "All elements in {.arg ...} must be named",
-            call = call
-        )
+    if (!rlang::is_named2(dots)) {
+        cli::cli_abort("All elements in {.arg ...} must be named", call = call)
     }
     dots
 }

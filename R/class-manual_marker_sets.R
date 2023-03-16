@@ -118,10 +118,10 @@ validate_marker_set <- function(x) {
     } else if (x_type == "list") {
         # for a list, we should check all elements have names,
         # and then recall this function to check every elments
-        is_right <- all(has_names(x)) &&
+        is_right <- rlang::is_named(x) &&
             all(vapply(x, validate_marker_set, logical(1L), USE.NAMES = FALSE))
-    } else if (!is.null(x)) {
-        cli::cli_abort("all elements must be {.code NULL}, or a {.cls list} or a {.cls chracter}")
+    } else {
+        cli::cli_abort("all elements must be a {.cls list} or a {.cls chracter}")
     }
     if (!is_right) {
         cli::cli_abort("all elements or sub-elements should be named")

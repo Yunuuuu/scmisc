@@ -118,10 +118,10 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, "list", is.list, null_ok = TRUE)
     if (!is.null(marker_list)) {
-        if (any(!has_names(marker_list))) {
-            cli::cli_abort("All elements in {.arg marker_list} must be named.")
-        } else if (length(marker_list) == 0L) {
+        if (length(marker_list) == 0L) {
             cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+        } else if (!rlang::is_named(marker_list)) {
+            cli::cli_abort("All elements in {.arg marker_list} must be named.")
         }
         if (anyDuplicated(names(marker_list))) {
             cli::cli_abort("Duplicated names found in {.arg marker_list}")
@@ -267,7 +267,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
 #' @noRd
 label_fn_helper <- function(x, labels, arg = rlang::caller_arg(x), label_arg = rlang::caller_arg(labels), call = rlang::caller_env()) {
     if (is.character(x)) {
-        if (all(has_names(x))) {
+        if (rlang::is_named(x)) {
             x <- x[labels]
         } else if (length(x) != length(labels)) {
             cli::cli_abort(

@@ -40,15 +40,15 @@ NULL
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
     assert_class(marker_list, "list", is.list, null_ok = FALSE)
     assert_class(manual, "list", is.list, null_ok = TRUE)
-    if (any(!has_names(marker_list))) {
-        cli::cli_abort("All elements in {.arg marker_list} must be named.")
-    } else if (length(marker_list) == 0L) {
+    if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+    } else if (!rlang::is_named(marker_list)) {
+        cli::cli_abort("All elements in {.arg marker_list} must be named.")
     }
 
     # prepare manual annotation
     if (length(manual) > 0L) {
-        if (all(!has_names(manual))) {
+        if (!rlang::is_named(manual)) {
             cli::cli_abort("All elements in {.arg manual} must be named.")
         }
         manual_clusters <- as.character(

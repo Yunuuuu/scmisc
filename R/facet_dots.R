@@ -27,10 +27,10 @@ NULL
 #' @keywords internal
 facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
     assert_class(marker_list, "list", is.list, null_ok = FALSE)
-    if (any(!has_names(marker_list))) {
-        cli::cli_abort("All elements in {.arg marker_list} must be named.")
-    } else if (length(marker_list) == 0L) {
+    if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
+    } else if (!rlang::is_named(marker_list)) {
+        cli::cli_abort("All elements in {.arg marker_list} must be named.")
     } else if (anyDuplicated(names(marker_list))) {
         cli::cli_abort("Duplicated names found in {.arg marker_list}")
     }

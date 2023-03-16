@@ -18,11 +18,8 @@ quo_or_symbol <- function(x) {
 build_step <- function(id, expr, step_param, default,
                        arg = rlang::caller_arg(step_param),
                        call = parent.frame()) {
-    if (!all(has_names(step_param))) {
-        cli::cli_abort(
-            "All items in {.arg {arg}} must be named",
-            call = call
-        )
+    if (!rlang::is_named2(step_param)) {
+        cli::cli_abort("All items in {.arg {arg}} must be named", call = call)
     }
     step_param <- modify_list(default, step_param)
     rlang::inject(pipeline::create_step(id = id, expr = expr, !!!step_param))
