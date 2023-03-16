@@ -22,7 +22,6 @@ plot_grouped_heat(x, ...)
   scale = FALSE,
   zlim = NULL,
   flip = FALSE,
-  slice_border_gp = NULL,
   row_labels = NULL,
   column_labels = NULL
 )
@@ -90,10 +89,6 @@ If \code{center=TRUE}, this defaults to the range of the centered expression mat
 \item{flip}{A scalar logical indicates whether flipping the axis, the default
 \code{FALSE} means rows are \code{features} specified in \code{marker_list} and columns
 are \code{groups}.}
-
-\item{slice_border_gp}{Graphic parameters for drawing slice rectangles. The
-value should be specified by \link[grid:gpar]{gpar} and fill parameter is
-always setted to "transparent". If \code{NULL}, no slice border will be drawn.}
 
 \item{row_labels, column_labels}{The row and column labels of the heatmap. Can
 be One of:

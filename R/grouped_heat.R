@@ -62,7 +62,7 @@ plot_grouped_heat_internal <- function(
     x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, zlim = NULL, flip = FALSE,
-    slice_border_gp = NULL, row_labels = NULL, column_labels = NULL) {
+    row_labels = NULL, column_labels = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -70,7 +70,6 @@ plot_grouped_heat_internal <- function(
         center = center, scale = scale,
         zlim = zlim, threshold = 0L,
         colour = colour, flip = flip,
-        slice_border_gp = slice_border_gp,
         row_labels = row_labels, column_labels = column_labels,
         ..., graph_type = "square"
     )
@@ -112,8 +111,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   blocks = NULL, cluster2cell = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
-                                  colour = NULL, slice_border_gp = NULL,
-                                  ..., flip = FALSE,
+                                  colour = NULL, ..., flip = FALSE,
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
     assert_class(marker_list, "list", is.list, null_ok = TRUE)
@@ -229,20 +227,11 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
     )
 
     if (graph_type == "square") {
-        if (is.null(slice_border_gp)) {
-            layer_fn <- NULL
-        } else {
-            slice_border_gp$fill <- "transparent"
-            layer_fn <- function(j, i, x, y, width, height, fill) {
-                grid::grid.rect(gp = slice_border_gp)
-            }
-        }
         heat_obj <- ComplexHeatmap::Heatmap(
             heat_matrix,
             col = col_fn,
             row_split = row_split,
             column_split = column_split,
-            layer_fun = layer_fn,
             row_labels = row_labels,
             column_labels = column_labels,
             ...
@@ -251,7 +240,6 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         heat_obj <- DotsHeatmap(
             heat_matrix,
             matrix_size = size_matrix,
-            slice_border_gp = slice_border_gp,
             col = col_fn,
             row_split = row_split,
             column_split = column_split,
