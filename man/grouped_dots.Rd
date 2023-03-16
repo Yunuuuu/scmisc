@@ -22,6 +22,7 @@ plot_grouped_dots(x, ...)
   scale = FALSE,
   threshold = 0L,
   zlim = NULL,
+  dots_size_legend_param = list(),
   flip = FALSE,
   row_labels = NULL,
   column_labels = NULL
@@ -88,6 +89,18 @@ detected expression values.}
 Values outside this range are set to the most extreme color.
 If \code{NULL}, it defaults to the range of the expression matrix.
 If \code{center=TRUE}, this defaults to the range of the centered expression matrix, made symmetric around zero.}
+
+\item{dots_size_legend_param}{Other arguments passed to
+\link[ComplexHeatmap:Legend]{Legend}. This will be used to define the dots size
+legend. Two extra arguments (\code{radius_range} and \code{radius}) are added to
+enhance the circle legend creation. \code{radius_range} define the minimal and
+maximal legend dots radius (measured in "mm") and an \link[grid:unit]{unit} or
+numeric \code{radius} directly specify the dots radius. If both \code{radius_range}
+and \code{radius} are specified, only \code{radius_range} will be used. \code{radius} must
+have the same length of \code{at}, the default \code{at} is created with
+\link[scales:breaks_extended]{breaks_extended}.  \code{dots_size_legend_param} can
+also be \code{NULL}, in this way, no legend for dots size will be created and a
+\link[ComplexHeatmap:Heatmap]{Heatmap} object will be returned.}
 
 \item{flip}{A scalar logical indicates whether flipping the axis, the default
 \code{FALSE} means rows are \code{features} specified in \code{marker_list} and columns
