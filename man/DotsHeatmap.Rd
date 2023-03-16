@@ -7,6 +7,7 @@
 DotsHeatmap(
   matrix,
   matrix_size = NULL,
+  circle_gp = gpar(col = NA),
   radius_range = c(1, 5),
   dots_size_legend_param = list(),
   slice_border_gp = NULL,
@@ -20,6 +21,9 @@ color.}
 
 \item{matrix_size}{A numeric matrix or vector. If it is a simple vector, it
 will be converted to a one-column matrix. Only used for dot size.}
+
+\item{circle_gp}{Graphic parameters for drawing point circle (for heatmap
+body). The value should be specified by gpar and fill parameter is ignored.}
 
 \item{radius_range}{A numeric vector of length one or two specifying the
 minimal and maximal dots radius (measured in "mm"). If length one, all dots
