@@ -62,7 +62,7 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, circle_gp = gpar(col = NA), 
     }
     scale_size <- scale_range(unclass(radius_range), matrix_size)
     circle_layer_fun <- function(j, i, x, y, width, height, fill) {
-        size_values <- ComplexHeatmap::pindex(matrix_size, i = i, j = j)
+        size_values <- pindex(matrix_size, i = i, j = j)
         circle_gp$fill <- fill
         grid::grid.circle(
             x = x, y = y,

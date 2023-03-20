@@ -2,6 +2,27 @@
     if (is.null(x)) y else x
 }
 
+pindex <- function(array, ...) {
+    dots <- list(...)
+    if (length(dim(array)) != length(dots)) {
+        stop("Indexing must have as many as the number of dimentions of array")
+    }
+    dots_len <- lengths(dots)
+    if (any(dots_len == 0L)) {
+        stop("Empty index is not allowed")
+    }
+    common_len <- max(dots_len)
+    if (any(dots_len > 1L & dots_len < common_len)) {
+        stop("Only index of length one are recycled")
+    }
+    if (common_len != 1L) {
+        dots[dots_len == 1L] <- lapply(dots[dots_len == 1L], function(x) {
+            rep_len(x, common_len)
+        })
+    }
+    array[do.call("cbind", dots)]
+}
+
 #' Report if an argument is a specific class
 #'
 #' @keywords internal
