@@ -7,12 +7,12 @@
 read_h5(file, name = "matrix", ...)
 }
 \arguments{
-\item{file}{The filename (character) of the file in which the dataset is
-be located. It is possible to provide an object of
-class \linkS4class{H5IdComponent} representing a H5 location identifier
-(file or group). See \code{\link[rhdf5]{H5Fcreate}}, \code{\link[rhdf5]{H5Fopen}},
-\code{\link[rhdf5]{H5Gcreate}}, \code{\link[rhdf5]{H5Gopen}} to create an object of this
-kind.}
+\item{file}{The filename (character) of the file in which the dataset is be
+located. It is possible to provide an object of class
+\link[rhdf5:H5IdComponent-class]{H5IdComponent} representing a H5 location
+identifier (file or group). See \link[rhdf5:H5Fcreate]{H5Fcreate},
+\link[rhdf5:H5Fopen]{H5Fopen}, \link[rhdf5:H5Gcreate]{H5Gcreate},
+\link[rhdf5:H5Gopen]{H5Gopen} to create an object of this kind.}
 
 \item{name}{The name of the dataset in the HDF5 file.}
 
