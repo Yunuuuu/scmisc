@@ -30,18 +30,19 @@ is supported.}
   \describe{
     \item{\code{block}}{String specifying the field of \code{\link{colData}(object)} containing a blocking factor (e.g., batch of origin).
 Alternatively, any value that can be used in the \code{by} argument to \code{\link[scater]{retrieveCellInfo}}.}
-    \item{\code{exprs_values}}{A string or integer scalar indicating which assay of \code{object} should be used as expression values.}
+    \item{\code{exprs_values}}{Alias to \code{assay.type}.}
     \item{\code{detection_limit}}{Numeric scalar providing the value above which observations are deemed to be expressed.}
-    \item{\code{zlim}}{A numeric vector of length 2, specifying the upper and lower bounds for color mapping of expression values.
-Values outside this range are set to the most extreme color.
+    \item{\code{zlim}}{A numeric vector of length 2, specifying the upper and lower bounds for colour mapping of expression values.
+Values outside this range are set to the most extreme colour.
 If \code{NULL}, it defaults to the range of the expression matrix.
 If \code{center=TRUE}, this defaults to the range of the centered expression matrix, made symmetric around zero.}
-    \item{\code{color}}{A vector of colours specifying the palette to use for increasing expression. 
+    \item{\code{colour}}{A vector of colours specifying the palette to use for increasing expression. 
 This defaults to \link[viridis]{viridis} if \code{center=FALSE}, and the the \code{"RdYlBu"}
-color palette from \code{\link[RColorBrewer]{brewer.pal}} otherwise.}
+colour palette from \code{\link[RColorBrewer]{brewer.pal}} otherwise.}
+    \item{\code{color}}{Alias to \code{colour}.}
     \item{\code{max_detected}}{Numeric value specifying the cap on the proportion of 
 detected expression values.}
-    \item{\code{by_exprs_values}}{A string or integer scalar specifying which assay to obtain expression values from, for entries of \code{other_fields}.}
+    \item{\code{by_exprs_values}}{Alias for \code{by.assay.type}.}
     \item{\code{swap_rownames}}{Column name of \code{rowData(object)} to be used to 
 identify features instead of \code{rownames(object)} when labelling plot 
 elements.}
@@ -49,7 +50,8 @@ elements.}
 (specifically, the mean of averages across all groups) centered at zero prior to plotting.}
     \item{\code{scale}}{A logical scalar specifying whether each row should have its
 average expression values scaled to unit variance prior to plotting.}
-    \item{\code{low_color,high_color,max_ave}}{Deprecated arguments.}
+    \item{\code{assay.type}}{A string or integer scalar indicating which assay of \code{object} should be used as expression values.}
+    \item{\code{by.assay.type}}{A string or integer scalar specifying which assay to obtain expression values from, for entries of \code{other_fields}. Also alias \code{by_exprs_values} is accepted as argument name.}
   }}
 
 \item{marker_list}{A named list contaning the markers for each cell types.
