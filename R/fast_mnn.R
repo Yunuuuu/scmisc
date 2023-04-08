@@ -125,8 +125,8 @@ fast_mnn <- function(
     #
     # - multiBatchNorm need size factor, if it's NULL, the internal will
     #   calculate it with `librarySizeFactors` function
-    # - normalizetion shouldn't use the `subset.row` since library size is the
-    #   total sum of counts across all genes for each cell
+    # - For normalizetion, I prefer never to use the `subset.row` since library
+    #   size is the total sum of counts across all genes for each cell
     if (is.null(norm.args$name)) {
         norm.args$name <- "multiBatchNorm"
     }
@@ -141,6 +141,10 @@ fast_mnn <- function(
         assay.type = assay.type,
         BPPARAM = BPPARAM
     )
+
+    # dimensionality reduction -----------------------------------------
+    # -- Many of these approximate algorithms are based on randomization
+    # -- set the seed to guarantee reproducibility
     batch_pcs <- batchelor::multiBatchPCA(x,
         batch = batch, d = d,
         subset.row = subset.row,
@@ -155,6 +159,9 @@ fast_mnn <- function(
     )
     SingleCellExperiment::reducedDim(x, "PCA") <- batch_pcs[[1L]]
 
+    # run MNN --------------------------------------------------------
+    # -- MNN need PCA run with `multiBatchPCA`
+    # -- as we have run multiBatchNorm, no need to run `cosineNorm`
     mnn_res <- batchelor::reducedMNN(
         batch_pcs[[1L]],
         batch = batch,
