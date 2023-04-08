@@ -16,7 +16,7 @@ run_cellranger(
 
 \item{cellranger_args}{arguments passed to cellranger sub-command.}
 
-\item{cellranger_cmd}{Path to cellranger cmd.}
+\item{cellranger_cmd}{Path to cellranger command.}
 
 \item{sys_args}{Other arguments passed to \link{system2}.}
 }

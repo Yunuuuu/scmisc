@@ -30,7 +30,7 @@ to local jobs.}
 
 \item{other_args}{Other arguments passed to cellranger count.}
 
-\item{cellranger_cmd}{Path to cellranger cmd.}
+\item{cellranger_cmd}{Path to cellranger command.}
 
 \item{sys_args}{Other arguments passed to \link{system2}.}
 }
