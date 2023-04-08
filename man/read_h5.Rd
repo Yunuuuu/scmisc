@@ -62,7 +62,7 @@ accessing files in a private Amazon S3 bucket.}
   }}
 }
 \value{
-A sparse matrix
+A \link{SingleCellExperiment} object.
 }
 \description{
 Reads object in HDF5 files
