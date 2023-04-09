@@ -27,7 +27,6 @@ Suggests:
     batchelor,
     circlize,
     Matrix,
-    pipeline,
     rhdf5,
     roxygen2,
     scales,
@@ -36,8 +35,6 @@ Suggests:
     scuttle,
     smoother,
     testthat (>= 3.0.0)
-Remotes:
-    Yunuuuu/pipeline
 Depends: 
     R (>= 3.5.0)
 ByteCompile: true
