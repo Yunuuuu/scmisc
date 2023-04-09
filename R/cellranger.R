@@ -1,5 +1,6 @@
 #' Run cellranger-count
-#' @description Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
+#' @description Count gene expression (targeted or whole-transcriptome) and/or
+#' feature barcode reads from a single sample and GEM well. 
 #' @param id A unique run id and output folder name.
 #' @param fastqs Path to input FASTQ data.
 #' @param transcriptome Path of folder containing 10x-compatible transcriptome

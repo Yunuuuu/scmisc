@@ -35,5 +35,6 @@ to local jobs.}
 \item{sys_args}{Other arguments passed to \link{system2}.}
 }
 \description{
-Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
+Count gene expression (targeted or whole-transcriptome) and/or
+feature barcode reads from a single sample and GEM well.
 }
