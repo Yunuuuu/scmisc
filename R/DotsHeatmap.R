@@ -31,14 +31,17 @@
 #' @name DotsHeatmap
 #' @export
 DotsHeatmap <- function(matrix, matrix_size = NULL, circle_gp = gpar(col = NA), radius_range = c(1, 6), ..., dots_size_legend_param = list()) {
-    assert_class(radius_range, "numeric", is.numeric)
+    assert_class(radius_range, is.numeric, "{.cls numeric} object")
     if (!data.table::between(length(radius_range), 1L, 2L)) {
         cli::cli_abort("{.arg radius_range} must be a numeric with a length 1 or 2")
     }
     if (anyNA(radius_range) || any(radius_range < 0L)) {
         cli::cli_abort("{.arg radius_range} must not be negative or {.val NA}")
     }
-    assert_class(dots_size_legend_param, "list", is.list, null_ok = TRUE)
+    assert_class(dots_size_legend_param, is.list,
+        "{.cls list} object",
+        null_ok = TRUE
+    )
     if (!is.matrix(matrix)) {
         if (is.atomic(matrix)) {
             cli::cli_alert_info("convert simple vector {.arg matrix} to one-column matrix")
@@ -46,9 +49,9 @@ DotsHeatmap <- function(matrix, matrix_size = NULL, circle_gp = gpar(col = NA), 
         } else {
             cli::cli_abort("{.arg matrix} must be a matrix or a simple vector.")
         }
-    }    
+    }
     matrix_size <- matrix_size %||% matrix
-    assert_class(matrix_size, "numeric", is.numeric)
+    assert_class(matrix_size, is.numeric, "{.cls numeric} object")
     if (!is.matrix(matrix_size)) {
         if (is.atomic(matrix_size)) {
             cli::cli_alert_info("convert simple vector {.arg matrix_size} to one-column matrix")
