@@ -21,7 +21,7 @@ read_h5 <- function(file, name = "matrix", ...) {
     colnames(mat) <- h5$barcodes
     sce_obj <- SingleCellExperiment::SingleCellExperiment(
         assays = list(counts = mat), 
-        rowData = S4Vectors::DataFrame(h5$features)
+        rowData = S4Vectors::DataFrame(h5$features, check.names = FALSE)
     )
     rownames(sce_obj) <- scuttle::uniquifyFeatureNames(
         h5$features$id, h5$features$name
