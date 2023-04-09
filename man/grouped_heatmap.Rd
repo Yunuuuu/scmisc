@@ -71,7 +71,9 @@ extracted.}
 
 \item{colour}{Alias for color.}
 
-\item{color}{Alias to \code{colour}.}
+\item{color}{A vector of colours specifying the palette to use for increasing expression. 
+This defaults to \link[viridis]{viridis} if \code{center=FALSE}, and the the \code{"RdYlBu"}
+color palette from \code{\link[RColorBrewer]{brewer.pal}} otherwise.}
 
 \item{center}{A logical scalar indicating whether each feature should have its mean expression 
 (specifically, the mean of averages across all groups) centered at zero prior to plotting.}
@@ -79,8 +81,8 @@ extracted.}
 \item{scale}{A logical scalar specifying whether each row should have its
 average expression values scaled to unit variance prior to plotting.}
 
-\item{zlim}{A numeric vector of length 2, specifying the upper and lower bounds for colour mapping of expression values.
-Values outside this range are set to the most extreme colour.
+\item{zlim}{A numeric vector of length 2, specifying the upper and lower bounds for color mapping of expression values.
+Values outside this range are set to the most extreme color.
 If \code{NULL}, it defaults to the range of the expression matrix.
 If \code{center=TRUE}, this defaults to the range of the centered expression matrix, made symmetric around zero.}
 
