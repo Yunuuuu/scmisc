@@ -1,3 +1,4 @@
+# utils function to extract data from colData or rowData
 # for the feature data, we usually want to all or some features (rownames)
 #' @keywords internal
 handle_row_data <- function(object, idx) {
