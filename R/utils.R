@@ -3,9 +3,16 @@
 }
 
 pindex <- function(array, ...) {
-    dots <- list(...)
-    if (length(dim(array)) != length(dots)) {
+    if (length(dim(array)) != ...length()) {
         stop("Indexing must have as many as the number of dimentions of array")
+    }
+    dots <- list(...)
+    # all index must be atomic
+    is_right <- vapply(dots, function(x) {
+        is.atomic(x) && !is.null(x)
+    }, logical(1L))
+    if (!all(is_right)) {
+        stop("All elements in ... must be atomic (`NULL` is not allowed)")
     }
     dots_len <- lengths(dots)
     if (any(dots_len == 0L)) {
