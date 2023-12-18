@@ -26,10 +26,7 @@ NULL
 
 #' @keywords internal
 facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
-    assert_class(marker_list, is.list,
-        "{.cls list} object",
-        null_ok = FALSE
-    )
+    assert_(marker_list, is.list, "{.cls list}", null_ok = FALSE)
     if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     } else if (!rlang::is_named(marker_list)) {

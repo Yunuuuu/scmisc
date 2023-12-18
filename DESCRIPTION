@@ -14,7 +14,7 @@ Imports:
     data.table (>= 1.14.7),
     memoise,
     methods,
-    rlang (>= 0.4.11),
+    rlang (>= 1.1.0),
     ComplexHeatmap,
     SingleCellExperiment,
     SummarizedExperiment,

@@ -38,14 +38,8 @@
 NULL
 
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
-    assert_class(marker_list, is.list,
-        "{.cls list} object",
-        null_ok = FALSE
-    )
-    assert_class(manual, is.list,
-        "{.cls list} object",
-        null_ok = TRUE
-    )
+    assert_(marker_list, is.list, "{.cls list}", null_ok = FALSE)
+    assert_(manual, is.list, "{.cls list}", null_ok = TRUE)
     if (length(marker_list) == 0L) {
         cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
     } else if (!rlang::is_named(marker_list)) {

@@ -48,10 +48,7 @@ setMethod(
 
         is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
         if (is_colour_by_dpt) {
-            assert_length(root, 1L, null_ok = TRUE)
-            assert_class(root, is.numeric, "{.cls numeric} object",
-                null_ok = TRUE
-            )
+            assert_(root, is_scalar_numeric, "a number", null_ok = TRUE)
             dpt <- methods::new("DPT",
                 branch = matrix(), tips = matrix(),
                 dm = y
@@ -107,10 +104,7 @@ setMethod(
              root = NULL, add_paths = TRUE, paths_to = NULL,
              path_args = list(),
              w_width = 0.1, ..., ncomponents = 2L) {
-        if (!rlang::is_scalar_logical(add_paths)) {
-            cli::cli_abort("{.arg add_paths} must be a scalar logical value.")
-        }
-
+        assert_bool(add_paths)
         is_colour_by_branch <- identical(colour_by, "Branch") ||
             identical(colour_by, "branch")
 
@@ -124,10 +118,7 @@ setMethod(
         }
         is_colour_by_dpt <- grepl("^DPT\\d+|^DPT$", colour_by, perl = TRUE)
         if (is_colour_by_dpt) {
-            assert_length(root, 1L, null_ok = TRUE)
-            assert_class(root, is.numeric, "{.cls numeric} object",
-                null_ok = TRUE
-            )
+            assert_(root, is_scalar_numeric, "a number", null_ok = TRUE)
             if (is.null(root)) {
                 root <- destiny::tips(y)[[1L]]
             } else {

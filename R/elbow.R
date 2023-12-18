@@ -20,6 +20,7 @@ setGeneric(
 setMethod(
     "pca_elbow", "numeric",
     function(x) {
+        assert_pkg("PCAtools")
         # Percentage of variance explained is tucked away in the attributes.
         PCAtools::findElbowPoint(sort(x, decreasing = TRUE))
     }

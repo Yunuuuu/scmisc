@@ -104,11 +104,7 @@ fast_mnn <- function(
     BSPARAM = BiocSingular::IrlbaParam(),
     BNPARAM = BiocNeighbors::AnnoyParam(),
     BPPARAM = BiocParallel::SerialParam()) {
-    assert_class(
-        x,
-        function(x) methods::is(x, "SingleCellExperiment"),
-        "{.cls SingleCellExperiment} object"
-    )
+    assert_s4_class(x, "SingleCellExperiment")
     # nromalization, adjust for differences in sequencing depth --------
     # This can be done before variance-modelling or after.
     # - https://github.com/LTLA/batchelor/blob/master/R/quickCorrect.R; in the

@@ -17,12 +17,9 @@
 #' @return An integer index .
 #' @export
 find_roots <- function(dm, start, ends = NULL, ref, n_root = 100L) {
-    if (!methods::is(dm, "DiffusionMap")) {
-        cli::cli_abort("{.arg dm} must be a {.cls DiffusionMap}.")
-    }
-    assert_length(start, 1L, null_ok = FALSE)
-    assert_length(n_root, 1L, null_ok = FALSE)
-    assert_class(n_root, is.numeric, "{.cls numeric} object", null_ok = FALSE)
+    assert_s4_class(dm, "DiffusionMap")
+    assert_(start, is_scalar, "scalar", null_ok = FALSE)
+    assert_(n_root, is_scalar_numeric, "a number", null_ok = FALSE)
 
     if (length(dm@d) != length(ref)) {
         cli::cli_abort("{.arg ref} must have the same length {.code length(dm@d)} ({length(dm@d)})")
