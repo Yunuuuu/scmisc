@@ -63,7 +63,7 @@
 #' "PCA" matrix in the `reducedDims` slot, containing the first d PCs returned
 #' by `multiBatchPCA` for each cell. A "corrected" matrix in the `reducedDims`
 #' slot, containing corrected low-dimensional coordinates for each cell.
-#' @note 
+#' @note
 #'  - <https://support.bioconductor.org/p/127544/#127553>
 #'  - <https://github.com/MarioniLab/FurtherMNN2018/issues/6>
 #'  - <https://support.bioconductor.org/p/9145895/#9145905>
@@ -71,7 +71,7 @@
 #' `fast_mnn` after subsetting large cell sets (subset epithelium from all cell
 #' types), for sub-clustering in smaller cell sets (subset a specific T cell
 #' type from all T cells ).
-#' @seealso 
+#' @seealso
 #' - [multiBatchNorm][batchelor::multiBatchNorm]
 #' - [multiBatchPCA][batchelor::multiBatchPCA]
 #' - [reducedMNN][batchelor::reducedMNN]
@@ -149,7 +149,7 @@ fast_mnn <- function(
         batch = batch, d = d,
         subset.row = subset.row,
         weights = weights,
-        get.all.genes = FALSE,
+        get.all.genes = TRUE,
         get.variance = TRUE,
         preserve.single = TRUE,
         assay.type = norm.args$name,
@@ -157,7 +157,15 @@ fast_mnn <- function(
         deferred = deferred,
         BPPARAM = BPPARAM
     )
-    SingleCellExperiment::reducedDim(x, "PCA") <- batch_pcs[[1L]]
+
+    # Saving the results
+    pca <- batch_pcs[[1L]]
+    pca_attrs <- S4Vectors::metadata(batch_pcs)
+    attr(pca, "varExplained") <- pca_attrs$var.explained
+    attr(pca, "percentVar") <- pca_attrs$var.explained /
+        pca_attrs$var.total * 100
+    attr(pca, "rotation") <- pca_attrs$rotation
+    SingleCellExperiment::reducedDim(x, "PCA") <- pca
 
     # run MNN --------------------------------------------------------
     # -- MNN need PCA run with `multiBatchPCA`
