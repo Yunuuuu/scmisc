@@ -150,7 +150,7 @@ fast_mnn <- function(
         subset.row = subset.row,
         weights = weights,
         get.all.genes = FALSE,
-        get.variance = FALSE,
+        get.variance = TRUE,
         preserve.single = TRUE,
         assay.type = norm.args$name,
         BSPARAM = BSPARAM,
