@@ -88,8 +88,9 @@ make_gg_data <- function(x, type, mapping = aes(), items = NULL, ..., assay.type
             cells = ncol(x),
             features = nrow(x)
         )
-        data[, (group_nm) := rep(rep(names(items), times = lengths(items)),
-            each = n_group
+        data[, (group_nm) := factor(
+            rep(rep(nms, times = lengths(items)), each = n_group),
+            levels = nms
         )]
     }
     ggplot2::ggplot(data[], mapping)
