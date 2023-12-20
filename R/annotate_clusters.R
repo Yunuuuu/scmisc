@@ -38,13 +38,8 @@
 NULL
 
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
-    assert_(marker_list, is.list, "{.cls list}", null_ok = FALSE)
+    assert_marker_list(marker_list)
     assert_(manual, is.list, "{.cls list}", null_ok = TRUE)
-    if (length(marker_list) == 0L) {
-        cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")
-    } else if (!rlang::is_named(marker_list)) {
-        cli::cli_abort("All elements in {.arg marker_list} must be named.")
-    }
 
     # prepare manual annotation
     if (length(manual) > 0L) {
@@ -153,6 +148,27 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
         )
     }
     factor(cluster2cell, levels = cluster2cell_levels)
+}
+
+assert_marker_list <- function(x, arg = rlang::caller_arg(x), call = rlang::caller_env()) {
+    if (!is.list(x)) {
+        cli::cli_abort("{.arg arg} must be a {.cls list}")
+    }
+    nms <- names(x)
+    if (length(x) == 0L) {
+        cli::cli_abort("Empty list is not allowed in {.arg {arg}}.",
+            call = call
+        )
+    }
+    if (is.null(nms) || anyNA(nms)) {
+        cli::cli_abort("All elements in {.arg {arg}} must be named.",
+            call = call
+        )
+    } else if (anyDuplicated(nms)) {
+        cli::cli_abort("Duplicated names found in {.arg {arg}}",
+            call = call
+        )
+    }
 }
 
 utils::globalVariables(c("means", "celltype"))
