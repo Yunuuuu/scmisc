@@ -192,3 +192,33 @@ cli_list <- function(label, items, sep = ": ", add_num = TRUE) {
     }
     cli::cli_li(message)
 }
+
+conf_level_to_prob <- function(x) {
+    x * c(-1L, 1L) / 2L + 0.5
+}
+
+set_seed <- function(seed = NULL, envir = rlang::caller_env()) {
+    if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+        oseed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+    } else {
+        oseed <- NULL
+    }
+    run <- substitute(on.exit(restore_rng(oseed)), list(oseed = oseed))
+    eval(run, envir = envir)
+    seed <- seed %||% random_seed(1L)
+    set.seed(seed)
+}
+
+restore_rng <- function(oseed) {
+    if (is.null(oseed)) {
+        if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+            rm(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+        }
+    } else {
+        assign(".Random.seed", oseed, envir = .GlobalEnv, inherits = FALSE)
+    }
+}
+
+random_seed <- function(n) {
+    sample.int(1e6L, n)
+}

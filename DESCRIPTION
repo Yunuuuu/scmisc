@@ -27,6 +27,7 @@ Suggests:
     batchelor,
     circlize,
     Matrix,
+    matrixStats,
     rhdf5,
     roxygen2,
     scales,
