@@ -47,7 +47,7 @@ scprop_compare <- function(
 
     # allocate seed -----------------------------------
     seed <- BiocParallel::bpRNGseed(BPPARAM)
-    if (length(seed) < 2L) {
+    if (conf.int && length(seed) < 2L) {
         set_seed(seed[1L])
         seed <- random_seed(2L)
     }
