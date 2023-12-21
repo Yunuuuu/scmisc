@@ -114,7 +114,7 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   colour = NULL, ..., flip = FALSE,
                                   row_labels = NULL, column_labels = NULL,
                                   graph_type = c("dots", "square")) {
-    assert_(marker_list, is.list, "{.cls list}", null_ok = TRUE)
+    assert_(marker_list, is.list, "a {.cls list}", null_ok = TRUE)
     if (!is.null(marker_list)) {
         if (length(marker_list) == 0L) {
             cli::cli_abort("Empty list is not allowed in {.arg marker_list}.")

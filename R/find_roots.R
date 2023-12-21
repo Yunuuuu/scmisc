@@ -18,7 +18,7 @@
 #' @export
 find_roots <- function(dm, start, ends = NULL, ref, n_root = 100L) {
     assert_s4_class(dm, "DiffusionMap")
-    assert_(start, is_scalar, "scalar", null_ok = FALSE)
+    assert_(start, is_scalar, "a scalar", null_ok = FALSE)
     assert_(n_root, is_scalar_numeric, "a number", null_ok = FALSE)
 
     if (length(dm@d) != length(ref)) {

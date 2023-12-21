@@ -39,7 +39,7 @@ NULL
 
 annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, blocks = NULL) {
     assert_marker_list(marker_list)
-    assert_(manual, is.list, "{.cls list}", null_ok = TRUE)
+    assert_(manual, is.list, "a {.cls list}", null_ok = TRUE)
 
     # prepare manual annotation
     if (length(manual) > 0L) {
