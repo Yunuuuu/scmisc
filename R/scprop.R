@@ -100,7 +100,7 @@ scprop_compare <- function(
         ), .SDcols = bootstrap_cols]
         out <- out[, .SD, .SDcols = !bootstrap_cols]
     }
-    out[, p.value := ifelse(estimate > 0, increased, decreased)] # nolint
+    out[, p.value := data.table::fifelse(estimate > 0, increased, decreased)]
     out[, p.adjust := stats::p.adjust(p.value, p.adjust)] # nolint
     out[, term := levels(compare)[2L]] # nolint
     data.table::setcolorder(out, "term")
