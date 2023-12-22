@@ -4,7 +4,7 @@
 #' @param compare An atomic vector coerced into factor to define the comparison
 #' groups, must have two unique values.
 #' @param stat A string giving the type of the statistic to calculate. Current
-#' options include "odds_ratio", "relative_risk", "odds", "risk".
+#' options include "odds_ratio", "risk_ratio", "risk_diff".
 #' @param times Conventient way to set both `n_permutation` and `n_bootstrap`.
 #' @param n_permutation Number of permutation to calcualte `p.value`.
 #' @param n_bootstrap Number of bootstrap to calcualte `ci.low` and `ci.high`.
@@ -22,7 +22,7 @@
 #' <https://github.com/rpolicastro/scProportionTest>
 #' @export
 scprop_compare <- function(
-    identity, compare, stat = "relative_risk", times = 2000L,
+    identity, compare, stat = "risk_ratio", times = 2000L,
     n_permutation = times, n_bootstrap = times,
     p.adjust = "BH", conf.int = TRUE, conf.level = 0.95,
     BPPARAM = BiocParallel::SerialParam()) {
@@ -44,7 +44,7 @@ scprop_compare <- function(
             "{.arg identity} and {.arg compare} must have the same length"
         )
     }
-    stat <- match.arg(stat, c("risk", "odds", "relative_risk", "odds_ratio"))
+    stat <- match.arg(stat, c("risk_ratio", "odds_ratio", "risk_diff"))
     stat <- eval(rlang::sym(sprintf("stat_%s", stat)))
 
     # Get observed differences in fraction --------
@@ -130,23 +130,27 @@ scprop_diff <- function(compare, identity, stat, id = "estimate") {
     data[, c("b", "d") := lapply(.SD, function(x) {
         sum(x) - x
     }), .SDcols = c("a", "c")]
-    data[, estimate := log(stat(a, b, c, d))] # nolint
+    data[, estimate := stat(a, b, c, d)] # nolint
     data <- data[, c(".identity", "estimate")]
     data.table::setnames(data, c("identity", id))
 }
 
 stat_risk <- function(a, b, c, d) {
-    a / (a + b)
+    log(a / (a + b))
 }
 
 stat_odds <- function(a, b, c, d) {
-    a / b
+    log(a / b)
 }
 
-stat_relative_risk <- function(a, b, c, d) {
-    (a / (a + b)) / (c / (c + d))
+stat_risk_ratio <- function(a, b, c, d) {
+    log((a / (a + b)) / (c / (c + d)))
 }
 
 stat_odds_ratio <- function(a, b, c, d) {
-    (a / b) * (d / c)
+    log((a / b) * (d / c))
+}
+
+stat_risk_diff <- function(a, b, c, d) {
+    (a / (a + b)) - (c / (c + d))
 }

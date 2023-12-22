@@ -7,7 +7,7 @@
 scprop_compare(
   identity,
   compare,
-  stat = "relative_risk",
+  stat = "risk_ratio",
   times = 2000L,
   n_permutation = times,
   n_bootstrap = times,
@@ -24,7 +24,7 @@ scprop_compare(
 groups, must have two unique values.}
 
 \item{stat}{A string giving the type of the statistic to calculate. Current
-options include "odds_ratio", "relative_risk", "odds", "risk".}
+options include "odds_ratio", "risk_ratio", "(a / b) * (d / c)".}
 
 \item{times}{Conventient way to set both \code{n_permutation} and \code{n_bootstrap}.}
 
