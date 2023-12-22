@@ -31,7 +31,6 @@
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if groups is `NULL`, "label" in `colData(x)` will be
 #'   extracted.
-#' @param colour Alias for color.
 #' @param flip A scalar logical indicates whether flipping the axis, the default
 #'   `FALSE` means rows are `features` specified in `marker_list` and columns
 #'   are `groups`.

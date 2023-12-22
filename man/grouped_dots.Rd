@@ -70,7 +70,9 @@ String specifying the field of \code{colData(x)} containing the grouping factor.
 In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
 extracted.}
 
-\item{colour}{Alias for color.}
+\item{colour}{A vector of colours specifying the palette to use for increasing expression. 
+This defaults to \link[viridis]{viridis} if \code{center=FALSE}, and the the \code{"RdYlBu"}
+colour palette from \code{\link[RColorBrewer]{brewer.pal}} otherwise.}
 
 \item{color}{Alias to \code{colour}.}
 
