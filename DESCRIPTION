@@ -25,6 +25,9 @@ Imports:
     destiny
 Suggests: 
     batchelor,
+    BiocNeighbors,
+    BiocParallel,
+    BiocSingular,
     circlize,
     Matrix,
     matrixStats,

@@ -3,6 +3,8 @@
 #' @param identity An atomic vector define the cell types
 #' @param compare An atomic vector coerced into factor to define the comparison
 #' groups, must have two unique values.
+#' @param stat A string giving the type of the statistic to calculate. Current
+#' options include "odds_ratio", "relative_risk", "odds", "risk".
 #' @param times Conventient way to set both `n_permutation` and `n_bootstrap`.
 #' @param n_permutation Number of permutation to calcualte `p.value`.
 #' @param n_bootstrap Number of bootstrap to calcualte `ci.low` and `ci.high`.
@@ -20,7 +22,7 @@
 #' <https://github.com/rpolicastro/scProportionTest>
 #' @export
 scprop_compare <- function(
-    identity, compare, times = 2000L,
+    identity, compare, stat = "relative_risk", times = 2000L,
     n_permutation = times, n_bootstrap = times,
     p.adjust = "BH", conf.int = TRUE, conf.level = 0.95,
     BPPARAM = BiocParallel::SerialParam()) {
@@ -42,8 +44,11 @@ scprop_compare <- function(
             "{.arg identity} and {.arg compare} must have the same length"
         )
     }
+    stat <- match.arg(stat, c("risk", "odds", "relative_risk", "odds_ratio"))
+    stat <- eval(rlang::sym(sprintf("stat_%s", stat)))
+
     # Get observed differences in fraction --------
-    obs_diff <- scprop_diff(compare, identity)
+    obs_diff <- scprop_diff(compare, identity, stat)
 
     # allocate seed -----------------------------------
     seed <- BiocParallel::bpRNGseed(BPPARAM)
@@ -54,7 +59,9 @@ scprop_compare <- function(
 
     # Permutation test ----------------------------
     permuted <- BiocParallel::bplapply(seq_len(n_permutation), function(i) {
-        scprop_diff(sample(compare), identity, id = paste0("Permutation", i))
+        scprop_diff(sample(compare), identity, stat,
+            id = paste0("Permutation", i)
+        )
     }, BPPARAM = BPPARAM)
     BiocParallel::bpRNGseed(BPPARAM) <- seed[1L]
     permuted <- Reduce(function(x, y) {
@@ -79,7 +86,9 @@ scprop_compare <- function(
             dd <- data[, list(.identity = sample(.identity, replace = TRUE)), # nolint
                 by = ".compare"
             ]
-            scprop_diff(dd$.compare, dd$.identity, id = paste0("Bootstrap", i))
+            scprop_diff(dd$.compare, dd$.identity, stat,
+                id = paste0("Bootstrap", i)
+            )
         }, BPPARAM = BPPARAM)
         booted <- Reduce(function(x, y) {
             merge(x, y, all = TRUE, by = "identity")
@@ -109,19 +118,35 @@ scprop_compare <- function(
 
 utils::globalVariables(c(
     "estimate", "increased", "decreased", "p.value", "p.adj",
-    ".identity", ".fraction", "booted_mean", "patterns", "count"
+    ".identity", ".fraction", "booted_mean", "patterns",
+    "count", "a", "b", "c", "d"
 ))
 
-scprop_diff <- function(compare, identity, id = "estimate") {
+scprop_diff <- function(compare, identity, stat, id = "estimate") {
     data <- data.table::data.table(.compare = compare, .identity = identity)
     data <- data[, list(count = .N), by = c(".compare", ".identity")]
-    data[, .fraction := count / sum(count), by = ".compare"] # nolint
-    data <- data.table::dcast(data, .identity ~ .compare,
-        value.var = ".fraction"
-    )
-    env <- rlang::syms(levels(compare))
-    names(env) <- c("group1", "group2")
-    eval(substitute(data[, estimate := log2(group2 / group1)], env))
+    data <- data.table::dcast(data, .identity ~ .compare, value.var = "count")
+    data.table::setnames(data, levels(compare), c("c", "a"))
+    data[, c("b", "d") := lapply(.SD, function(x) {
+        sum(x) - x
+    }), .SDcols = c("a", "c")]
+    data[, estimate := log(stat(a, b, c, d))] # nolint
     data <- data[, c(".identity", "estimate")]
     data.table::setnames(data, c("identity", id))
+}
+
+stat_risk <- function(a, b, c, d) {
+    a / (a + b)
+}
+
+stat_odds <- function(a, b, c, d) {
+    a / b
+}
+
+stat_relative_risk <- function(a, b, c, d) {
+    (a / (a + b)) / (c / (c + d))
+}
+
+stat_odds_ratio <- function(a, b, c, d) {
+    (a / b) * (d / c)
 }

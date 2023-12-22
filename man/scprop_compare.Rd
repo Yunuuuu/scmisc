@@ -7,6 +7,7 @@
 scprop_compare(
   identity,
   compare,
+  stat = "relative_risk",
   times = 2000L,
   n_permutation = times,
   n_bootstrap = times,
@@ -21,6 +22,9 @@ scprop_compare(
 
 \item{compare}{An atomic vector coerced into factor to define the comparison
 groups, must have two unique values.}
+
+\item{stat}{A string giving the type of the statistic to calculate. Current
+options include "odds_ratio", "relative_risk", "odds", "risk".}
 
 \item{times}{Conventient way to set both \code{n_permutation} and \code{n_bootstrap}.}
 
