@@ -3,13 +3,13 @@
 #' Performs a quick subclustering for all cells within each group.
 #'
 #' @param ... Other arguments passed to
-#' [quickSubCluster][scran::quickSubCluster] 
+#' [quickSubCluster][scran::quickSubCluster]
 #'   - `x` A matrix of counts or log-normalized expression values (if
 #'     \code{normalize=FALSE}), where each row corresponds to a gene and each
 #'     column corresponds to a cell. Alternatively, a
 #'     [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment] or
 #'     [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
-#'     containing such a matrix. 
+#'     containing such a matrix.
 #'   - `groups`: A vector of group assignments for all cells, usually
 #'     corresponding to cluster identities.
 #'   - `normalize`: Logical scalar indicating whether each subset of \code{x}
@@ -36,6 +36,7 @@
 #'
 #' @return A factor
 #' @seealso [quickSubCluster][scran::quickSubCluster]
+#' @export
 sub_cluster <- function(...) {
     assert_pkg("scran")
     labels <- scran::quickSubCluster(..., format = "%s.%s", simplify = TRUE)
