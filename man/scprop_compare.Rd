@@ -24,7 +24,7 @@ scprop_compare(
 groups, must have two unique values.}
 
 \item{stat}{A string giving the type of the statistic to calculate. Current
-options include "odds_ratio", "risk_ratio", "(a / b) * (d / c)".}
+options include "odds_ratio", "risk_ratio", "risk_diff".}
 
 \item{times}{Conventient way to set both \code{n_permutation} and \code{n_bootstrap}.}
 
