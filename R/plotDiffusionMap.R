@@ -26,6 +26,7 @@ plotDiffusionMap <- function(
     dpt = NULL, colour_by = color_by, shape_by = NULL,
     size_by = NULL, order_by = NULL, text_by = NULL,
     color_by = NULL, dimred = "DiffusionMap", ncomponents = 2L) {
+    assert_pkg("destiny")
     assert_s4_class(object, "SingleCellExperiment")
     assert_bool(add_paths)
     assert_string(dpt, null_ok = TRUE)

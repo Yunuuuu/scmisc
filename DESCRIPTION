@@ -21,8 +21,7 @@ Imports:
     SeuratObject,
     S4Vectors,
     ggplot2,
-    grid,
-    destiny
+    grid
 Suggests: 
     batchelor,
     BiocNeighbors,
@@ -37,6 +36,7 @@ Suggests:
     scater,
     scran,
     scuttle,
+    destiny,
     smoother,
     testthat (>= 3.0.0)
 Depends: 

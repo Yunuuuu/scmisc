@@ -1,4 +1,5 @@
 .calculate_diffusion_map <- function(x, ncomponents = 20L, ..., tips = NULL, w_width = 0.1) {
+    assert_pkg("destiny")
     dm <- destiny::DiffusionMap(
         data = x, ...,
         n_eigs = ncomponents, rotate = FALSE,
