@@ -39,13 +39,14 @@
 #' For the ANY methods, additional arguments to pass to [destiny::DiffusionMap]
 #'  - `sigma`: Diffusion scale parameter of the Gaussian kernel. One of
 #'             \code{'local'}, \code{'global'}, a (\link[base]{numeric}) global
-#'             sigma or a \link{Sigmas} object.  When choosing \code{'global'},
-#'             a global sigma will be calculated using
-#'             \code{\link{find_sigmas}}.  (Optional. default: \code{'local'}) A
-#'             larger sigma might be necessary if the eigenvalues can not be
-#'             found because of a singularity in the matrix.
+#'             sigma or a [Sigmas][destiny::Sigmas] object.  When choosing
+#'             \code{'global'}, a global sigma will be calculated using
+#'             [find_sigmas][destiny::find_sigmas].  (Optional. default:
+#'             \code{'local'}) A larger sigma might be necessary if the
+#'             eigenvalues can not be found because of a singularity in the
+#'             matrix.
 #'  - `k`: Number of nearest neighbors to consider (default: a guess betweeen
-#'         100 and \eqn{n - 1}. See \code{\link{find_dm_k}}).
+#'         100 and \eqn{n - 1}. See [find_dm_k][destiny::find_dm_k]).
 #'  - `density_norm`: logical. If TRUE, use density normalisation.
 #'  - `n_local`: If \code{sigma == 'local'}, the \code{n_local}th nearest
 #'               neighbor(s) determine(s) the local sigma.
@@ -56,7 +57,7 @@
 #'                   TODO: also allow \eqn{ 2 \times G } matrix.
 #'  - `missing_range`: Whole data range for missing value model. Has to be
 #'                    specified if NAs are in the data.
-#'  - `knn_params`: Parameters passed to \code{\link{find_knn}}.
+#'  - `knn_params`: Parameters passed to [find_knn][destiny::find_knn].
 #'  - `verbose`: Show a progressbar and other progress information (default: do
 #'              it if censoring is enabled).
 #'
