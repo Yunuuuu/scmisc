@@ -119,7 +119,7 @@ scprop_compare <- function(
 utils::globalVariables(c(
     "estimate", "increased", "decreased", "p.value", "p.adj",
     ".identity", ".fraction", "booted_mean", "patterns",
-    "count", "a", "b", "c", "d"
+    "count", "a", "b", "c", "d", "term"
 ))
 
 scprop_diff <- function(compare, identity, stat, id = "estimate") {
