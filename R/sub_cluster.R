@@ -54,10 +54,14 @@ order_labels <- function(x) {
     for (i in seq_along(dbl_lvls_list)) {
         cur_lvls <- sort(dbl_lvls_list[[i]])
         mapping <- c(mapping, structure(
-            c(cur_lvls[1L], seq_len(length(cur_lvls) - 1L) + max_lvls),
+            c(
+                as.integer(cur_lvls[1L]),
+                seq_len(length(cur_lvls) - 1L) + max_lvls
+            ),
             names = cur_lvls
         ))
         max_lvls <- max(mapping)
     }
+    mapping <- sort(mapping)
     factor(x, levels = names(mapping), labels = mapping)
 }
