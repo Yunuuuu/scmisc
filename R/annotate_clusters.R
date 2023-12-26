@@ -201,29 +201,23 @@ setMethod(
     }
 )
 
-#' @export
-#' @importClassesFrom SeuratObject Seurat
-#' @rdname annotate_clusters
-setMethod(
-    "annotate_clusters", "Seurat",
-    function(x, clusters = NULL, ..., assay.type = NULL) { # nolint
-        assay.type <- assay.type %||% SeuratObject::DefaultAssay(x)
+annotate_clusters_seurat <- function(x, clusters = NULL, ..., assay.type = NULL) {
+    assay.type <- assay.type %||% SeuratObject::DefaultAssay(x)
+    if (is.null(clusters)) {
+        clusters <- SeuratObject::Idents(x)
         if (is.null(clusters)) {
-            clusters <- SeuratObject::Idents(x)
-            if (is.null(clusters)) {
-                cli::cli_abort("{.field Idents} never exist in {.arg x}.")
-            }
-        } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
-            x <- SeuratObject::SetIdent(x, value = clusters)
-            clusters <- SeuratObject::Idents(x)
+            cli::cli_abort("{.field Idents} never exist in {.arg x}.")
         }
-        annotate_clusters_internal(
-            SeuratObject::GetAssayData(
-                object = x, slot = "data",
-                assay = assay.type
-            ),
-            clusters = clusters,
-            ...
-        )
+    } else if (rlang::is_scalar_character(clusters) && ncol(x) > 1L) {
+        x <- SeuratObject::SetIdent(x, value = clusters)
+        clusters <- SeuratObject::Idents(x)
     }
-)
+    annotate_clusters_internal(
+        SeuratObject::GetAssayData(
+            object = x, slot = "data",
+            assay = assay.type
+        ),
+        clusters = clusters,
+        ...
+    )
+}

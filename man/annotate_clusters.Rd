@@ -4,7 +4,6 @@
 \alias{annotate_clusters}
 \alias{annotate_clusters,ANY-method}
 \alias{annotate_clusters,SummarizedExperiment-method}
-\alias{annotate_clusters,Seurat-method}
 \title{Annotate cluster cell types with provided markers}
 \usage{
 annotate_clusters(x, ...)
@@ -12,8 +11,6 @@ annotate_clusters(x, ...)
 \S4method{annotate_clusters}{ANY}(x, clusters, marker_list, manual = NULL, blocks = NULL)
 
 \S4method{annotate_clusters}{SummarizedExperiment}(x, clusters = NULL, ..., assay.type = "logcounts")
-
-\S4method{annotate_clusters}{Seurat}(x, clusters = NULL, ..., assay.type = NULL)
 }
 \arguments{
 \item{x}{A numeric matrix of counts with cells in columns and features in
