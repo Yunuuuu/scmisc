@@ -6,13 +6,13 @@
 \usage{
 plotDiffusionMap(
   object,
-  root = NULL,
+  dpt = "DPT1",
   paths_to = NULL,
   add_paths = FALSE,
+  smooth = FALSE,
   path_args = list(),
   w_width = NULL,
   ...,
-  dpt = NULL,
   colour_by = color_by,
   shape_by = NULL,
   size_by = NULL,
@@ -27,20 +27,24 @@ plotDiffusionMap(
 \item{object}{A
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment} object.}
 
-\item{root}{Root branch ID. Will be used as the start of the DPT. (default:
-lowest branch ID)}
+\item{dpt}{A string, specify the \code{DPT} to use, usually starts with "DPT".
+\code{colour_by}, \code{shape_by}, \code{size_by}, \code{order_by}, \code{text_by} and \code{color_by} can
+use "DPT" to mapping from the extracted \code{DPT}.}
 
 \item{paths_to}{Numeric Branch IDs, which are used as target(s) for the
-path(s) to draw.}
+path(s) to draw. Root branch ID will use the cell with the minimal DPT.}
 
 \item{add_paths}{A scalar logical value indicates whether to add path.}
+
+\item{smooth}{A bool, whether smooth path.}
 
 \item{path_args}{A list of arguments to passed to
 \link[ggplot2:geom_path]{geom_path}.}
 
 \item{w_width}{Window width for smoothing the path (see
 \link[smoother:smth.gaussian]{smth.gaussian}). If \code{NULL}, will use the same
-\code{w_width} used when running \link{calculateDiffusionMap}.}
+\code{w_width} used when calculating DiffusionMap. Only used when smooth is
+\code{TRUE}.}
 
 \item{...}{
   Arguments passed on to \code{\link[scater:plotReducedDim]{scater::plotReducedDim}}
@@ -82,11 +86,6 @@ obtain expression values from,
 for use in point aesthetics - see the \code{assay.type} argument in
 \code{?\link[scater]{retrieveCellInfo}}.}
   }}
-
-\item{dpt}{A string, specify the \code{DPT} to use, usually starts with "DPT". If
-\code{NULL}, will use \code{root} to extract the \code{DPT}. \code{colour_by}, \code{shape_by},
-\code{size_by}, \code{order_by}, \code{text_by} and \code{color_by} can use "DPT" to mapping from
-the extracted \code{DPT}.}
 
 \item{colour_by}{Specification of a column metadata field or a feature to
 colour by, see the \code{by} argument in \code{?\link[scater]{retrieveCellInfo}} for
