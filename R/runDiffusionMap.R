@@ -10,10 +10,9 @@
     } else {
         dpt <- destiny::DPT(dm, tips = tips, w_width = w_width)
     }
-    evs <- destiny::eigenvectors(dm)
     attr(dpt, "w_width") <- w_width
-    attr(evs, "DPT") <- dpt
-    evs
+    evs <- destiny::eigenvectors(dm)
+    SingleCellExperiment::reduced.dim.matrix(evs, DPT = dpt)
 }
 
 #' Create a diffusion map of cells
