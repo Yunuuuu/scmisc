@@ -65,16 +65,16 @@ annotate_clusters_internal <- function(x, clusters, marker_list, manual = NULL, 
                 "!" = "Missed items: {.val {missed_clusters}}"
             ))
         }
-        is_dup_clusters <- duplicated(manual_clusters, fromLast = TRUE)
-        dup_clusters <- unique(manual_clusters[is_dup_clusters])
+        duplicated <- duplicated(manual_clusters, fromLast = TRUE)
+        dup_clusters <- unique(manual_clusters[duplicated])
         if (length(dup_clusters) > 0L) {
             cli::cli_warn(c(
                 "Duplicated clusters are provided in {.arg manual}",
                 "!" = "Duplicated items: {.val {dup_clusters}}",
                 "i" = "will use the later one"
             ))
-            manual_clusters <- manual_clusters[!is_dup_clusters]
-            manual_labels <- manual_labels[!is_dup_clusters]
+            manual_clusters <- manual_clusters[!duplicated]
+            manual_labels <- manual_labels[!duplicated]
         }
     } else {
         manual_clusters <- NULL
