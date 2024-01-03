@@ -38,6 +38,7 @@ Suggests:
     destiny,
     smoother,
     SeuratObject,
+    edgeR,
     testthat (>= 3.0.0)
 Depends: 
     R (>= 3.5.0)

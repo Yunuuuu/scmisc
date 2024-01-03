@@ -17,3 +17,26 @@ assert_s4_class <- function(
         ..., arg = arg, call = call
     )
 }
+
+assert_data_frame_columns <- function(x, columns, ..., args = rlang::caller_arg(x), call = rlang::caller_env()) {
+    missing_cols <- setdiff(columns, names(x))
+    if (length(missing_cols)) {
+        args <- style_arg(args)
+        if (length(args) == 1L) {
+            msg <- args
+        } else {
+            msg <- sprintf("One of %s", oxford_comma(args, final = "or"))
+        }
+        rlang::abort(
+            c(
+                sprintf(
+                    "%s must contain columns: %s", msg,
+                    oxford_comma(columns)
+                ),
+                x = sprintf("missing columns: %s", oxford_comma(missing_cols))
+            ),
+            ...,
+            call = call
+        )
+    }
+}
