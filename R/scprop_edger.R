@@ -15,7 +15,7 @@
 #' [p.adjust][stats::p.adjust].
 #' @param ... For the generic, further arguments to pass to specific methods.
 #' @return A [data.table][data.table::data.table].
-#' @references 
+#' @references
 #' <https://bioconductor.org/books/3.18/OSCA.multisample/differential-abundance.html#>
 #' @name scprop_edger
 NULL
@@ -66,9 +66,9 @@ setMethod("scprop_edger", "data.frame", scprop_edger_internal)
 #' @rdname scprop_edger
 setMethod("scprop_edger", "SummarizedExperiment", function(data, ..., sample = "Sample", celltype = "label") {
     scprop_edger_internal(
-        data = as.data.frame(
+        data = data.frame(
             SummarizedExperiment::colData(data),
-            check.names = FALSE, make.names = FALSE
+            check.names = FALSE, fix.empty.names = FALSE,
         ), sample = sample, celltype = celltype,
         ...
     )
