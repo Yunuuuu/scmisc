@@ -20,7 +20,7 @@
 #' @name scprop_edger
 NULL
 
-scprop_edger_internal <- function(data, sample, celltype, formula, filter = TRUE, normalize = FALSE, coef = NULL, p.adjust = "BH") {
+scprop_edger_internal <- function(data, formula, sample, celltype, filter = TRUE, normalize = FALSE, coef = NULL, p.adjust = "BH") {
     assert_pkg("edgeR")
     assert_string(sample)
     assert_string(celltype)
@@ -64,12 +64,12 @@ setMethod("scprop_edger", "data.frame", scprop_edger_internal)
 #' @export
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @rdname scprop_edger
-setMethod("scprop_edger", "SummarizedExperiment", function(data, ...) {
+setMethod("scprop_edger", "SummarizedExperiment", function(data, ..., sample = "Sample", celltype = "label") {
     scprop_edger_internal(
         data = as.data.frame(
             SummarizedExperiment::colData(data),
             check.names = FALSE, make.names = FALSE
-        ),
+        ), sample = sample, celltype = celltype,
         ...
     )
 })

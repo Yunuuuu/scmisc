@@ -10,27 +10,27 @@ scprop_edger(data, ...)
 
 \S4method{scprop_edger}{data.frame}(
   data,
+  formula,
   sample,
   celltype,
-  formula,
   filter = TRUE,
   normalize = FALSE,
   coef = NULL,
   p.adjust = "BH"
 )
 
-\S4method{scprop_edger}{SummarizedExperiment}(data, ...)
+\S4method{scprop_edger}{SummarizedExperiment}(data, ..., sample = "Sample", celltype = "label")
 }
 \arguments{
 \item{data}{A data.frame.}
 
 \item{...}{For the generic, further arguments to pass to specific methods.}
 
+\item{formula}{A formula object to build design matrix from \code{data}.}
+
 \item{sample}{A string of the column in \code{data} containing sample id.}
 
 \item{celltype}{A string of the column in \code{data} containing cell types.}
-
-\item{formula}{A formula object to build design matrix from \code{data}.}
 
 \item{filter}{A bool, if \code{TRUE}, will use \link[edgeR:filterByExpr]{filterByExpr}
 to filter.}
