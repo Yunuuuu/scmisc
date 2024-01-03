@@ -68,7 +68,7 @@ setMethod("scprop_edger", "SummarizedExperiment", function(data, ..., sample = "
     scprop_edger_internal(
         data = data.frame(
             SummarizedExperiment::colData(data),
-            check.names = FALSE, fix.empty.names = FALSE,
+            check.names = FALSE, fix.empty.names = FALSE
         ), sample = sample, celltype = celltype,
         ...
     )
