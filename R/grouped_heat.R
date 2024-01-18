@@ -288,11 +288,9 @@ heatmap_scale <- function(x, center, scale, colour = NULL, zlim = NULL) {
         x <- x / sqrt(rowSums(x^2L, na.rm = TRUE) / (ncol(x) - 1L))
     }
     if (is.null(zlim)) {
+        zlim <- range(x, na.rm = TRUE, finite = TRUE)
         if (center) {
-            extreme <- max(abs(x), na.rm = TRUE)
-            zlim <- extreme * c(-1L, 1L)
-        } else {
-            zlim <- range(x, na.rm = TRUE, finite = TRUE)
+            zlim <- max(abs(zlim)) * c(-1L, 1L)
         }
     }
     if (is.null(colour)) {
