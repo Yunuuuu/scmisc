@@ -8,7 +8,7 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1.9000
 Imports: 
     cli,
     data.table (>= 1.14.7),
@@ -21,7 +21,8 @@ Imports:
     S4Vectors,
     ggplot2,
     grid
-Suggests: 
+Suggests:
+    scran.chan,
     batchelor,
     BiocNeighbors,
     BiocParallel,
@@ -40,6 +41,8 @@ Suggests:
     SeuratObject,
     edgeR,
     testthat (>= 3.0.0)
+Remotes:
+    LTLA/scran.chan
 Depends: 
     R (>= 3.5.0)
 ByteCompile: true
