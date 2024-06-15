@@ -40,7 +40,12 @@ Suggests:
     smoother,
     SeuratObject,
     edgeR,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    infercnv,
+    GenomicRanges,
+    GenomicFeatures,
+    GenomeInfoDb,
+    BiocGenerics
 Remotes:
     LTLA/scran.chan
 Depends: 
