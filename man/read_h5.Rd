@@ -21,7 +21,7 @@ identifier (file or group). See \link[rhdf5:H5Fcreate]{H5Fcreate},
   \describe{
     \item{\code{index}}{List of indices for subsetting. The length of the list has to
 agree with the dimensional extension of the HDF5 array. Each list element is
-an integer vector of indices. A list element equal to NULL choses all
+an integer vector of indices. A list element equal to NULL chooses all
 indices in this dimension. Counting is R-style 1-based.}
     \item{\code{start}}{The start coordinate of a hyperslab (similar to subsetting in
 R). Counting is R-style 1-based. This argument is ignored, if index is not
