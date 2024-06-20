@@ -20,8 +20,10 @@ handle_column_data <- function(object, idx, arg = rlang::caller_arg(idx)) {
     } else if (rlang::is_scalar_character(idx) && ncol(object) > 1L) {
         idx <- get_colData_column(object, idx)
     } else {
-        if (length(idx) != nrow(object)) {
-            cli::cli_abort("{.arg {arg}} should be of length {.val {nrow(object)}}.")
+        if (length(idx) != ncol(object)) {
+            cli::cli_abort(
+                "{.arg {arg}} should be of length {.val {ncol(object)}}."
+            )
         }
     }
     idx
