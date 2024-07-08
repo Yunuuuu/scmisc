@@ -17,7 +17,6 @@ score_markers(x, ...)
   order = -1L,
   cellmarker = FALSE,
   clusters = NULL,
-  lfc = 1L,
   features = NULL,
   ...
 )
@@ -73,9 +72,6 @@ group to which each cell in \code{x} belongs. Alternatively, if \code{x} is a
 String specifying the field of \code{colData(x)} containing the grouping factor.
 In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
 extracted.  See \link[scran:scoreMarkers]{scoreMarkers} groups argument.}
-
-\item{lfc}{A numeric scalar specifying the log-fold change threshold to
-compute effect sizes against.}
 
 \item{features}{This can be a logical, integer or character vector indicating
 the rows of x to use. If \code{NULL}, and x is a

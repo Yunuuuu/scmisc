@@ -29,8 +29,6 @@
 #'   String specifying the field of `colData(x)` containing the grouping factor.
 #'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
 #'   extracted.  See [scoreMarkers][scran::scoreMarkers] groups argument.
-#' @param lfc A numeric scalar specifying the log-fold change threshold to
-#' compute effect sizes against.
 #' @param features This can be a logical, integer or character vector indicating
 #' the rows of x to use. If `NULL`, and x is a
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
@@ -42,10 +40,13 @@
 NULL
 
 #' @keywords internal
-score_markers_internal <- function(x, restricted = NULL, top_n = 20L, order_by = "mean.AUC", order = -1L, cellmarker = FALSE, clusters = NULL, lfc = 1L, features = NULL, ...) { # nolint
+score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
+                                   order_by = "mean.AUC", order = -1L,
+                                   cellmarker = FALSE, clusters = NULL, features = NULL,
+                                   ...) { # nolint
     score_markers_list <- cached_score_markers(
         x,
-        clusters = clusters, lfc = lfc,
+        clusters = clusters,
         features = handle_row_data(object = x, features),
         ...
     )
@@ -119,10 +120,10 @@ setMethod(
 )
 
 #' @keywords internal
-cached_score_markers <- function(x, clusters, lfc, features, ...) {
+cached_score_markers <- function(x, clusters, features, ...) {
     score_markers_list <- scran::scoreMarkers(
-        x,
-        groups = clusters, lfc = lfc,
+        x = x,
+        groups = clusters,
         subset.row = features,
         ...
     )
