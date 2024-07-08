@@ -11,27 +11,21 @@ score_markers(x, ...)
 
 \S4method{score_markers}{ANY}(
   x,
+  groups = NULL,
   restricted = NULL,
-  top_n = 20L,
+  top_n = 10L,
   order_by = "mean.AUC",
   order = -1L,
-  cellmarker = FALSE,
-  clusters = NULL,
-  features = NULL,
-  absolute_lfc = FALSE,
-  lfc_cutoff = NULL,
-  ...
-)
-
-\S4method{score_markers}{SingleCellExperiment}(
-  x,
   ...,
-  clusters = NULL,
   features = NULL,
-  assay.type = "logcounts"
+  cellmarker = FALSE,
+  absolute_lfc = FALSE,
+  lfc_cutoff = NULL
 )
 
-\S4method{score_markers}{SummarizedExperiment}(x, ..., clusters = NULL, assay.type = "logcounts")
+\S4method{score_markers}{SingleCellExperiment}(x, ..., groups = NULL, features = NULL, assay.type = "logcounts")
+
+\S4method{score_markers}{SummarizedExperiment}(x, ..., groups = NULL, assay.type = "logcounts")
 }
 \arguments{
 \item{x}{A matrix-like object containing log-normalized expression values,
@@ -46,15 +40,22 @@ containing such a matrix in its assays.}
     \item{\code{}}{}
   }}
 
+\item{groups}{A factor (or vector coercible into a factor) specifying the
+group to which each cell in \code{x} belongs. Alternatively, if \code{x} is a
+\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}, e.g,
+String specifying the field of \code{colData(x)} containing the grouping factor.
+In this way, if \code{groups} is \code{NULL}, "label" in \code{colData(x)} will be
+extracted.}
+
 \item{restricted}{An atomic vector coerced to characters containing the
-subset of groups in clusters to be returned. By default, all unique groups in
-clusters will be returned, but this can be restricted to specific groups of
+subset of groups in \code{groups} to be returned. By default, all unique groups in
+\code{groups} will be returned, but this can be restricted to specific groups of
 interest.}
 
 \item{top_n}{A scalar integer indicates derive how many top features from the
 results. If cellmarker is \code{TRUE}, these features were then searched from
 cellmarker database. If \code{NULL}, all features will be returned. Default:
-\code{20L}.}
+\code{10L}.}
 
 \item{order_by}{A character vector of column names by which to order. By
 default, sorts over \code{mean.AUC}. See \link[scran:scoreMarkers]{scoreMarkers} for
@@ -65,21 +66,14 @@ corresponding to ascending and descending order. The length of order must be
 either 1 or equal to that of \code{order_by}. If \code{length(order) == 1}, it is
 recycled to \code{length(order_by)}.}
 
-\item{cellmarker}{A scalar logical indicates if search the CellMarker
-database use the \code{top_n} genes. See \code{\link[=cellmarker_search]{cellmarker_search()}}}
-
-\item{clusters}{A factor (or vector coercible into a factor) specifying the
-group to which each cell in \code{x} belongs. Alternatively, if \code{x} is a
-\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}, e.g,
-String specifying the field of \code{colData(x)} containing the grouping factor.
-In this way, if clusters is \code{NULL}, "label" in \code{colData(x)} will be
-extracted.  See \link[scran:scoreMarkers]{scoreMarkers} groups argument.}
-
 \item{features}{This can be a logical, integer or character vector indicating
 the rows of x to use. If \code{NULL}, and x is a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment},
 \link[SingleCellExperiment:rowSubset]{rowSubset} is used to derive the features.
 See \link[scran:scoreMarkers]{scoreMarkers} subset.row argument.}
+
+\item{cellmarker}{A scalar logical indicates if search the CellMarker
+database use the \code{top_n} genes. See \code{\link[=cellmarker_search]{cellmarker_search()}}}
 
 \item{absolute_lfc}{A boolean value indicates whether to calculate absolute
 logFC when filtering by \code{lfc_cutoff}. Only used when \code{lfc_cutoff} is not

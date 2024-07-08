@@ -7,13 +7,13 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment] object
 #' containing such a matrix in its assays.
 #' @param restricted An atomic vector coerced to characters containing the
-#' subset of groups in clusters to be returned. By default, all unique groups in
-#' clusters will be returned, but this can be restricted to specific groups of
+#' subset of groups in `groups` to be returned. By default, all unique groups in
+#' `groups` will be returned, but this can be restricted to specific groups of
 #' interest.
 #' @param top_n A scalar integer indicates derive how many top features from the
 #' results. If cellmarker is `TRUE`, these features were then searched from
 #' cellmarker database. If `NULL`, all features will be returned. Default:
-#' `20L`.
+#' `10L`.
 #' @param order_by A character vector of column names by which to order. By
 #' default, sorts over `mean.AUC`. See [scoreMarkers][scran::scoreMarkers] for
 #' full summary scores names.
@@ -23,12 +23,12 @@
 #' recycled to `length(order_by)`.
 #' @param cellmarker A scalar logical indicates if search the CellMarker
 #' database use the `top_n` genes. See [cellmarker_search()]
-#' @param clusters A factor (or vector coercible into a factor) specifying the
+#' @param groups A factor (or vector coercible into a factor) specifying the
 #'   group to which each cell in `x` belongs. Alternatively, if `x` is a
 #'   [SummarizedExperiment][SummarizedExperiment::SummarizedExperiment], e.g,
 #'   String specifying the field of `colData(x)` containing the grouping factor.
-#'   In this way, if clusters is `NULL`, "label" in `colData(x)` will be
-#'   extracted.  See [scoreMarkers][scran::scoreMarkers] groups argument.
+#'   In this way, if `groups` is `NULL`, "label" in `colData(x)` will be
+#'   extracted.
 #' @param features This can be a logical, integer or character vector indicating
 #' the rows of x to use. If `NULL`, and x is a
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
@@ -45,14 +45,17 @@
 NULL
 
 #' @keywords internal
-score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
-                                   order_by = "mean.AUC", order = -1L,
-                                   cellmarker = FALSE, clusters = NULL, features = NULL, absolute_lfc = FALSE,
-                                   lfc_cutoff = NULL,
-                                   ...) { # nolint
+.score_markers <- function(x, groups = NULL,
+                           restricted = NULL, top_n = 10L,
+                           order_by = "mean.AUC", order = -1L,
+                           ...,
+                           features = NULL,
+                           cellmarker = FALSE,
+                           absolute_lfc = FALSE,
+                           lfc_cutoff = NULL) { # nolint
     score_markers_list <- cached_score_markers(
         x,
-        clusters = clusters,
+        groups = groups,
         features = handle_row_data(object = x, features),
         ...
     )
@@ -69,7 +72,11 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
                 markers <- markers[logFC > lfc_cutoff]
             }
         }
-        if (is.null(top_n)) top_n <- nrow(markers)
+        if (is.null(top_n)) {
+            top_n <- nrow(markers)
+        } else {
+            top_n <- min(top_n, nrow(markers))
+        }
         data.table::setorderv(markers, order_by, order = order)
         markers <- markers[seq_len(top_n)]
         if (cellmarker) {
@@ -96,7 +103,7 @@ setGeneric(
 
 #' @export
 #' @rdname score_markers
-setMethod("score_markers", "ANY", score_markers_internal)
+setMethod("score_markers", "ANY", .score_markers)
 
 #' @export
 #' @param assay.type A string or integer scalar indicating which `assays` in the
@@ -105,16 +112,16 @@ setMethod("score_markers", "ANY", score_markers_internal)
 #' @rdname score_markers
 setMethod(
     "score_markers", "SingleCellExperiment",
-    function(x, ..., clusters = NULL, features = NULL, assay.type = "logcounts") {
-        clusters <- handle_column_data(object = x, clusters)
+    function(x, ..., groups = NULL, features = NULL, assay.type = "logcounts") {
+        groups <- handle_column_data(object = x, groups)
         if (is.null(features)) {
             features <- SingleCellExperiment::rowSubset(
                 x,
                 onAbsence = "none"
             )
         }
-        score_markers_internal(x,
-            clusters = clusters,
+        .score_markers(x,
+            groups = groups,
             features = features,
             ...,
             assay.type = assay.type
@@ -127,9 +134,9 @@ setMethod(
 #' @rdname score_markers
 setMethod(
     "score_markers", "SummarizedExperiment",
-    function(x, ..., clusters = NULL, assay.type = "logcounts") {
-        score_markers_internal(x,
-            clusters = handle_column_data(object = x, clusters),
+    function(x, ..., groups = NULL, assay.type = "logcounts") {
+        .score_markers(x,
+            groups = handle_column_data(object = x, groups),
             ...,
             assay.type = assay.type
         )
@@ -137,10 +144,10 @@ setMethod(
 )
 
 #' @keywords internal
-cached_score_markers <- function(x, clusters, features, ...) {
+cached_score_markers <- function(x, groups, features, ...) {
     score_markers_list <- scran::scoreMarkers(
         x = x,
-        groups = clusters,
+        groups = groups,
         subset.row = features,
         ...
     )
