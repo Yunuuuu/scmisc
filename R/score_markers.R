@@ -34,6 +34,11 @@
 #' [SingleCellExperiment][SingleCellExperiment::SingleCellExperiment],
 #' [rowSubset][SingleCellExperiment::rowSubset] is used to derive the features.
 #' See [scoreMarkers][scran::scoreMarkers] subset.row argument.
+#' @param absolute_lfc A boolean value indicates whether to calculate absolute
+#' logFC when filtering by `lfc_cutoff`. Only used when `lfc_cutoff` is not
+#' `NULL`.
+#' @param lfc_cutoff Limit testing to genes which show, on average, at least
+#' X-fold difference (log-scale) between the two groups of cells.
 #' @inheritDotParams scran::scoreMarkers
 #' @return A data.frame
 #' @name score_markers
@@ -42,7 +47,8 @@ NULL
 #' @keywords internal
 score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
                                    order_by = "mean.AUC", order = -1L,
-                                   cellmarker = FALSE, clusters = NULL, features = NULL,
+                                   cellmarker = FALSE, clusters = NULL, features = NULL, absolute_lfc = FALSE,
+                                   lfc_cutoff = NULL,
                                    ...) { # nolint
     score_markers_list <- cached_score_markers(
         x,
@@ -53,14 +59,23 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
     if (!is.null(restricted)) {
         score_markers_list <- score_markers_list[as.character(restricted)]
     }
-    res <- lapply(score_markers_list, function(score_markers) {
-        if (is.null(top_n)) top_n <- nrow(score_markers)
-        data.table::setorderv(score_markers, order_by, order = order)
-        score_markers <- score_markers[seq_len(top_n)]
+    res <- lapply(score_markers_list, function(markers) {
+        markers <- markers[, logFC := self.average - other.average]
+        data.table::setcolorder(markers, "logFC", after = "other.average")
+        if (!is.null(lfc_cutoff)) {
+            if (absolute_lfc) {
+                markers <- markers[abs(logFC) > lfc_cutoff]
+            } else {
+                markers <- markers[logFC > lfc_cutoff]
+            }
+        }
+        if (is.null(top_n)) top_n <- nrow(markers)
+        data.table::setorderv(markers, order_by, order = order)
+        markers <- markers[seq_len(top_n)]
         if (cellmarker) {
-            cellmarker_search(score_markers$genes)
+            cellmarker_search(markers$genes)
         } else {
-            data.table::setDF(score_markers)
+            data.table::setDF(markers)
         }
     })
     if (length(res) == 1L) {
@@ -69,6 +84,8 @@ score_markers_internal <- function(x, restricted = NULL, top_n = 20L,
         res
     }
 }
+
+utils::globalVariables(c("self.average", "other.average", "logFC"))
 
 #' @export
 #' @rdname score_markers

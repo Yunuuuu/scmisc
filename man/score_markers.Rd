@@ -18,6 +18,8 @@ score_markers(x, ...)
   cellmarker = FALSE,
   clusters = NULL,
   features = NULL,
+  absolute_lfc = FALSE,
+  lfc_cutoff = NULL,
   ...
 )
 
@@ -78,6 +80,13 @@ the rows of x to use. If \code{NULL}, and x is a
 \link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment},
 \link[SingleCellExperiment:rowSubset]{rowSubset} is used to derive the features.
 See \link[scran:scoreMarkers]{scoreMarkers} subset.row argument.}
+
+\item{absolute_lfc}{A boolean value indicates whether to calculate absolute
+logFC when filtering by \code{lfc_cutoff}. Only used when \code{lfc_cutoff} is not
+\code{NULL}.}
+
+\item{lfc_cutoff}{Limit testing to genes which show, on average, at least
+X-fold difference (log-scale) between the two groups of cells.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}
