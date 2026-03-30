@@ -24,8 +24,9 @@ plot_grouped_dots_internal <- function(
     x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, threshold = 0L, zlim = NULL,
-    dots_size_legend_param = list(),
-    flip = FALSE, row_labels = NULL, column_labels = NULL) {
+    dots_size_legend_param = list(), flip = FALSE,
+    row_labels = NULL, row_group_fn = NULL,
+    column_labels = NULL, column_group_fn = NULL) {
     if (!is.null(dots_size_legend_param)) {
         dots_size_legend_param$title <- dots_size_legend_param$title %||%
             "NumDetected"
@@ -37,7 +38,8 @@ plot_grouped_dots_internal <- function(
         center = center, scale = scale,
         zlim = zlim, threshold = threshold,
         colour = colour, flip = flip,
-        row_labels = row_labels, column_labels = column_labels,
+        row_labels = row_labels, row_group_fn = row_group_fn,
+        column_labels = column_labels, column_group_fn = column_group_fn,
         dots_size_legend_param = dots_size_legend_param,
         ..., graph_type = "dots"
     )
