@@ -44,6 +44,8 @@
 #'   - A function that takes the default labels as input and returns a character
 #'    vector of the same length. Can be also a rlang
 #'     [lambda][rlang::as_function()] function notation.
+#' @param row_group_fn,column_group_fn A function that takes the row/column
+#' groups as input and modifies it.
 #' @param ... Other arguments passed to [Heatmap][ComplexHeatmap::Heatmap] and
 #'   specific methods.
 #' @inheritParams DotsHeatmap
@@ -61,7 +63,8 @@ plot_grouped_heat_internal <- function(
     x, marker_list = NULL, cluster2cell = NULL, groups = NULL, ...,
     blocks = NULL, colour = color, color = NULL, center = FALSE,
     scale = FALSE, zlim = NULL, flip = FALSE,
-    row_labels = NULL, column_labels = NULL) {
+    row_labels = NULL, row_group_fn = NULL,
+    column_labels = NULL, column_group_fn = NULL) {
     grouped_heat_internal(
         x = x, marker_list = marker_list,
         groups = groups, blocks = blocks,
@@ -69,7 +72,8 @@ plot_grouped_heat_internal <- function(
         center = center, scale = scale,
         zlim = zlim, threshold = 0L,
         colour = colour, flip = flip,
-        row_labels = row_labels, column_labels = column_labels,
+        row_labels = row_labels, row_group_fn = row_group_fn,
+        column_labels = column_labels, column_group_fn = column_group_fn,
         ..., graph_type = "square"
     )
 }
@@ -111,7 +115,8 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
                                   center = FALSE, scale = FALSE,
                                   zlim = NULL, threshold = 0L,
                                   colour = NULL, ..., flip = FALSE,
-                                  row_labels = NULL, column_labels = NULL,
+                                  row_labels = NULL, row_group_fn = NULL,
+                                  column_labels = NULL, column_group_fn = NULL,
                                   graph_type = c("dots", "square")) {
     assert_(marker_list, is.list, "a {.cls list}", null_ok = TRUE)
     if (!is.null(marker_list)) {
@@ -212,6 +217,18 @@ grouped_heat_internal <- function(x, marker_list = NULL, groups = NULL,
         }
         row_label_arg <- "unlist(marker_list)"
         column_label_arg <- "levels(groups)"
+    }
+    if (!is.null(row_split) && !is.null(row_group_fn)) {
+        if (rlang::is_formula(row_group_fn)) {
+            row_group_fn <- rlang::as_function(row_group_fn)
+        }
+        row_split <- row_group_fn(row_split)
+    }
+    if (!is.null(column_split) && !is.null(column_group_fn)) {
+        if (rlang::is_formula(column_group_fn)) {
+            column_group_fn <- rlang::as_function(column_group_fn)
+        }
+        column_split <- column_group_fn(column_split)
     }
     # prepare row_labels
     row_labels <- label_fn_helper(row_labels,

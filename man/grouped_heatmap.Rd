@@ -23,7 +23,9 @@ plot_grouped_heat(x, ...)
   zlim = NULL,
   flip = FALSE,
   row_labels = NULL,
-  column_labels = NULL
+  row_group_fn = NULL,
+  column_labels = NULL,
+  column_group_fn = NULL
 )
 
 \S4method{plot_grouped_heat}{SummarizedExperiment}(
@@ -102,6 +104,9 @@ with the default labels, Otherwise, used as it is.
 vector of the same length. Can be also a rlang
 \link[rlang:as_function]{lambda} function notation.
 }}
+
+\item{row_group_fn, column_group_fn}{A function that takes the row/column
+groups as input and modifies it.}
 
 \item{assay.type}{A string or integer scalar indicating which \code{assays} in the
 \code{x} contains the count matrix.}
