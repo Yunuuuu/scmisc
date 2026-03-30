@@ -13,6 +13,7 @@ facet_dots(x, ...)
   marker_list,
   clusters,
   cluster2cell = NULL,
+  cluster_fn = NULL,
   flip = TRUE,
   facet_args = list(scales = "free", space = "free"),
   ...
@@ -67,6 +68,9 @@ extracted.}
 
 \item{cluster2cell}{A named character or factor returned by
 \code{\link[=annotate_clusters]{annotate_clusters()}}.}
+
+\item{cluster_fn}{A function that takes cluster groups as input and modifies
+it.}
 
 \item{flip}{A scalar logical indicates whether flipping the plot.}
 

@@ -16,6 +16,8 @@
 #'   extracted.
 #' @param cluster2cell A named character or factor returned by
 #'   [`annotate_clusters()`][annotate_clusters].
+#' @param cluster_fn A function that takes cluster groups as input and modifies
+#' it.
 #' @param flip A scalar logical indicates whether flipping the plot.
 #' @param facet_args A named arguments list passed to
 #'   [facet_grid][ggplot2::facet_grid].
@@ -25,7 +27,8 @@
 NULL
 
 #' @keywords internal
-facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
+facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL,
+                                cluster_fn = NULL, flip = TRUE, facet_args = list(scales = "free", space = "free"), ...) {
     assert_marker_list(marker_list)
     markers <- unlist(marker_list, recursive = FALSE, use.names = FALSE)
     dup_markers <- unique(markers[duplicated(markers)])
@@ -55,9 +58,17 @@ facet_dots_internal <- function(x, marker_list, clusters, cluster2cell = NULL, f
     facet_args_list <- list(ggplot2::vars(..marker_celltypes..)) # nolint
     if (!is.null(cluster2cell)) {
         ..cluster2cell.. <- cluster2cell
+        if (is.null(cluster_fn)) {
+            cluster_fn <- function(x) x
+        } else {
+            if (rlang::is_formula(cluster_fn)) {
+                cluster_fn <- rlang::as_function(cluster_fn)
+            }
+        }
         facet_args_list <- c(
-            facet_args_list,
-            list(ggplot2::vars(..cluster2cell..[as.character(Group)])) # nolint
+            facet_args_list, list(
+                ggplot2::vars(cluster_fn(..cluster2cell..[as.character(Group)]))
+            )
         )
     }
     if (flip) {
